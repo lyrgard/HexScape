@@ -1,0 +1,6 @@
+/.settings
+/target
+/.classpath
+/.project
+/lwjgl.dll
+/OpenAL32.dll
