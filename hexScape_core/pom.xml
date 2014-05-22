@@ -1,0 +1,80 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>fr.lyrgard.hexScape</groupId>
+	<artifactId>hexScape_core</artifactId>
+	<version>0.0.3-SNAPSHOT</version>
+
+	<properties>
+		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
+	</properties>
+
+	<repositories>
+		<repository>
+			<id>sonatype-public</id>
+			<name>sonatype public</name>
+			<url>https://oss.sonatype.org/content/groups/public/</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+
+		<dependency>
+			<!-- Contains just the jme3test demo classes, with main methods -->
+			<groupId>com.jme3</groupId>
+			<artifactId>jmonkeyengine3</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<!-- The core library -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-core</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+
+		<!-- LWJGL stuff -->
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-lwjgl</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-lwjgl-natives</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>lwjgl</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-desktop</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-effects</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jME3-jbullet</artifactId>
+			<version>${jmonkey.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>17.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+	</dependencies>
+
+
+</project>
