@@ -11,7 +11,6 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 
 public class ChooseMapAction extends AbstractAction {
 

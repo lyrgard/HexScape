@@ -31,4 +31,12 @@ public class Player {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+
+	public CardCollection getArmy() {
+		return army;
+	}
+
+	public void setArmy(CardCollection army) {
+		this.army = army;
+	}
 }

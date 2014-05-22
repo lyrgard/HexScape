@@ -3,7 +3,6 @@ package fr.lyrgard.hexScape.camera;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 

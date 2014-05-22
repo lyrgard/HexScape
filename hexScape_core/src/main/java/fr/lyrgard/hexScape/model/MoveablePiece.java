@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.model;
 
-import com.jme3.light.AmbientLight;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
@@ -18,8 +17,6 @@ public class MoveablePiece implements Displayable {
 	private String modelName;
 
 	private Spatial pieceNode;
-	
-	private AmbientLight selectLight;
 	
 	public MoveablePiece(String modelName) {
 		this.modelName= modelName; 

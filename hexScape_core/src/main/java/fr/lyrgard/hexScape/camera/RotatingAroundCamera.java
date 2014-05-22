@@ -2,7 +2,6 @@ package fr.lyrgard.hexScape.camera;
 
 import com.jme3.bounding.BoundingBox;
 import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
 import com.jme3.input.awt.AwtKeyInput;
 import com.jme3.input.controls.AnalogListener;
 import com.jme3.input.controls.KeyTrigger;

@@ -9,6 +9,8 @@ import javax.swing.SwingUtilities;
 import com.jme3.system.AppSettings;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.gui.desktop.components.HexScapeFrame;
+import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
 
 
 public class HexScapeDesktopGui {
@@ -17,7 +19,6 @@ public class HexScapeDesktopGui {
 		final HexScapeCore app = HexScapeCore.getInstance();
 		
 		AppSettings settings = new AppSettings(true);
-		//settings.setCustomRenderer(AwtPanelsContext.class);
 		settings.setCustomRenderer(SwingContext.class);
 		settings.setFrameRate(60);
 		settings.setWidth(1024);
@@ -26,20 +27,10 @@ public class HexScapeDesktopGui {
 		app.getHexScapeJme3Application().setShowSettings(false);
 		app.getHexScapeJme3Application().setSettings(settings);
 		
-		//app.getHexScapeJme3Application().start();
 		
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-//				AwtPanelsContext ctx = (AwtPanelsContext) app.getHexScapeJme3Application().getContext();
-//				AwtPanel panel3d = ctx.createPanel(PaintMode.Accelerated);
-                
-				
-
-				
-				
-				
-				
 				app.getHexScapeJme3Application().createCanvas();
 				
 				final SwingContext ctx = (SwingContext)app.getHexScapeJme3Application().getContext();
@@ -47,7 +38,6 @@ public class HexScapeDesktopGui {
 				ctx.setSystemListener(app.getHexScapeJme3Application());
 				
 				final Canvas panel3d = ctx.getCanvas();
-				//panel3d.setFocusable(true);
 				
 				Dimension dim = new Dimension(1024, 768);
 				panel3d.setMinimumSize(dim);
