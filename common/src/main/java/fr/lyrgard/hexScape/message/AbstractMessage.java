@@ -1,16 +1,14 @@
 package fr.lyrgard.hexScape.message;
 
-import fr.lyrgard.hexScape.model.player.Player;
-
 public abstract class AbstractMessage {
 	
-	private Player player;
+	private String playerId;
 
-	public AbstractMessage(Player player) {
-		this.player = player;
+	public AbstractMessage(String playerId) {
+		this.playerId = playerId;
 	}
 
-	public Player getPlayer() {
-		return player;
+	public String getPlayerId() {
+		return playerId;
 	}
 }

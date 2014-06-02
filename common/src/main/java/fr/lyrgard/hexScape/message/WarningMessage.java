@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.message;
 
-import fr.lyrgard.hexScape.model.player.Player;
 
 public class WarningMessage extends AbstractMessage {
 
@@ -8,8 +7,8 @@ public class WarningMessage extends AbstractMessage {
 
 	
 	
-	public WarningMessage(Player player, String message) {
-		super(player);
+	public WarningMessage(String playerId, String message) {
+		super(playerId);
 		this.message = message;
 	}
 
