@@ -15,16 +15,17 @@ import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeDecorType;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeMap;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeTile;
-import fr.lyrgard.hexScape.model.Direction;
 import fr.lyrgard.hexScape.model.map.Decor;
+import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.TileType;
+import fr.lyrgard.hexScape.service.MapManager;
 
 public class VirtualScapeMapReader {
 	
 	
 
-	public Map readMap(File mapFile) {
+	public MapManager readMap(File mapFile) {
 		ByteBuffer bB = null;
 		try {
 			byte[] bytes = Files.readAllBytes(mapFile.toPath());
@@ -109,8 +110,9 @@ public class VirtualScapeMapReader {
 		return lenght;
 	}
 	
-	private Map toMap(VirtualScapeMap virtualScapeMap, String defaultName) {
+	private MapManager toMap(VirtualScapeMap virtualScapeMap, String defaultName) {
 		Map map = new Map();
+		MapManager mapManager = new MapManager(map);
 
 		java.util.Map<Integer, List<VirtualScapeTile>> tilesByHeight = new HashMap<Integer, List<VirtualScapeTile>>();
 		int maxHeight = 0;
@@ -133,7 +135,7 @@ public class VirtualScapeMapReader {
 			if (tiles != null) {
 				for (VirtualScapeTile tile : tiles) {
 					if (getTileType(tile) != null) {
-						addTileToMap(tile, z, map);
+						addTileToMap(tile, z, mapManager);
 					} else {
 						decors.add(tile);
 					}
@@ -144,19 +146,19 @@ public class VirtualScapeMapReader {
 		}
 		
 		for (VirtualScapeTile decor : decors) {
-			addDecorToMap(decor, map);
+			addDecorToMap(decor, mapManager);
 		}
 		
-		map.setName(virtualScapeMap.getName());
-		if (StringUtils.isEmpty(map.getName())) {
-			map.setName(defaultName);
+		mapManager.getMap().setName(virtualScapeMap.getName());
+		if (StringUtils.isEmpty(mapManager.getMap().getName())) {
+			mapManager.getMap().setName(defaultName);
 		}
 		
-		return map;
+		return mapManager;
 	}
 	
 	
-	private void addDecorToMap(VirtualScapeTile decor, Map map) {
+	private void addDecorToMap(VirtualScapeTile decor, MapManager mapManager) {
 		int x = convertCoordX(decor);
 		int y = convertCoordY(decor);
 		VirtualScapeDecorType type = getDecorType(decor);
@@ -170,32 +172,32 @@ public class VirtualScapeMapReader {
 			Vector3i tileAttachementOffset = type.getAttachementTilePosition().get(direction);
 
 			decorBean.setPosition(x + tileAttachementOffset.x, y + tileAttachementOffset.y, decor.getPosZ() + tileAttachementOffset.z);
-			map.getDecors().add(decorBean);
+			mapManager.getDecors().add(decorBean);
 
 			// Some decors has Tiles under them
 			if (type == VirtualScapeDecorType.BRUSH_1 || type == VirtualScapeDecorType.PALM_1) {
-				addSingleTilesToMap(map, 1, 0, TileType.SWAMP, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 1, 0, TileType.SWAMP, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.HIVE_6) {
-				addSingleTilesToMap(map, 6, decor.getRotation(), TileType.SWAMP_WATER, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 6, decor.getRotation(), TileType.SWAMP_WATER, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.GLACIER_6) {
-				addSingleTilesToMap(map, 6, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 6, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.GLACIER_4) {
-				addSingleTilesToMap(map, 4, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 4, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.GLACIER_3) {
-				addSingleTilesToMap(map, 3, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 3, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.GLACIER_1) {
-				addSingleTilesToMap(map, 1, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 1, decor.getRotation(), TileType.ICE, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.OUTCROP_3) {
-				addSingleTilesToMap(map, 3, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 3, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.OUTCROP_1) {
-				addSingleTilesToMap(map, 1, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
+				addSingleTilesToMap(mapManager, 1, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
 			}
 			
 		}
 	}
 
 
-	private void addTileToMap(VirtualScapeTile tile, int z ,Map map) {
+	private void addTileToMap(VirtualScapeTile tile, int z ,MapManager mapManager) {
 		
 		int tileNumber = tile.getType() % 1000;
 		int rotation = tile.getRotation();
@@ -205,36 +207,36 @@ public class VirtualScapeMapReader {
 		int x = convertCoordX(tile);
 		int y = convertCoordY(tile);
 		
-		addSingleTilesToMap(map, tileNumber, rotation, tileType, x, y, z);
+		addSingleTilesToMap(mapManager, tileNumber, rotation, tileType, x, y, z);
 	}
 
 
-	private void addSingleTilesToMap(Map map, int tileNumber, int rotation, TileType tileType, int x, int y, int z) {
+	private void addSingleTilesToMap(MapManager mapManager, int tileNumber, int rotation, TileType tileType, int x, int y, int z) {
 		switch (tileNumber) {
 		case 1:
-			map.addTile(tileType, x, y, z);
+			mapManager.addTile(tileType, x, y, z);
 			break;
 		case 2:
 			if (tileType == TileType.WATER || tileType == TileType.SHADOW) {
 				// Somehow Virtualscape has shadow and water tiles "2", that are in fact normal single tiles
-				map.addTile(tileType, x, y, z);	
+				mapManager.addTile(tileType, x, y, z);	
 				break;
 			}
 			switch (rotation) {
 			case 0:
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
 				break;
 			case 1:
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
 				break;
 			case 2:
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
 				break;
 			}
 			break;
@@ -243,16 +245,16 @@ public class VirtualScapeMapReader {
 			case 0:
 			case 2:
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
 				break;
 			case 1:
 			case 3:
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y-1, z);
 				break;
 			}
 			break;
@@ -260,24 +262,24 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
 				break;
 			case 1:
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
 				break;
 			case 2:
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
 				break;
 			}
 			break;
@@ -285,27 +287,27 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x+3, y, z);
-				map.addTile(tileType, x+4, y, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x+3, y, z);
+				mapManager.addTile(tileType, x+4, y, z);
 				break;
 			case 1:
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
 				break;
 			case 2:
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x, y-4, z);
 				break;
 			}
 			break;
@@ -313,30 +315,30 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
 				break;
 			case 1:
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-2, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-2, z);
 				break;
 			case 2:
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
 				break;
 			}
 			break;
@@ -344,298 +346,298 @@ public class VirtualScapeMapReader {
 			if (tileType == TileType.ROAD) {
 				switch (rotation) {
 				case 0:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x+1, y, z);
-					map.addTile(tileType, x+2, y, z);
-					map.addTile(tileType, x+3, y, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x+2, y-1, z);
-					map.addTile(tileType, x+3, y-1, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x+1, y, z);
+					mapManager.addTile(tileType, x+2, y, z);
+					mapManager.addTile(tileType, x+3, y, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x+2, y-1, z);
+					mapManager.addTile(tileType, x+3, y-1, z);
 					break;
 				case 1:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x, y-1, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x+1, y-2, z);
-					map.addTile(tileType, x+2, y-2, z);
-					map.addTile(tileType, x+2, y-3, z);
-					map.addTile(tileType, x+3, y-3, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x, y-1, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x+1, y-2, z);
+					mapManager.addTile(tileType, x+2, y-2, z);
+					mapManager.addTile(tileType, x+2, y-3, z);
+					mapManager.addTile(tileType, x+3, y-3, z);
 					break;
 				case 2:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x+1, y, z);
-					map.addTile(tileType, x, y-1, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x, y-2, z);
-					map.addTile(tileType, x+1, y-2, z);
-					map.addTile(tileType, x+1, y-3, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x+1, y, z);
+					mapManager.addTile(tileType, x, y-1, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x, y-2, z);
+					mapManager.addTile(tileType, x+1, y-2, z);
+					mapManager.addTile(tileType, x+1, y-3, z);
 					break;
 				case 3:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x+1, y, z);
-					map.addTile(tileType, x+2, y, z);
-					map.addTile(tileType, x, y-1, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x+2, y-1, z);
-					map.addTile(tileType, x+3, y-1, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x+1, y, z);
+					mapManager.addTile(tileType, x+2, y, z);
+					mapManager.addTile(tileType, x, y-1, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x+2, y-1, z);
+					mapManager.addTile(tileType, x+3, y-1, z);
 					break;
 				case 4:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x+1, y, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x+2, y-1, z);
-					map.addTile(tileType, x+2, y-2, z);
-					map.addTile(tileType, x+3, y-2, z);
-					map.addTile(tileType, x+3, y-3, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x+1, y, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x+2, y-1, z);
+					mapManager.addTile(tileType, x+2, y-2, z);
+					mapManager.addTile(tileType, x+3, y-2, z);
+					mapManager.addTile(tileType, x+3, y-3, z);
 					break;
 				case 5:
-					map.addTile(tileType, x, y, z);
-					map.addTile(tileType, x, y-1, z);
-					map.addTile(tileType, x+1, y-1, z);
-					map.addTile(tileType, x, y-2, z);
-					map.addTile(tileType, x+1, y-2, z);
-					map.addTile(tileType, x, y-3, z);
-					map.addTile(tileType, x+1, y-3, z);
+					mapManager.addTile(tileType, x, y, z);
+					mapManager.addTile(tileType, x, y-1, z);
+					mapManager.addTile(tileType, x+1, y-1, z);
+					mapManager.addTile(tileType, x, y-2, z);
+					mapManager.addTile(tileType, x+1, y-2, z);
+					mapManager.addTile(tileType, x, y-3, z);
+					mapManager.addTile(tileType, x+1, y-3, z);
 					break;
 				}
 				break;
 			} else {
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
 			}
 			break;
 		case 9:
 			switch (rotation) {
 			case 0:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x+3, y, z);
-				map.addTile(tileType, x+4, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+3, y-1, z);
-				map.addTile(tileType, x+4, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x+3, y, z);
+				mapManager.addTile(tileType, x+4, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+3, y-1, z);
+				mapManager.addTile(tileType, x+4, y-1, z);
 				break;
 			case 1:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+3, y-4, z);
-				map.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+3, y-4, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
 				break;
 			case 2:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
 				break;
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x+3, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+3, y-1, z);
-				map.addTile(tileType, x+4, y-1, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x+3, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+3, y-1, z);
+				mapManager.addTile(tileType, x+4, y-1, z);
 				break;
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-2, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+4, y-3, z);
-				map.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-2, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+4, y-3, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
 				break;
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x, y-4, z);
-				map.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x, y-4, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
 				break;
 			}
 			break;
 		case 24:
 			switch (rotation) {
 			case 0:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-2, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+4, y-3, z);
-				map.addTile(tileType, x+5, y-3, z);
-				map.addTile(tileType, x+2, y-4, z);
-				map.addTile(tileType, x+3, y-4, z);
-				map.addTile(tileType, x+4, y-4, z);
-				map.addTile(tileType, x+5, y-4, z);
-				map.addTile(tileType, x+6, y-4, z);
-				map.addTile(tileType, x+2, y-5, z);
-				map.addTile(tileType, x+3, y-5, z);
-				map.addTile(tileType, x+4, y-5, z);
-				map.addTile(tileType, x+5, y-5, z);
-				map.addTile(tileType, x+6, y-5, z);
-				map.addTile(tileType, x+7, y-5, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-2, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+4, y-3, z);
+				mapManager.addTile(tileType, x+5, y-3, z);
+				mapManager.addTile(tileType, x+2, y-4, z);
+				mapManager.addTile(tileType, x+3, y-4, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x+5, y-4, z);
+				mapManager.addTile(tileType, x+6, y-4, z);
+				mapManager.addTile(tileType, x+2, y-5, z);
+				mapManager.addTile(tileType, x+3, y-5, z);
+				mapManager.addTile(tileType, x+4, y-5, z);
+				mapManager.addTile(tileType, x+5, y-5, z);
+				mapManager.addTile(tileType, x+6, y-5, z);
+				mapManager.addTile(tileType, x+7, y-5, z);
 				break;
 			case 1:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x-1, y-1, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x-2, y-2, z);
-				map.addTile(tileType, x-1, y-2, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x-1, y-3, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x, y-4, z);
-				map.addTile(tileType, x+1, y-4, z);
-				map.addTile(tileType, x+2, y-4, z);
-				map.addTile(tileType, x+1, y-5, z);
-				map.addTile(tileType, x+2, y-5, z);
-				map.addTile(tileType, x+3, y-5, z);
-				map.addTile(tileType, x+2, y-6, z);
-				map.addTile(tileType, x+3, y-6, z);
-				map.addTile(tileType, x+3, y-7, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x-1, y-1, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x-2, y-2, z);
+				mapManager.addTile(tileType, x-1, y-2, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x-1, y-3, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x, y-4, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x+2, y-4, z);
+				mapManager.addTile(tileType, x+1, y-5, z);
+				mapManager.addTile(tileType, x+2, y-5, z);
+				mapManager.addTile(tileType, x+3, y-5, z);
+				mapManager.addTile(tileType, x+2, y-6, z);
+				mapManager.addTile(tileType, x+3, y-6, z);
+				mapManager.addTile(tileType, x+3, y-7, z);
 				break;
 			case 2:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-2, z);
-				map.addTile(tileType, x+4, y-2, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+4, y-3, z);
-				map.addTile(tileType, x+5, y-3, z);
-				map.addTile(tileType, x, y-4, z);
-				map.addTile(tileType, x+1, y-4, z);
-				map.addTile(tileType, x+2, y-4, z);
-				map.addTile(tileType, x+3, y-4, z);
-				map.addTile(tileType, x+4, y-4, z);
-				map.addTile(tileType, x+5, y-4, z);
-				map.addTile(tileType, x, y-5, z);
-				map.addTile(tileType, x+1, y-5, z);
-				map.addTile(tileType, x+2, y-5, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-2, z);
+				mapManager.addTile(tileType, x+4, y-2, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+4, y-3, z);
+				mapManager.addTile(tileType, x+5, y-3, z);
+				mapManager.addTile(tileType, x, y-4, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x+2, y-4, z);
+				mapManager.addTile(tileType, x+3, y-4, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x+5, y-4, z);
+				mapManager.addTile(tileType, x, y-5, z);
+				mapManager.addTile(tileType, x+1, y-5, z);
+				mapManager.addTile(tileType, x+2, y-5, z);
 				break;
 			case 3:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x+3, y, z);
-				map.addTile(tileType, x+4, y, z);
-				map.addTile(tileType, x+5, y, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x+3, y-1, z);
-				map.addTile(tileType, x+4, y-1, z);
-				map.addTile(tileType, x+5, y-1, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+3, y-2, z);
-				map.addTile(tileType, x+4, y-2, z);
-				map.addTile(tileType, x+5, y-2, z);
-				map.addTile(tileType, x+6, y-2, z);
-				map.addTile(tileType, x+4, y-3, z);
-				map.addTile(tileType, x+5, y-3, z);
-				map.addTile(tileType, x+6, y-3, z);
-				map.addTile(tileType, x+5, y-4, z);
-				map.addTile(tileType, x+6, y-4, z);
-				map.addTile(tileType, x+7, y-4, z);
-				map.addTile(tileType, x+6, y-5, z);
-				map.addTile(tileType, x+7, y-5, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x+3, y, z);
+				mapManager.addTile(tileType, x+4, y, z);
+				mapManager.addTile(tileType, x+5, y, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x+3, y-1, z);
+				mapManager.addTile(tileType, x+4, y-1, z);
+				mapManager.addTile(tileType, x+5, y-1, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+3, y-2, z);
+				mapManager.addTile(tileType, x+4, y-2, z);
+				mapManager.addTile(tileType, x+5, y-2, z);
+				mapManager.addTile(tileType, x+6, y-2, z);
+				mapManager.addTile(tileType, x+4, y-3, z);
+				mapManager.addTile(tileType, x+5, y-3, z);
+				mapManager.addTile(tileType, x+6, y-3, z);
+				mapManager.addTile(tileType, x+5, y-4, z);
+				mapManager.addTile(tileType, x+6, y-4, z);
+				mapManager.addTile(tileType, x+7, y-4, z);
+				mapManager.addTile(tileType, x+6, y-5, z);
+				mapManager.addTile(tileType, x+7, y-5, z);
 				break;
 			case 4:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x+3, y-3, z);
-				map.addTile(tileType, x+1, y-4, z);
-				map.addTile(tileType, x+2, y-4, z);
-				map.addTile(tileType, x+3, y-4, z);
-				map.addTile(tileType, x+4, y-4, z);
-				map.addTile(tileType, x+1, y-5, z);
-				map.addTile(tileType, x+2, y-5, z);
-				map.addTile(tileType, x+3, y-5, z);
-				map.addTile(tileType, x+4, y-5, z);
-				map.addTile(tileType, x+5, y-5, z);
-				map.addTile(tileType, x+1, y-6, z);
-				map.addTile(tileType, x+2, y-6, z);
-				map.addTile(tileType, x+3, y-6, z);
-				map.addTile(tileType, x+4, y-6, z);
-				map.addTile(tileType, x+2, y-7, z);
-				map.addTile(tileType, x+3, y-7, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x+3, y-3, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x+2, y-4, z);
+				mapManager.addTile(tileType, x+3, y-4, z);
+				mapManager.addTile(tileType, x+4, y-4, z);
+				mapManager.addTile(tileType, x+1, y-5, z);
+				mapManager.addTile(tileType, x+2, y-5, z);
+				mapManager.addTile(tileType, x+3, y-5, z);
+				mapManager.addTile(tileType, x+4, y-5, z);
+				mapManager.addTile(tileType, x+5, y-5, z);
+				mapManager.addTile(tileType, x+1, y-6, z);
+				mapManager.addTile(tileType, x+2, y-6, z);
+				mapManager.addTile(tileType, x+3, y-6, z);
+				mapManager.addTile(tileType, x+4, y-6, z);
+				mapManager.addTile(tileType, x+2, y-7, z);
+				mapManager.addTile(tileType, x+3, y-7, z);
 				break;
 			case 5:
-				map.addTile(tileType, x, y, z);
-				map.addTile(tileType, x+1, y, z);
-				map.addTile(tileType, x+2, y, z);
-				map.addTile(tileType, x-3, y-1, z);
-				map.addTile(tileType, x-2, y-1, z);
-				map.addTile(tileType, x-1, y-1, z);
-				map.addTile(tileType, x, y-1, z);
-				map.addTile(tileType, x+1, y-1, z);
-				map.addTile(tileType, x+2, y-1, z);
-				map.addTile(tileType, x-3, y-2, z);
-				map.addTile(tileType, x-2, y-2, z);
-				map.addTile(tileType, x-1, y-2, z);
-				map.addTile(tileType, x, y-2, z);
-				map.addTile(tileType, x+1, y-2, z);
-				map.addTile(tileType, x+2, y-2, z);
-				map.addTile(tileType, x-2, y-3, z);
-				map.addTile(tileType, x-1, y-3, z);
-				map.addTile(tileType, x, y-3, z);
-				map.addTile(tileType, x+1, y-3, z);
-				map.addTile(tileType, x+2, y-3, z);
-				map.addTile(tileType, x, y-4, z);
-				map.addTile(tileType, x+1, y-4, z);
-				map.addTile(tileType, x+2, y-4, z);
-				map.addTile(tileType, x+2, y-5, z);
+				mapManager.addTile(tileType, x, y, z);
+				mapManager.addTile(tileType, x+1, y, z);
+				mapManager.addTile(tileType, x+2, y, z);
+				mapManager.addTile(tileType, x-3, y-1, z);
+				mapManager.addTile(tileType, x-2, y-1, z);
+				mapManager.addTile(tileType, x-1, y-1, z);
+				mapManager.addTile(tileType, x, y-1, z);
+				mapManager.addTile(tileType, x+1, y-1, z);
+				mapManager.addTile(tileType, x+2, y-1, z);
+				mapManager.addTile(tileType, x-3, y-2, z);
+				mapManager.addTile(tileType, x-2, y-2, z);
+				mapManager.addTile(tileType, x-1, y-2, z);
+				mapManager.addTile(tileType, x, y-2, z);
+				mapManager.addTile(tileType, x+1, y-2, z);
+				mapManager.addTile(tileType, x+2, y-2, z);
+				mapManager.addTile(tileType, x-2, y-3, z);
+				mapManager.addTile(tileType, x-1, y-3, z);
+				mapManager.addTile(tileType, x, y-3, z);
+				mapManager.addTile(tileType, x+1, y-3, z);
+				mapManager.addTile(tileType, x+2, y-3, z);
+				mapManager.addTile(tileType, x, y-4, z);
+				mapManager.addTile(tileType, x+1, y-4, z);
+				mapManager.addTile(tileType, x+2, y-4, z);
+				mapManager.addTile(tileType, x+2, y-5, z);
 				break;
 			}
 			break;

@@ -1,5 +1,22 @@
 package fr.lyrgard.hexScape.message;
 
-public class LoadArmyMessage {
+import java.io.File;
+
+public class LoadArmyMessage extends AbstractMessage {
+	
+	private File armyFile;
+	
+	
+
+	public LoadArmyMessage(String playerId, File armyFile) {
+		super(playerId);
+		this.armyFile = armyFile;
+	}
+
+
+
+	public File getArmyFile() {
+		return armyFile;
+	}
 
 }

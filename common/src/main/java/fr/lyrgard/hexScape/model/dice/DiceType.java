@@ -6,6 +6,8 @@ import java.util.List;
 
 public class DiceType {
 	
+	private String id;
+	
 	private String name;
 	
 	private File iconFile;
@@ -43,5 +45,13 @@ public class DiceType {
 
 	public void setMaxNumberThrown(int maxNumberThrown) {
 		this.maxNumberThrown = maxNumberThrown;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}	
 }

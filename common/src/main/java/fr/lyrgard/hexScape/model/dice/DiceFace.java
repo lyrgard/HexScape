@@ -4,6 +4,8 @@ import java.io.File;
 
 public class DiceFace {
 
+	private String id;
+	
 	private Integer value;
 	
 	private String name;
@@ -32,5 +34,13 @@ public class DiceFace {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 }

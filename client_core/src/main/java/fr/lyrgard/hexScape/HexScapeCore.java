@@ -6,6 +6,7 @@ import java.awt.Color;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.MapManager;
 
 public class HexScapeCore {
 
@@ -22,6 +23,8 @@ public class HexScapeCore {
 	private Player player;
 	
 	private Game game;
+	
+	private MapManager mapManager;
 	
 	public Game getGame() {
 		return game;
@@ -44,6 +47,10 @@ public class HexScapeCore {
 
 	public Player getPlayer() {
 		return player;
+	}
+
+	public MapManager getMapManager() {
+		return mapManager;
 	}
 	
 }

@@ -16,19 +16,12 @@ import com.jme3.math.Vector3f;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.MessageBus;
-import fr.lyrgard.hexScape.event.piece.PieceAddedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceMovedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceRemovedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceSelectedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceUnselectedEvent;
-import fr.lyrgard.hexScape.listener.MapService;
 import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.model.MoveablePiece;
-import fr.lyrgard.hexScape.service.MapManager;
 
 public class PieceControlerAppState extends AbstractAppState implements ActionListener {
 
@@ -44,8 +37,6 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 	private State currentState = State.WAITING;
 	
 	private InputManager inputManager;
-	
-	private MapManager mapManager;
 	
 	private enum State {
 		WAITING, ADDING_PIECE, MOVING_PIECE, SELECTING_PIECE
@@ -183,7 +174,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 			case MOVING_PIECE:
 				piece = placePieceByMouseAppState.getPieceToPlace();
 				if (piece != null) {
-					mapManager.removePiece(piece);
+					HexScapeCore.getInstance().getMapManager().removePiece(piece);
 					MessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayer().getId(), HexScapeCore.getInstance().getGame().getId(), piece.getId()));
 				}
 				changeStateTo(State.WAITING);
@@ -191,7 +182,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 			case SELECTING_PIECE:
 				piece = selectPieceByMouseAppState.getSelectedPiece();
 				if (piece != null) {
-					mapManager.removePiece(piece);
+					HexScapeCore.getInstance().getMapManager().removePiece(piece);
 					MessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayer().getId(), HexScapeCore.getInstance().getGame().getId(), piece.getId()));
 				}
 				changeStateTo(State.WAITING);

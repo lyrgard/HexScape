@@ -15,11 +15,10 @@ import com.jme3.scene.Spatial;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
-import fr.lyrgard.hexScape.listener.MapService;
 import fr.lyrgard.hexScape.model.MoveablePiece;
-import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
+import fr.lyrgard.hexScape.service.TileService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class PlacePieceByMouseAppState extends AbstractAppState {
@@ -30,8 +29,6 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 	
 	private Camera cam;
 	
-	private MapService mapService;
-	
 	private Node rootNode;
 	
 	@Override
@@ -39,7 +36,6 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		super.initialize(stateManager, app);
 		this.inputManager = app.getInputManager();
 		this.cam = app.getCamera();
-		this.mapService = HexScapeCore.getInstance().getMapService();
 		this.rootNode = ((HexScapeJme3Application)app).getRootNode();
 	}
 
@@ -56,7 +52,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		if (this.pieceToPlace != null) {
 			rootNode.detachChild(this.pieceToPlace.getSpatial());
 			if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene().contains(pieceToPlace)) {
-				mapService.placePiece(pieceToPlace, pieceToPlace.getX(), pieceToPlace.getY(), pieceToPlace.getZ());
+				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getX(), pieceToPlace.getY(), pieceToPlace.getZ());
 			}
 		}
 		
@@ -70,14 +66,13 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		Vector3f collision = getMapCollisionPoint();
 			
 		if (collision != null) {
-			Map map = mapService.getCurrentMap();
-			if (map != null) {
+			if (HexScapeCore.getInstance().getMapManager() != null) {
 				Vector3i mapPos = CoordinateUtils.toMapCoordinate(collision.x, collision.y, collision.z);
-				Tile nearestTile = map.getNearestTile(mapPos.x, mapPos.y, mapPos.z);
+				Tile nearestTile = HexScapeCore.getInstance().getMapManager().getNearestTile(mapPos.x, mapPos.y, mapPos.z);
 				if (nearestTile != null) {
 					Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
 
-					if (nearestTile.getType().isHalfTile()) {
+					if (TileService.getInstance().isHalfTile(nearestTile.getType())) {
 						spacePos.y += TileMesh.HEX_SIZE_Y / 2;
 					} else {
 						spacePos.y += TileMesh.HEX_SIZE_Y;
@@ -94,7 +89,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		if (collision != null) {
 			Vector3i mapPos = CoordinateUtils.toMapCoordinate(collision.x, collision.y, collision.z);
 			
-			success = mapService.placePiece(pieceToPlace, mapPos.x, mapPos.y, mapPos.z);
+			success = HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, mapPos.x, mapPos.y, mapPos.z);
 			setPieceToPlace(null);
 		}
 		return success;
@@ -116,7 +111,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
         // Aim the ray from the clicked spot forwards.
         Ray ray = new Ray(click3d, dir);
         // Collect intersections between ray and all nodes in results list.
-        Spatial mapSpatial = HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMap().getMapWithoutDecorsSpatial();
+        Spatial mapSpatial = HexScapeCore.getInstance().getMapManager().getMapWithoutDecorsSpatial();
         if (mapSpatial != null) {
         	mapSpatial.collideWith(ray, results);
         }

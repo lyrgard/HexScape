@@ -30,7 +30,6 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.io.virtualScape.VirtualScapeMapReader;
-import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.message.WarningMessage;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.MoveablePiece;
@@ -59,21 +58,13 @@ public class MapManager {
 		this.map = map;
 	}
 	
-	public MapManager(File file) {
-		super();
-		HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
-		
-		map = mapReader.readMap(file);
-		Scene scene = new Scene();
-		scene.setMapManager(this);
-		
-		HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
-		MessageBus.post(new MapLoadedMessage(HexScapeCore.getInstance().getPlayer(), map));
+	public static MapManager fromFile(File file) {		
+		return mapReader.readMap(file);
 	}
 
 	public void placePiece(MoveablePiece piece) {
 		if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene() == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer(), "No map was loaded. Please load a map before trying to place pieces"));
+			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer().getId(), "No map was loaded. Please load a map before trying to place pieces"));
 			return;
 		}
 		PieceControlerAppState pieceController = HexScapeCore.getInstance().getHexScapeJme3Application().getPieceControlerAppState();
@@ -83,7 +74,7 @@ public class MapManager {
 	public boolean placePiece(MoveablePiece piece, int x, int y, int z) {
 		Scene scene = HexScapeCore.getInstance().getHexScapeJme3Application().getScene();
 		if (scene == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer(), "No map was loaded. Please load a map before trying to place pieces"));
+			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer().getId(), "No map was loaded. Please load a map before trying to place pieces"));
 			return false;
 		}
 		
@@ -109,7 +100,7 @@ public class MapManager {
 
 	public void moveSelectedPiece() {
 		if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene() == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer(), "No map was loaded. Please load a map before trying to move a piece"));
+			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayer().getId(), "No map was loaded. Please load a map before trying to move a piece"));
 			return;
 		}
 		PieceControlerAppState pieceController = HexScapeCore.getInstance().getHexScapeJme3Application().getPieceControlerAppState();
