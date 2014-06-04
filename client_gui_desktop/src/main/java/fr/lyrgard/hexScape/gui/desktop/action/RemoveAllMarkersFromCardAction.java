@@ -6,7 +6,9 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 
 public class RemoveAllMarkersFromCardAction extends AbstractAction {
 	
@@ -14,16 +16,20 @@ public class RemoveAllMarkersFromCardAction extends AbstractAction {
 
 	private static final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/remove.png"));
 	
-	private Card card;
+	private CardInstance card;
 	
-	public RemoveAllMarkersFromCardAction(Card card) {
+	public RemoveAllMarkersFromCardAction(CardInstance card) {
 		super("Remove all markers from this card", icon);
 		this.card = card;
 	}
 	
 	
 	public void actionPerformed(ActionEvent e) {
-		HexScapeCore.getInstance().getMarkerService().removeAllMarkersFromCard(card);
+		String playerId = HexScapeCore.getInstance().getPlayerId();
+		String gameId = HexScapeCore.getInstance().getGameId();
+		
+		RemoveMarkerMessage message = new RemoveMarkerMessage(playerId, gameId, card.getId(), null, 0, true);
+		MessageBus.post(message);
 	}
 
 }

@@ -11,14 +11,14 @@ import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
 import fr.lyrgard.hexScape.message.RevealMarkerMessage;
 import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.card.Card;
-import fr.lyrgard.hexScape.model.card.CardCollection;
-import fr.lyrgard.hexScape.model.game.Game;
+import fr.lyrgard.hexScape.model.card.Army;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
+import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.MarkerService;
 
 public class MarkerMessageLocalListener {
@@ -49,19 +49,19 @@ public class MarkerMessageLocalListener {
 		String markerId = message.getMarkerId();
 		int number = message.getNumber();
 		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		if (game == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player == null) {
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
 		} 
 		
-		CardCollection army = game.getArmyByPlayerId().get(playerId);
+		Army army = player.getArmy();
 		if (army == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId + " in game " + gameId));
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId));
 			return;
 		}
 		
-		Card card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCardsById().get(cardId);
 		if (card == null) {
 			MessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;
@@ -95,7 +95,7 @@ public class MarkerMessageLocalListener {
 		MessageBus.post(new MarkerPlacedMessage(playerId, gameId, cardId, markerId, number));
 	}
 
-	private void addStackableMarkerToCard(Card card, MarkerDefinition markerDefinition, int number) {
+	private void addStackableMarkerToCard(CardInstance card, MarkerDefinition markerDefinition, int number) {
 		
 		for (MarkerInstance markerOnCard : card.getMarkers()) {
 			if (markerOnCard.getMarkerDefinition() == markerDefinition) {
@@ -119,19 +119,19 @@ public class MarkerMessageLocalListener {
 		boolean allMarkers = message.isAllMarkers();
 		
 		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		if (game == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player == null) {
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
 		} 
 		
-		CardCollection army = game.getArmyByPlayerId().get(playerId);
+		Army army = player.getArmy();
 		if (army == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId + " in game " + gameId));
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId));
 			return;
 		}
 		
-		Card card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCardsById().get(cardId);
 		if (card == null) {
 			MessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;
@@ -185,19 +185,19 @@ public class MarkerMessageLocalListener {
 			return;
 		}
 		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		if (game == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player == null) {
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
 		} 
 		
-		CardCollection army = game.getArmyByPlayerId().get(playerId);
+		Army army = player.getArmy();
 		if (army == null) {
-			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId + " in game " + gameId));
+			MessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId));
 			return;
 		}
 		
-		Card card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCardsById().get(cardId);
 		if (card == null) {
 			MessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;

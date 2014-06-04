@@ -14,7 +14,9 @@ import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
+import fr.lyrgard.hexScape.service.DirectionService;
 import fr.lyrgard.hexScape.service.MapManager;
+import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexScape.service.TileService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
@@ -22,9 +24,9 @@ public class Scene implements Displayable {
 
 	private MapManager mapManager;
 	
-	private java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, MoveablePiece>>> pieces = new TreeMap<Integer, java.util.Map<Integer,java.util.Map<Integer,MoveablePiece>>>();
+	private java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, PieceManager>>> pieces = new TreeMap<Integer, java.util.Map<Integer,java.util.Map<Integer,PieceManager>>>();
 	
-	private Set<MoveablePiece> piecesSet = new HashSet<>();
+	private Set<PieceManager> piecesSet = new HashSet<>();
 	
 	private Node selectablePieceNode;
 	
@@ -37,13 +39,13 @@ public class Scene implements Displayable {
 		sceneNode.attachChild(selectablePieceNode);
 	}
 	
-	public void addPiece(MoveablePiece piece, int x, int y, int z) {
+	public void addPiece(PieceManager pieceManager, int x, int y, int z) {
 		
 		Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(x, y, z);
 		
-		piece.setX(x);
-		piece.setY(y);
-		piece.setZ(z);
+		pieceManager.getPiece().setX(x);
+		pieceManager.getPiece().setY(y);
+		pieceManager.getPiece().setZ(z);
 		
 		Tile tile = mapManager.getMap().getTile(x, y, z);
 		
@@ -53,62 +55,63 @@ public class Scene implements Displayable {
 			spacePos.y += TileMesh.HEX_SIZE_Y;
 		}
 		
-		selectablePieceNode.attachChild(piece.getSpatial());
-		piece.getSpatial().setLocalTranslation(spacePos);
-		piece.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(piece.getDirection().getAngle(), Vector3f.UNIT_Y));
+		selectablePieceNode.attachChild(pieceManager.getSpatial());
+		pieceManager.getSpatial().setLocalTranslation(spacePos);
+		float angle = DirectionService.getInstance().getAngle(pieceManager.getPiece().getDirection());
+		pieceManager.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
 		
-		java.util.Map<Integer, java.util.Map<Integer, MoveablePiece>> byZ = pieces.get(z);
+		java.util.Map<Integer, java.util.Map<Integer, PieceManager>> byZ = pieces.get(z);
 		if (byZ == null) {
-			byZ = new HashMap<Integer, java.util.Map<Integer,MoveablePiece>>();
+			byZ = new HashMap<Integer, java.util.Map<Integer,PieceManager>>();
 			pieces.put(z, byZ);
 		}
-		java.util.Map<Integer, MoveablePiece> byY = byZ.get(y);
+		java.util.Map<Integer, PieceManager> byY = byZ.get(y);
 		if (byY == null) {
-			byY = new HashMap<Integer, MoveablePiece>();
+			byY = new HashMap<Integer, PieceManager>();
 			byZ.put(y, byY);
 		}
-		byY.put(x, piece);
-		piecesSet.add(piece);
+		byY.put(x, pieceManager);
+		piecesSet.add(pieceManager);
 	}
 	
-	public boolean contains(MoveablePiece piece) {
+	public boolean contains(PieceManager piece) {
 		return piecesSet.contains(piece);
 	}
 	
-	public void removePiece(MoveablePiece piece) {
-		java.util.Map<Integer, java.util.Map<Integer, MoveablePiece>> byZ = pieces.get(piece.getZ());
+	public void removePiece(PieceManager pieceManager) {
+		java.util.Map<Integer, java.util.Map<Integer, PieceManager>> byZ = pieces.get(pieceManager.getPiece().getZ());
 		if (byZ != null) {
-			java.util.Map<Integer, MoveablePiece> byY = byZ.get(piece.getY());
+			java.util.Map<Integer, PieceManager> byY = byZ.get(pieceManager.getPiece().getY());
 			if (byY != null) {
-				byY.remove(piece.getX());
+				byY.remove(pieceManager.getPiece().getX());
 			}
 		}
-		piecesSet.remove(piece);
-		selectablePieceNode.detachChild(piece.getSpatial());
+		piecesSet.remove(pieceManager);
+		selectablePieceNode.detachChild(pieceManager.getSpatial());
 	}
 	
-	public MoveablePiece getNearestPiece(int x, int y, int z) {
-		MoveablePiece nearestPiece = null;
+	public PieceManager getNearestPiece(int x, int y, int z) {
+		PieceManager nearestPiece = null;
 		
-		List<MoveablePiece> pieces = getPieces(x, y);
+		List<PieceManager> pieces = getPieces(x, y);
 		int minDistanceZ = Integer.MAX_VALUE;
-		for (MoveablePiece piece : pieces) {
-			int distanceZ = Math.abs(piece.getZ() - z);
+		for (PieceManager pieceManager : pieces) {
+			int distanceZ = Math.abs(pieceManager.getPiece().getZ() - z);
 			if (distanceZ < minDistanceZ) {
 				minDistanceZ = distanceZ;
-				nearestPiece = piece;
+				nearestPiece = pieceManager;
 			}
 		}
 		return nearestPiece;
 	}
 	
-	public List<MoveablePiece> getPieces(int x, int y) {
-		List<MoveablePiece> results = new ArrayList<>();
+	public List<PieceManager> getPieces(int x, int y) {
+		List<PieceManager> results = new ArrayList<>();
 		
-		for (java.util.Map<Integer, java.util.Map<Integer, MoveablePiece>> byZ : pieces.values()) {
-			java.util.Map<Integer, MoveablePiece> byY = byZ.get(y);
+		for (java.util.Map<Integer, java.util.Map<Integer, PieceManager>> byZ : pieces.values()) {
+			java.util.Map<Integer, PieceManager> byY = byZ.get(y);
 			if (byY != null) {
-				MoveablePiece piece = byY.get(x);
+				PieceManager piece = byY.get(x);
 				if (piece != null) {
 					// if the tile doesn't have a tile on top of it, we add it
 					results.add(piece);
@@ -118,12 +121,12 @@ public class Scene implements Displayable {
 		return results;
 	}
 	
-	public MoveablePiece getPiece(int x, int y, int z) {
-		MoveablePiece piece = null;
+	public PieceManager getPiece(int x, int y, int z) {
+		PieceManager piece = null;
 		
-		java.util.Map<Integer, java.util.Map<Integer, MoveablePiece>> byZ = pieces.get(z);
+		java.util.Map<Integer, java.util.Map<Integer, PieceManager>> byZ = pieces.get(z);
 		if (byZ != null) {
-			java.util.Map<Integer, MoveablePiece> byY = byZ.get(y);
+			java.util.Map<Integer, PieceManager> byY = byZ.get(y);
 			if (byY != null) {
 				piece = byY.get(x);
 			}

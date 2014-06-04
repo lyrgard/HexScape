@@ -18,7 +18,7 @@ import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 
 public class MarkerService {
 	
-	private static final MarkerService INSTANCE = new MarkerService();
+	
 
 	public static MarkerService getInstance() {
 		return INSTANCE;
@@ -34,6 +34,8 @@ public class MarkerService {
 	private static final String NAME = "name";
 	private static final String HIDDEN_NAME = "hiddenName";
 	private static final String TYPE = "type";
+	
+	private static final MarkerService INSTANCE = new MarkerService();
 	
 	private MarkerService() {
 		getMarkersListForCard();
@@ -65,7 +67,7 @@ public class MarkerService {
 							
 							File iconFile = new File(folder, markerIconFilename);
 							if (!iconFile.exists() || !iconFile.isFile() || !iconFile.canRead() ) {
-								MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
+								MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
 								continue markerDefinition;
 							}
 							
@@ -74,7 +76,7 @@ public class MarkerService {
 							try {
 								type = MarkerType.valueOf(typeString);
 							} catch (IllegalArgumentException e) {
-								MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
+								MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
 								continue markerDefinition;
 							}
 							
@@ -90,14 +92,14 @@ public class MarkerService {
 								if (ownerHiddenMarkerIconFile.exists() && ownerHiddenMarkerIconFile.isFile() && ownerHiddenMarkerIconFile.canRead() ) {
 									((RevealableMarkerDefinition)marker).setOwnerHiddenMarkerImage(ownerHiddenMarkerIconFile);	
 								} else {
-									MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
+									MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 								File notOwnerHiddenMarkerIconFile = new File(folder, notOwnerHiddenMarkerIconFilename);
 								if (notOwnerHiddenMarkerIconFile.exists() && notOwnerHiddenMarkerIconFile.isFile() && notOwnerHiddenMarkerIconFile.canRead() ) {
 									((RevealableMarkerDefinition)marker).setNotOwnerHiddenMarkerImage(notOwnerHiddenMarkerIconFile);	
 								} else {
-									MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "No " + notOwnerHiddenMarkerIconFilename + " file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
+									MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No " + notOwnerHiddenMarkerIconFilename + " file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 								break;
@@ -111,13 +113,13 @@ public class MarkerService {
 							markersByIds.put(marker.getId(), marker);
 							
 						} catch (IOException e) {
-							MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
+							MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
 						}
 					}
 				}
 			}
 		} else {
-			MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "The marker definition folder \"" + baseFolder + "\" was not found"));
+			MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker definition folder \"" + baseFolder + "\" was not found"));
 		}
 		
 		

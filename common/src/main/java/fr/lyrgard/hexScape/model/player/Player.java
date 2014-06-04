@@ -1,9 +1,12 @@
 package fr.lyrgard.hexScape.model.player;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
-import fr.lyrgard.hexScape.model.card.CardCollection;
+import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.game.Game;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.room.Room;
 
 public class Player {
@@ -14,11 +17,13 @@ public class Player {
 	
 	private Color color;
 	
-	private CardCollection army;
+	private Army army;
 	
 	private Room room;
 	
 	private Game game;
+	
+	private Map<String, PieceInstance> piecesById = new HashMap<>(); 
 
 	public Player() {
 	}
@@ -45,11 +50,11 @@ public class Player {
 		this.color = color;
 	}
 
-	public CardCollection getArmy() {
+	public Army getArmy() {
 		return army;
 	}
 
-	public void setArmy(CardCollection army) {
+	public void setArmy(Army army) {
 		this.army = army;
 	}
 
@@ -105,5 +110,9 @@ public class Player {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public Map<String, PieceInstance> getPiecesById() {
+		return piecesById;
 	}
 }

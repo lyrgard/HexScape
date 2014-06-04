@@ -1,24 +1,26 @@
 package fr.lyrgard.hexScape.model.card;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.List;
 import java.util.TreeSet;
 
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 
-public class Card {
-
+public class CardInstance {
+	
 	private String id;
 	
-	private String name;
+	private CardType type;
 	
-	private List<String> figureNames = new ArrayList<>();
-	
-	private File folder;
+	private int number;
 	
 	private TreeSet<MarkerInstance> markers;
+
+	public CardInstance(String id, CardType type, int number) {
+		super();
+		this.id = id;
+		this.type = type;
+		this.number = number;
+	}
 
 	public String getId() {
 		return id;
@@ -28,25 +30,22 @@ public class Card {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public CardType getType() {
+		return type;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setType(CardType type) {
+		this.type = type;
 	}
 
-	public List<String> getFigureNames() {
-		return figureNames;
+	public int getNumber() {
+		return number;
 	}
 
-	public File getFolder() {
-		return folder;
+	public void setNumber(int number) {
+		this.number = number;
 	}
-
-	public void setFolder(File folder) {
-		this.folder = folder;
-	}
+	
 
 	public TreeSet<MarkerInstance> getMarkers() {
 		if (markers == null) {
@@ -60,4 +59,5 @@ public class Card {
 		}
 		return markers;
 	}
+
 }

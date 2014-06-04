@@ -18,7 +18,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.ChatTypeEnum;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.PostMessageMessage;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -26,8 +27,6 @@ import fr.lyrgard.hexScape.model.player.Player;
 public class ChatPanel extends JPanel{
 	
 	private static final long serialVersionUID = 1711726926387382729L;
-	
-	private ChatTypeEnum type;
 	
 	final private JTextPane textPane;
 	
@@ -41,8 +40,7 @@ public class ChatPanel extends JPanel{
 	
 	private final Style iconStyle;
 	
-	public ChatPanel(ChatTypeEnum type) {
-		this.type = type;
+	public ChatPanel(final String roomId, final String gameId) {
 		
 		setLayout(new BorderLayout());
 		
@@ -73,7 +71,8 @@ public class ChatPanel extends JPanel{
 				String messageContent = userInputField.getText();
 
 				if (messageContent != null) {
-					HexScapeCore.getInstance().getChatService().postMessage(messageContent, ChatPanel.this.type);
+					PostMessageMessage message = new PostMessageMessage(HexScapeCore.getInstance().getPlayerId(), messageContent, roomId, gameId);
+					MessageBus.post(message);
 					//We reset our text field to "" each time the user presses Enter
 					userInputField.setText("");
 				}
@@ -85,7 +84,7 @@ public class ChatPanel extends JPanel{
 		Dimension dim = new Dimension(200, 400);
 		setPreferredSize(dim);
 
-		HexScapeCore.getInstance().getEventBus().register(this);
+		MessageBus.register(this);
 	}
 	
 	public void addMessage(Player player, String line) {
@@ -139,13 +138,6 @@ public class ChatPanel extends JPanel{
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public ChatTypeEnum getType() {
-		return type;
-	}
-	
-	
-	
+	}	
 	
 }

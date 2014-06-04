@@ -9,7 +9,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.model.card.CardType;
 
 public class ShowCardAction extends AbstractAction {
 	
@@ -17,9 +17,9 @@ public class ShowCardAction extends AbstractAction {
 	
 	private static final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/zoom.png"));
 	
-	private Card card;
+	private CardType card;
 
-	public ShowCardAction(Card card) {
+	public ShowCardAction(CardType card) {
 		super("", icon);
 		this.card = card;
 	}

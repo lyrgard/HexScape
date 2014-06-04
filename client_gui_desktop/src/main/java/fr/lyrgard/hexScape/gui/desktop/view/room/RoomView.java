@@ -13,10 +13,7 @@ import javax.swing.ListSelectionModel;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.room.PlayerJoinedRoomEvent;
-import fr.lyrgard.hexScape.event.room.PlayerLeftRoomEvent;
-import fr.lyrgard.hexScape.event.room.RoomContentReceivedEvent;
-import fr.lyrgard.hexScape.event.room.RoomMessagePostedEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.DisconnectAction;
 import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.room.GameListPanel;
@@ -56,41 +53,42 @@ public class RoomView extends AbstractView {
 		userListScroller.setPreferredSize(new Dimension(200, 400));
 		add(userListScroller, BorderLayout.LINE_END);
 		
-		chatPanel = new ChatPanel(ChatTypeEnum.ROOM_CHAT);
+		chatPanel = new ChatPanel(HexScapeCore.getInstance().getRoomId(), null);
 		add(chatPanel, BorderLayout.CENTER);
 		
-		HexScapeCore.getInstance().getEventBus().register(this);
+		// TODO MessageBus.register(this);
 	}
 	
-	@Subscribe public void onRoomContentReceived(RoomContentReceivedEvent event) {
-		room = event.getRoom();
-		roomTitle.setText(room.getName());
-		playerListModel.setPlayers(room.getPlayers());
-		chatPanel.addAction("Room " + room.getName() + " joined.");
-		
-	}
-	
-	@Subscribe public void onRoomMessageReceived(RoomMessagePostedEvent event) {
-		Player player = event.getPlayer();
-		String message = event.getMessage();
-		chatPanel.addMessage(player, message);
-	}
-	
-	@Subscribe public void onPlayerJoined(PlayerJoinedRoomEvent event) {
-		Player player = event.getPlayer();
-		playerListModel.addPlayer(player);
-		chatPanel.addAction("player " + player.getName() + " joined the room");
-	}
-	
-	@Subscribe public void onPlayerLeft(PlayerLeftRoomEvent event) {
-		Player player = event.getPlayer();
-		chatPanel.addAction("player " + player.getName() + " left the room");
-		playerListModel.removePlayer(player);
-	}
+	// TODO
+//	@Subscribe public void onRoomContentReceived(RoomContentReceivedEvent event) {
+//		room = event.getRoom();
+//		roomTitle.setText(room.getName());
+//		playerListModel.setPlayers(room.getPlayers());
+//		chatPanel.addAction("Room " + room.getName() + " joined.");
+//		
+//	}
+//	
+//	@Subscribe public void onRoomMessageReceived(RoomMessagePostedEvent event) {
+//		Player player = event.getPlayer();
+//		String message = event.getMessage();
+//		chatPanel.addMessage(player, message);
+//	}
+//	
+//	@Subscribe public void onPlayerJoined(PlayerJoinedRoomEvent event) {
+//		Player player = event.getPlayer();
+//		playerListModel.addPlayer(player);
+//		chatPanel.addAction("player " + player.getName() + " joined the room");
+//	}
+//	
+//	@Subscribe public void onPlayerLeft(PlayerLeftRoomEvent event) {
+//		Player player = event.getPlayer();
+//		chatPanel.addAction("player " + player.getName() + " left the room");
+//		playerListModel.removePlayer(player);
+//	}
 
 	@Override
 	public void refresh() {
-		HexScapeCore.getInstance().getMultiplayerService().requestRoomContent(Room.DEFAULT_ROOM_ID);
+		// TODOHexScapeCore.getInstance().getMultiplayerService().requestRoomContent(Room.DEFAULT_ROOM_ID);
 	}
 	
 	

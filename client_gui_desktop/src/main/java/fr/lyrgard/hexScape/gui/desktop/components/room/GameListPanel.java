@@ -11,8 +11,7 @@ import javax.swing.ListSelectionModel;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.room.RoomContentReceivedEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.StartNewGameAction;
 import fr.lyrgard.hexScape.gui.desktop.view.room.GameListModel;
 import fr.lyrgard.hexScape.model.game.Game;
@@ -41,12 +40,14 @@ public class GameListPanel extends JPanel{
 		
 		buttonsPanel.add(new JButton(new StartNewGameAction(true)));
 		
-		HexScapeCore.getInstance().getEventBus().register(this);
+		// TODO MessageBus.register(this);
 	}
 	
-	@Subscribe public void onRoomContentReceived(RoomContentReceivedEvent event) {
-		Room room = event.getRoom();
-		gameListModel.setGames(room.getGames());
-		
-	}
+	// TODO
+//	@Subscribe public void onRoomContentReceived(RoomContentReceivedEvent event) {
+//		
+//		Room room = event.getRoom();
+//		gameListModel.setGames(room.getGames());
+//		
+//	}
 }

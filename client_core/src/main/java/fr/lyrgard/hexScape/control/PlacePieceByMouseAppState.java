@@ -15,15 +15,15 @@ import com.jme3.scene.Spatial;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
-import fr.lyrgard.hexScape.model.MoveablePiece;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
+import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexScape.service.TileService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class PlacePieceByMouseAppState extends AbstractAppState {
 	
-	private MoveablePiece pieceToPlace;
+	private PieceManager pieceToPlace;
 	
 	private InputManager inputManager;
 	
@@ -44,15 +44,15 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		super.cleanup();
 	}
 
-	public MoveablePiece getPieceToPlace() {
+	public PieceManager getPieceToPlace() {
 		return pieceToPlace;
 	}
 
-	public void setPieceToPlace(MoveablePiece newPieceToPlace) {
+	public void setPieceToPlace(PieceManager newPieceToPlace) {
 		if (this.pieceToPlace != null) {
 			rootNode.detachChild(this.pieceToPlace.getSpatial());
 			if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene().contains(pieceToPlace)) {
-				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getX(), pieceToPlace.getY(), pieceToPlace.getZ());
+				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getPiece().getX(), pieceToPlace.getPiece().getY(), pieceToPlace.getPiece().getZ());
 			}
 		}
 		

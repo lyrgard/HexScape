@@ -8,7 +8,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.BoxLayout;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingUtilities;
@@ -16,17 +15,15 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.ArmyLoadedEvent;
-import fr.lyrgard.hexScape.event.ErrorEvent;
-import fr.lyrgard.hexScape.event.MessageEvent;
-import fr.lyrgard.hexScape.event.WarningEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.ArmyCardPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedCardPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedPiecePanel;
 import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
-import fr.lyrgard.hexScape.model.card.Card;
-import fr.lyrgard.hexScape.model.card.CardCollection;
+import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.model.card.Army;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 
 public class GameView extends AbstractView {
 
@@ -61,7 +58,7 @@ public class GameView extends AbstractView {
 		add(centerPanel, BorderLayout.CENTER);
 		
 
-		add(new LeftPanel(), BorderLayout.LINE_END);
+		add(new RightPanel(), BorderLayout.LINE_END);
 		
 
 		centerPanel.addMouseListener(new MouseAdapter() {
@@ -73,20 +70,18 @@ public class GameView extends AbstractView {
 		
 		panel3d.transferFocusBackward();
 		
-		HexScapeCore.getInstance().getEventBus().register(this);  
+		MessageBus.register(this);
 	}
 	
-	@Subscribe public void onArmyLoaded(final ArmyLoadedEvent event) {
+	@Subscribe public void onArmyLoaded(final ArmyLoadedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				CardCollection army = event.getArmy();
+				Army army = message.getArmy();
 				if (armyPanel != null) {
 					armyPanel.removeAll();
-					for (String cardId : army.getCardsById().keySet()) {
-						Card card = army.getCardsById().get(cardId);
-						Integer number = army.getNumberById().get(cardId);
-						armyPanel.add(new ArmyCardPanel(card, number));
+					for (CardInstance card : army.getCardsById().values()) {
+						armyPanel.add(new ArmyCardPanel(card));
 
 					}
 					armyPanel.validate();
@@ -97,31 +92,9 @@ public class GameView extends AbstractView {
 		});
 	}
 
-	@Subscribe public void onMessage(final MessageEvent event) {
-		EventQueue.invokeLater(new Runnable() {
-
-			public void run() {
-
-				String message = event.getMessage();
-
-				int messageType = JOptionPane.INFORMATION_MESSAGE;
-				String title = "Message";
-				if (event instanceof ErrorEvent) {
-					messageType = JOptionPane.ERROR_MESSAGE;
-					title = "Error";
-				} else if (event instanceof WarningEvent) {
-					messageType = JOptionPane.WARNING_MESSAGE;
-					title = "Warning";
-				}
-				JOptionPane.showMessageDialog(null, message, title, messageType);
-			}
-		});
-
-	}
-
 	@Override
 	public void refresh() {
-		// TODO Auto-generated method stub
 		
 	}
+
 }

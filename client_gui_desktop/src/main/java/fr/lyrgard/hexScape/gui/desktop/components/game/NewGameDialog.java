@@ -15,14 +15,14 @@ import javax.swing.SpinnerNumberModel;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.ArmyLoadedEvent;
-import fr.lyrgard.hexScape.event.MapLoadedEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseArmyAction;
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
-import fr.lyrgard.hexScape.model.card.CardCollection;
+import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.message.MapLoadedMessage;
+import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.map.Map;
 
 import net.miginfocom.swing.MigLayout;
@@ -96,24 +96,24 @@ public class NewGameDialog extends JDialog {
 		
 		pack();
 		
-		HexScapeCore.getInstance().getEventBus().register(this);
+		MessageBus.register(this);
 	}
 	
-	@Subscribe public void onArmyLoaded(final ArmyLoadedEvent event) {
+	@Subscribe public void onArmyLoaded(final ArmyLoadedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				CardCollection army = event.getArmy();
+				Army army = message.getArmy();
 				armyNameLabel.setText(army.getName());
 			}
 		});
 	}
 	
-	@Subscribe public void onMapLoaded(final MapLoadedEvent event) {
+	@Subscribe public void onMapLoaded(final MapLoadedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				Map map = event.getMap();
+				Map map = message.getMap();
 				mapNameLabel.setText(map.getName());
 			}
 		});

@@ -9,7 +9,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.model.card.CardType;
 
 public class ShowCardDialog extends JDialog {
 
@@ -20,7 +20,7 @@ public class ShowCardDialog extends JDialog {
 	private int width;
 	private int height;
 	
-	public ShowCardDialog(Card card) {
+	public ShowCardDialog(CardType card) {
 		try {
 			image = ImageIO.read(new File(card.getFolder(), "card.jpg"));
 			

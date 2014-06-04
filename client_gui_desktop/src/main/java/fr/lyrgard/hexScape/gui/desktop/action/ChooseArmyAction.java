@@ -3,7 +3,6 @@ package fr.lyrgard.hexScape.gui.desktop.action;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.concurrent.Callable;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
@@ -11,6 +10,8 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.LoadArmyMessage;
 
 public class ChooseArmyAction extends AbstractAction {
 
@@ -33,17 +34,9 @@ public class ChooseArmyAction extends AbstractAction {
 		int returnVal = chooser.showOpenDialog(parent);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			final File armyFile = chooser.getSelectedFile();
-
-			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
-
-				public Void call() throws Exception {
-					HexScapeCore.getInstance().getCardService().loadArmy(armyFile);
-					return null;
-				}
-			});		
-
-
 			
+			LoadArmyMessage message = new LoadArmyMessage(HexScapeCore.getInstance().getPlayerId(), armyFile);
+			MessageBus.post(message);			
 		}
 	}
 }

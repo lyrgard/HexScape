@@ -3,14 +3,13 @@ package fr.lyrgard.hexScape.gui.desktop.components.diceComponent;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.DiceRolledEvent;
-import fr.lyrgard.hexScape.model.dice.DiceFace;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.ThrowDiceMessage;
 import fr.lyrgard.hexScape.model.dice.DiceType;
 
 public class DiceTypePanel extends JPanel {
@@ -28,8 +27,8 @@ public class DiceTypePanel extends JPanel {
 			rollDiceButton.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					List<DiceFace> result = HexScapeCore.getInstance().getDiceService().roll(number, diceType);
-					HexScapeCore.getInstance().getEventBus().post(new DiceRolledEvent(diceType, result, HexScapeCore.getInstance().getPlayer()));
+					ThrowDiceMessage message = new ThrowDiceMessage(HexScapeCore.getInstance().getPlayerId(), number, diceType.getId());
+					MessageBus.post(message);
 				}
 			});
 			add(rollDiceButton);

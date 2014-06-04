@@ -5,15 +5,15 @@ import java.util.Collection;
 import javax.swing.ImageIcon;
 import javax.swing.JTabbedPane;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.dice.DiceType;
+import fr.lyrgard.hexScape.service.DiceService;
 
 public class DiceTabbedPane extends JTabbedPane {
 
 	private static final long serialVersionUID = -5228434117122831373L;
 
 	public DiceTabbedPane() {
-		Collection<DiceType> diceTypes = HexScapeCore.getInstance().getDiceService().getDiceTypes();
+		Collection<DiceType> diceTypes = DiceService.getInstance().getDiceTypes();
 		for (DiceType diceType : diceTypes) {
 			DiceTypePanel diceTypePanel = new DiceTypePanel(diceType);
 			String title = null;

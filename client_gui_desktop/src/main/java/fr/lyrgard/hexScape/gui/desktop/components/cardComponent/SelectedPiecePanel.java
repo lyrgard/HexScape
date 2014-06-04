@@ -1,5 +1,7 @@
 package fr.lyrgard.hexScape.gui.desktop.components.cardComponent;
 
+import java.awt.EventQueue;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -7,37 +9,68 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.piece.PieceRemovedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceSelectedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceUnselectedEvent;
-import fr.lyrgard.hexScape.gui.desktop.action.MoveSelectedPieceAction;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.gui.desktop.action.MovePieceAction;
+import fr.lyrgard.hexScape.message.PieceRemovedMessage;
+import fr.lyrgard.hexScape.message.PieceSelectedMessage;
+import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 
 public class SelectedPiecePanel extends JPanel {
-private static final long serialVersionUID = 7100885729187357599L;
-	
+	private static final long serialVersionUID = 7100885729187357599L;
+
 	public SelectedPiecePanel() {
-		HexScapeCore.getInstance().getEventBus().register(this);
+		MessageBus.register(this);
 	}
 
-	@Subscribe public void pieceSelected(PieceSelectedEvent event) {
-		this.removeAll();
-		add(new JButton(new MoveSelectedPieceAction()));
-		validate();
-		repaint();
-		SwingUtilities.getWindowAncestor(this).pack();
+	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
+
+		final String cardId = message.getCardInstanceId();
+		final String pieceId = message.getPieceId();
+		String playerId = message.getPlayerId();
+
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					SelectedPiecePanel.this.removeAll();
+					add(new JButton(new MovePieceAction(pieceId, cardId)));
+					validate();
+					repaint();
+					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+				}
+			});
+		}
 	}
 
-	@Subscribe public void pieceUnselected(PieceUnselectedEvent event) {
-		this.removeAll();
-		validate();
-		repaint();
-		SwingUtilities.getWindowAncestor(this).pack();
+	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
+		String playerId = message.getPlayerId();
+
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					SelectedPiecePanel.this.removeAll();
+					validate();
+					repaint();
+					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+				}
+			});
+		}
 	}
 
-	@Subscribe public void pieceRemoved(PieceRemovedEvent event) {
-		this.removeAll();
-		validate();
-		repaint();
-		SwingUtilities.getWindowAncestor(this).pack();
+	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {
+		String playerId = message.getPlayerId();
+
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					SelectedPiecePanel.this.removeAll();
+					validate();
+					repaint();
+					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+				}
+			});
+		}
 	}
 }

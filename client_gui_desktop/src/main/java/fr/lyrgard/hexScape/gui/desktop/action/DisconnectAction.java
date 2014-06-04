@@ -6,8 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
-import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 
 public class DisconnectAction extends AbstractAction {
 
@@ -19,9 +19,10 @@ public class DisconnectAction extends AbstractAction {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		HexScapeCore.getInstance().getMultiplayerService().disconnect();
-		HexScapeFrame.getInstance().showView(ViewEnum.HOME);
+		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
+		DisconnectFromServerMessage message = new DisconnectFromServerMessage(playerId);
+		MessageBus.post(message);
 	}
 
 }

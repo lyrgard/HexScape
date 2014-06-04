@@ -1,35 +1,35 @@
 package fr.lyrgard.hexScape.gui.desktop.action;
 
 import java.awt.event.ActionEvent;
-import java.util.concurrent.Callable;
 
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.MoveablePiece;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.PlacePieceMessage;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 
 public class AddPieceAction extends AbstractAction {
 
 	private static final long serialVersionUID = 6124817922902744899L;
 
-	private String pieceName;
+	private String pieceModelId;
+	private CardInstance card;
 	private static final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/add_piece.png"));
 	
-	public AddPieceAction(String pieceName) {
+	public AddPieceAction(String pieceModelId, CardInstance card) {
 		super("", icon);
-		this.pieceName = pieceName;  
+		this.pieceModelId = pieceModelId;  
+		this.card = card;
 	}
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
-		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
-
-			public Void call() throws Exception {
-				HexScapeCore.getInstance().getMapService().placePiece(new MoveablePiece(pieceName));
-				return null;
-			}
-		});		
-
+		String playerId = HexScapeCore.getInstance().getPlayerId();
+		String gameId = HexScapeCore.getInstance().getGameId();
+		
+		PlacePieceMessage message = new PlacePieceMessage(playerId, gameId, card.getId(), pieceModelId);
+		MessageBus.post(message);	
 		
 	}
 }

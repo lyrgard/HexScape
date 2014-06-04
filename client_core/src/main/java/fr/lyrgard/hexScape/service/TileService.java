@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.service;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import fr.lyrgard.hexScape.model.map.TileType;
@@ -13,11 +14,11 @@ public class TileService {
 		return INSTANCE;
 	}
 
-	private Map<TileType, TileTexture> topTextures;
+	private Map<TileType, TileTexture> topTextures = new HashMap<>();
 
-	private Map<TileType, TileTexture> sideTextures;
+	private Map<TileType, TileTexture> sideTextures = new HashMap<>();
 	
-	private Map<TileType, Boolean> halfSizes;
+	private Map<TileType, Boolean> halfSizes = new HashMap<>();
 
 	private TileService() {
 		topTextures.put(TileType.GRASS,TileTexture.GRASS); 

@@ -6,6 +6,8 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.ConnectToServerMessage;
 import fr.lyrgard.hexScape.model.ServerConstant;
 
 public class ConnectToServerAction extends AbstractAction {
@@ -34,8 +36,10 @@ public class ConnectToServerAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		HexScapeCore.getInstance().getMultiplayerService().connectToServer(url, port);
+		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
+		ConnectToServerMessage message = new ConnectToServerMessage(playerId, url, port);
+		MessageBus.post(message);
 	}
 	
 	

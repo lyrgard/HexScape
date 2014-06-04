@@ -14,15 +14,18 @@ import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.LoadArmyMessage;
-import fr.lyrgard.hexScape.model.card.Card;
-import fr.lyrgard.hexScape.model.card.CardCollection;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.Army;
+import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.card.CardType;
+import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.CardService;
 
 public class ArmyMessageListener {
 	
 	private static ArmyMessageListener instance;
 	
-	public static void init() {
+	public static void start() {
 		if (instance == null) {
 			instance = new ArmyMessageListener();
 			MessageBus.register(instance);
@@ -31,13 +34,11 @@ public class ArmyMessageListener {
 	
 	private ArmyMessageListener() {
 	}
-	
-	
 
 	@Subscribe public void onLoadArmyMessage(LoadArmyMessage message) {
 		File armyFile = message.getArmyFile();
 		String playerId = message.getPlayerId();
-		CardCollection army = null;
+		Army army = null;
 		BufferedReader br = null;
 		try {
 			br = new BufferedReader(new FileReader(armyFile));
@@ -45,7 +46,8 @@ public class ArmyMessageListener {
 			int lineNumber = 0;
 			boolean firstLine = true;
 			
-			army = new CardCollection();
+			army = new Army();
+			int i = 0;
 			
 			while ((line = br.readLine()) != null) {
 				lineNumber++;
@@ -73,9 +75,9 @@ public class ArmyMessageListener {
 					}
 				}
 				
-				Card card = CardService.getInstance().getCardInventory().getCardsById().get(cardId);
+				CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(cardId);
 				
-				if (card == null) {
+				if (cardType == null) {
 					if (firstLine) {
 						army.setName(line);
 					} else {
@@ -83,7 +85,10 @@ public class ArmyMessageListener {
 						return;
 					}
 				} else {
-					army.addCard(cardId, card, number);
+					String cardInstanceId = playerId + "-" + i; 
+					CardInstance cardInstance = new CardInstance(cardInstanceId, cardType, number);
+					army.getCardsById().put(cardInstance.getId(), cardInstance);
+					i++;
 				}
 				
 				firstLine = false;
@@ -100,7 +105,13 @@ public class ArmyMessageListener {
 				}
 			}
 		}
-		MessageBus.post(new ArmyLoadedMessage(playerId, army));
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		
+		if (player != null) {
+			player.setArmy(army);
+			MessageBus.post(new ArmyLoadedMessage(playerId, army));
+		}
+		
 	}
 
 }

@@ -1,16 +1,16 @@
 package fr.lyrgard.hexScape.message;
 
-import fr.lyrgard.hexScape.model.card.CardCollection;
+import fr.lyrgard.hexScape.model.card.Army;
 
 public class ArmyLoadedMessage extends AbstractMessage {
-	private CardCollection army;
+	private Army army;
 
-	public ArmyLoadedMessage(String playerId, CardCollection army) {
+	public ArmyLoadedMessage(String playerId, Army army) {
 		super(playerId);
 		this.army = army;
 	}
 	
-	public CardCollection getArmy() {
+	public Army getArmy() {
 		return army;
 	}
 }

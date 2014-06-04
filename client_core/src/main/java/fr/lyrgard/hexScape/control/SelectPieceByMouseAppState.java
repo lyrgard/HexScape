@@ -18,14 +18,14 @@ import com.jme3.scene.Spatial;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
-import fr.lyrgard.hexScape.model.MoveablePiece;
 import fr.lyrgard.hexScape.model.SelectCross;
+import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class SelectPieceByMouseAppState extends AbstractAppState {
 
 	
-	private MoveablePiece selectedPiece;
+	private PieceManager selectedPiece;
 	
 	private InputManager inputManager;
 	
@@ -62,7 +62,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 
 	public boolean selectPiece() {
 		boolean success = false;
-		MoveablePiece piece = getPieceUnderMouse();
+		PieceManager piece = getPieceUnderMouse();
 		if (piece != null && selectedPiece != piece) {
 			selectPiece(piece);
 			success = true;
@@ -70,7 +70,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 		return success;
 	}
 	
-	public void selectPiece(MoveablePiece piece) {
+	public void selectPiece(PieceManager piece) {
 		if (piece != null) {
 			cancelSelection();
 			selectedPiece = piece;
@@ -78,7 +78,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 
 			BoundingBox boundingBox = (BoundingBox)selectedPiece.getSpatial().getWorldBound();
 
-			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(piece.getX(), piece.getY(), piece.getZ());
+			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(piece.getPiece().getX(), piece.getPiece().getY(), piece.getPiece().getZ());
 			selectMarkerY = boundingBox.getCenter().y - boundingBox.getYExtent() + selectMarkerYOffset;
 			spacePos.y = selectMarkerY;
 			selectMarker.setLocalTranslation(spacePos);
@@ -97,8 +97,8 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 
 
 
-	public MoveablePiece getPieceUnderMouse() {
-		MoveablePiece piece = null;
+	public PieceManager getPieceUnderMouse() {
+		PieceManager piece = null;
 		
 		// Reset results list.
         CollisionResults results = new CollisionResults();
@@ -128,7 +128,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 		return piece;
 	}
 
-	public MoveablePiece getSelectedPiece() {
+	public PieceManager getSelectedPiece() {
 		return selectedPiece;
 	}
 	

@@ -7,10 +7,10 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
+import fr.lyrgard.hexScape.service.MarkerService;
 import fr.lyrgard.hexScape.gui.desktop.action.AddMarkerToCardAction;
 import fr.lyrgard.hexScape.gui.desktop.action.AddStackableMarkerToCardAction;
 import fr.lyrgard.hexScape.gui.desktop.action.RemoveAllMarkersFromCardAction;
@@ -19,8 +19,8 @@ public class ArmyCardMenu extends JPopupMenu {
 
 	private static final long serialVersionUID = 7054882230582407223L;
 
-	public ArmyCardMenu(final Card card) {
-		Collection<MarkerDefinition> markers = HexScapeCore.getInstance().getMarkerService().getMarkersListForCard();
+	public ArmyCardMenu(final CardInstance card) {
+		Collection<MarkerDefinition> markers = MarkerService.getInstance().getMarkersListForCard();
 		
 		for (final MarkerDefinition marker : markers) {
 			

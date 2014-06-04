@@ -7,7 +7,9 @@ import javax.swing.Action;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 
 public class AddMarkerToCardAction extends AbstractAction {
@@ -16,11 +18,11 @@ public class AddMarkerToCardAction extends AbstractAction {
 
 	private MarkerDefinition marker;
 	
-	private Card card;
+	private CardInstance card;
 	
 	
 	
-	public AddMarkerToCardAction(MarkerDefinition marker, Card card) {
+	public AddMarkerToCardAction(MarkerDefinition marker, CardInstance card) {
 		super("Add a " + marker.getName() + " to this card");
 		this.marker = marker;
 		this.card = card;
@@ -30,7 +32,11 @@ public class AddMarkerToCardAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		HexScapeCore.getInstance().getMarkerService().addMarkerToCard(card, marker.getId());
+		String playerId = HexScapeCore.getInstance().getPlayerId();
+		String gameId = HexScapeCore.getInstance().getGameId();
+		
+		PlaceMarkerMessage message = new PlaceMarkerMessage(playerId, gameId, card.getId(), marker.getId(), 1);
+		MessageBus.post(message);
 	}
 
 }

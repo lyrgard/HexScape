@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.listener;
 
 import java.io.File;
+import java.util.concurrent.Callable;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -27,16 +28,26 @@ public class MapMessageListener {
 
 
 	@Subscribe public void onLoadMapMessage(LoadMapMessage message) {
-		String playerId = message.getPlayerId();
-		File file = message.getMapFile();
+		final String playerId = message.getPlayerId();
+		final File file = message.getMapFile();
 		
-		HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			public Void call() throws Exception {
+				HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
+				
+				MapManager mapManager = MapManager.fromFile(file);
+				Scene scene = new Scene();
+				scene.setMapManager(mapManager);
+				HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
+				
+				HexScapeCore.getInstance().setMapManager(mapManager);
+				
+				MessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
+				return null;
+			}
+		});		
+
 		
-		MapManager mapManager = MapManager.fromFile(file);
-		Scene scene = new Scene();
-		scene.setMapManager(mapManager);
-		
-		HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
-		MessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
 	}
 }

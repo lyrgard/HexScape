@@ -20,7 +20,7 @@ import fr.lyrgard.hexScape.model.dice.DiceType;
 
 public class DiceService {
 	
-	private static final DiceService INSTANCE = new DiceService();
+	
 
 	public static DiceService getInstance() {
 		return INSTANCE;
@@ -35,6 +35,7 @@ public class DiceService {
 	private static final String VALUES = "values";
 	private static final String MAX_NUMBER_THROWN = "maxNumberThrown";
 	
+	private static final DiceService INSTANCE = new DiceService();
 	
 	private Map<String, DiceType> diceTypes;
 
@@ -80,7 +81,7 @@ public class DiceService {
 										faceFile = null;
 									}
 									if (faceFile == null) {
-										MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
+										MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
 										break diceDefinition;
 									}
 								}
@@ -103,7 +104,7 @@ public class DiceService {
 				}
 			}
 		} else {
-			MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayer().getId(), "The dice definition folder \"" + baseFolder + "\" was not found"));
+			MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The dice definition folder \"" + baseFolder + "\" was not found"));
 		}
 		
 	}

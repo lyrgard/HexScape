@@ -19,27 +19,30 @@ import javax.swing.border.TitledBorder;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.marker.MarkerRevealedOnCardEvent;
-import fr.lyrgard.hexScape.event.marker.MarkersOnCardChangedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceAddedEvent;
-import fr.lyrgard.hexScape.event.piece.PieceRemovedEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ArmyCardMenu;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.PopMenuClickListener;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.RevealableMarkerMenu;
-import fr.lyrgard.hexScape.model.MoveablePiece;
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
+import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
+import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
+import fr.lyrgard.hexScape.message.PiecePlacedMessage;
+import fr.lyrgard.hexScape.message.PieceRemovedMessage;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
+import fr.lyrgard.hexScape.model.player.Player;
 
 public class ArmyCardPanel extends JPanel {
 
 	private static final long serialVersionUID = 6580633451061376631L;
 
-	private Card card;
+	private CardInstance card;
 
 	private ImageIcon imageIcon;
 
@@ -53,7 +56,7 @@ public class ArmyCardPanel extends JPanel {
 
 	private JPanel markerPanel;
 
-	public ArmyCardPanel(Card card, int number) {
+	public ArmyCardPanel(CardInstance card) {
 		this.card = card;
 
 		setLayout(new BorderLayout());
@@ -61,11 +64,11 @@ public class ArmyCardPanel extends JPanel {
 		add(markerPanel, BorderLayout.CENTER);
 
 		this.setSize(200, 50);
-		imageIcon = new ImageIcon(new File(card.getFolder(), "icon.jpg").getAbsolutePath());
+		imageIcon = new ImageIcon(new File(card.getType().getFolder(), "icon.jpg").getAbsolutePath());
 
-		piecesNumber = number * card.getFigureNames().size();
-		for (int i = 0; i < number; i++ ) {
-			for (String figureName : card.getFigureNames()) {
+		piecesNumber = card.getNumber() * card.getType().getFigureNames().size();
+		for (int i = 0; i < card.getNumber(); i++ ) {
+			for (String figureName : card.getType().getFigureNames()) {
 				pieceLeftToPlace.add(figureName);
 			}
 		}
@@ -87,49 +90,65 @@ public class ArmyCardPanel extends JPanel {
 		imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
 
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2, true);
-		border = BorderFactory.createTitledBorder(border, card.getName(), TitledBorder.LEFT, TitledBorder.TOP);
+		border = BorderFactory.createTitledBorder(border, card.getType().getName(), TitledBorder.LEFT, TitledBorder.TOP);
 		setBorder(border);
 
 		setPreferredSize(new Dimension(150, 120));
 		setMaximumSize(new Dimension(150, 120));
 
-		HexScapeCore.getInstance().getEventBus().register(this);
+		MessageBus.register(this);
 	}
 
 
 	private void selectNextPiece() {
-		figureNumbersLabel.setText(piecesNumber + "/" + pieceLeftToPlace.size());
-		addFigureButton.setAction(new AddPieceAction(pieceLeftToPlace.peek()));
+		figureNumbersLabel.setText(pieceLeftToPlace.size() + "/" + piecesNumber);
+		addFigureButton.setAction(new AddPieceAction(pieceLeftToPlace.peek(), card));
 	}
 
-	@Subscribe public void pieceAdded(final PieceAddedEvent event) {
+	@Subscribe public void onPiecePlaced(final PiecePlacedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				MoveablePiece piece = event.getPiece();
-				if (card.getFigureNames().contains(piece.getModelName())) {
-					pieceLeftToPlace.poll();
-					selectNextPiece();
-					if (pieceLeftToPlace.size() == 0) {
-						addFigureButton.setEnabled(false);
-					} 
+				String playerId = message.getPlayerId();
+				String cardId = message.getCardInstanceId();
+				
+				Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+				if (player != null) {
 
+					if (card.getId().equals(cardId)) {
+						pieceLeftToPlace.poll();
+						selectNextPiece();
+						if (pieceLeftToPlace.size() == 0) {
+							addFigureButton.setEnabled(false);
+						} 
+
+					}
 				}
 			}
 		});
 	}
 
-	@Subscribe public void pieceRemoved(final PieceRemovedEvent event) {
+	@Subscribe public void onPieceRemoved(final PieceRemovedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				MoveablePiece piece = event.getPiece();
-				if (card.getFigureNames().contains(piece.getModelName())) {
-					pieceLeftToPlace.add(piece.getModelName());
-					if (pieceLeftToPlace.size() == 1) {
-						addFigureButton.setEnabled(true);
+				String playerId = message.getPlayerId();
+				String pieceId = message.getPieceId();
+				String cardId = message.getCardInstanceId();
+				
+				Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+				if (player != null) {
+					PieceInstance piece = player.getPiecesById().get(pieceId);
+					if (piece != null) {
+						if (card.getId().equals(cardId)) {
+							pieceLeftToPlace.add(piece.getModelId());
+							if (pieceLeftToPlace.size() == 1) {
+								addFigureButton.setEnabled(true);
+							}
+							selectNextPiece();
+						}
+						
 					}
-					selectNextPiece();
 				}
 			}
 		});
@@ -169,24 +188,36 @@ public class ArmyCardPanel extends JPanel {
 		markerPanel.repaint();
 	}
 
-	@Subscribe public void markerAdded(final MarkersOnCardChangedEvent event) {
+	@Subscribe public void onMarkerPlaced(final MarkerPlacedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				Card card = event.getCard();
-				if (ArmyCardPanel.this.card == card) {
+				String cardId = message.getCardId();
+				if (ArmyCardPanel.this.card.getId().equals(cardId)) {
 					reDrawMarkers();
 				}
 			}
 		});
 	}
 	
-	@Subscribe public void markerRevealed(final MarkerRevealedOnCardEvent event) {
+	@Subscribe public void onMarkerRemoved(final MarkerRemovedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				Card card = event.getCard();
-				if (ArmyCardPanel.this.card == card) {
+				String cardId = message.getCardId();
+				if (ArmyCardPanel.this.card.getId().equals(cardId)) {
+					reDrawMarkers();
+				}
+			}
+		});
+	}
+	
+	@Subscribe public void onMarkerRevealed(final MarkerRevealedMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				String cardId = message.getCardId();
+				if (ArmyCardPanel.this.card.getId().equals(cardId)) {
 					reDrawMarkers();
 				}
 			}

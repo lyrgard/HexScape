@@ -25,7 +25,6 @@ public class HomeView extends AbstractView {
 		add(soloGame);
 		
 		JButton multiplayer = new JButton(new ConnectToServerAction());
-		multiplayer.setText("Multiplayer Game");
 //		multiplayer.addActionListener(new ActionListener() {
 //			
 //			public void actionPerformed(ActionEvent e) {
@@ -34,6 +33,7 @@ public class HomeView extends AbstractView {
 //			}
 //		});
 		add(multiplayer);
+		multiplayer.setEnabled(false);
 	}
 
 	@Override

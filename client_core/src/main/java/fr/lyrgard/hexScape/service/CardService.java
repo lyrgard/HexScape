@@ -6,20 +6,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-import fr.lyrgard.hexScape.model.card.Card;
+import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
 public class CardService {
 
 private static final File baseFolder = new File("asset/cards");
 	
-	private static final CardService INSTANCE = new CardService();
+	
 
 	private static final String ID = "id";
 	private static final String NAME = "name";
 	private static final String FIGURES_3D = "3dFigures";
 	
 	private static final String cardPropertiesFilename = "card.properties";
+	
+	private static final CardService INSTANCE = new CardService();
 	
 	public static CardService getInstance() {
 		return INSTANCE;
@@ -44,7 +46,7 @@ private static final File baseFolder = new File("asset/cards");
 				if (folder.exists() && folder.isDirectory()) {
 					File cardPropertiesFile = new File(folder, cardPropertiesFilename);
 					if (cardPropertiesFile.exists() && cardPropertiesFile.isFile() && cardPropertiesFile.canRead()) {
-						Card card = new Card();
+						CardType card = new CardType();
 						Properties cardProperties = new Properties();
 						InputStream input;
 						try {
@@ -73,7 +75,7 @@ private static final File baseFolder = new File("asset/cards");
 		return cardInventory;
 	}
 
-	public Card getCardByPieceId(String pieceId) {
+	public CardType getCardByPieceId(String pieceId) {
 		return cardInventory.getCardsByPieceId().get(pieceId);
 	}
 

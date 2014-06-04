@@ -25,13 +25,13 @@ public class ExternalModelService {
 		aseModelLoader = new ASEModelLoader();
 	}
 	
-	public Spatial getModel(String name) {
+	public Spatial getModel(String modelId) {
 		
-		ExternalModel model = models.get(name);
+		ExternalModel model = models.get(modelId);
 		
 		if (model == null) {
-			model = aseModelLoader.load(name);
-			models.put(name, model);
+			model = aseModelLoader.load(modelId);
+			models.put(modelId, model);
 		}
 		Spatial result = model.getNewInstance();
 		

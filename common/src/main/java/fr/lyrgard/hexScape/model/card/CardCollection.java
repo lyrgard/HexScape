@@ -8,13 +8,13 @@ public class CardCollection {
 
 	private String name;
 	
-	private Map<String, Card> cardsById = new HashMap<String, Card>();
+	private Map<String, CardType> cardsById = new HashMap<String, CardType>();
 	
 	private Map<String, Integer> numberById = new HashMap<String, Integer>();
 	
-	private Map<String, Card> cardsByPieceId = new HashMap<String, Card>();
+	private Map<String, CardType> cardsByPieceId = new HashMap<String, CardType>();
 	
-	public void addCard(String id, Card card, Integer number) {
+	public void addCard(String id, CardType card, Integer number) {
 		cardsById.put(id, card);
 		numberById.put(id, number);
 		for (String pieceId : card.getFigureNames()) {
@@ -22,7 +22,7 @@ public class CardCollection {
 		}
 	}
 
-	public Map<String, Card> getCardsById() {
+	public Map<String, CardType> getCardsById() {
 		return cardsById;
 	}
 
@@ -38,7 +38,7 @@ public class CardCollection {
 		this.name = name;
 	}
 
-	public Map<String, Card> getCardsByPieceId() {
+	public Map<String, CardType> getCardsByPieceId() {
 		return cardsByPieceId;
 	}
 	

@@ -2,26 +2,31 @@ package fr.lyrgard.hexScape.gui.desktop;
 
 import java.awt.Canvas;
 import java.awt.CardLayout;
+import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.google.common.eventbus.Subscribe;
 
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.event.net.ConnectedToServerEvent;
+import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
+import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
+import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.message.InfoMessage;
+import fr.lyrgard.hexScape.message.WarningMessage;
 
 public class HexScapeFrame extends JFrame {
 
@@ -79,7 +84,7 @@ public class HexScapeFrame extends JFrame {
 		
 		panel3d.transferFocusBackward();
 		
-		HexScapeCore.getInstance().getEventBus().register(this);
+		MessageBus.register(this);
 	}
 	
 	public void showView(ViewEnum view) {
@@ -87,7 +92,48 @@ public class HexScapeFrame extends JFrame {
 		viewsMap.get(view).refresh();
 	}
 	
-	@Subscribe public void onConnectedToServer(ConnectedToServerEvent event) {
-		showView(ViewEnum.ROOM);
+	@Subscribe public void onConnectedToServer(ConnectedToServerMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				showView(ViewEnum.ROOM);
+			}
+		});
+	}
+	
+	@Subscribe public void onMessage(final InfoMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				String messageContent = message.getMessage();
+				int messageType = JOptionPane.INFORMATION_MESSAGE;
+				String title = "Message";
+				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
+			}
+		});
+	}
+	
+	@Subscribe public void onMessage(final WarningMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				String messageContent = message.getMessage();
+				int messageType = JOptionPane.WARNING_MESSAGE;
+				String title = "Warning";
+				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
+			}
+		});
+	}
+	
+	@Subscribe public void onMessage(final ErrorMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				String messageContent = message.getMessage();
+				int messageType = JOptionPane.ERROR_MESSAGE;
+				String title = "Error";
+				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
+			}
+		});
 	}
 }
