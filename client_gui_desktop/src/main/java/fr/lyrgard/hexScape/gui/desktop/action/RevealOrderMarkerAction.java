@@ -28,7 +28,7 @@ public class RevealOrderMarkerAction extends AbstractAction {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		RevealMarkerMessage message = new RevealMarkerMessage(playerId, gameId, card.getId(), marker.getMarkerDefinition().getId(), 1);
+		RevealMarkerMessage message = new RevealMarkerMessage(playerId, gameId, card.getId(), marker.getMarkerDefinitionId(), 1);
 		MessageBus.post(message);		
 	}
 	

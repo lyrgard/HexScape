@@ -1,9 +1,16 @@
 package fr.lyrgard.hexScape.message;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PieceUnselectedMessage extends AbstractPieceMessage {
 
-	public PieceUnselectedMessage(String playerId, String gameId,
-			String cardInstanceId, String pieceId) {
+	@JsonCreator
+	public PieceUnselectedMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("gameId") String gameId,
+			@JsonProperty("cardInstanceId") String cardInstanceId, 
+			@JsonProperty("pieceId") String pieceId) {
 		super(playerId, gameId, cardInstanceId, pieceId);
 	}
 

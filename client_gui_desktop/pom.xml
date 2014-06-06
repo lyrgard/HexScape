@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.lyrgard.hexScape</groupId>
 	<artifactId>hexScape_client_gui_desktop</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<build>
 		<plugins>

@@ -31,12 +31,16 @@ import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.card.CardType;
+import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.CardService;
+import fr.lyrgard.hexScape.service.MarkerService;
 
 public class ArmyCardPanel extends JPanel {
 
@@ -64,11 +68,14 @@ public class ArmyCardPanel extends JPanel {
 		add(markerPanel, BorderLayout.CENTER);
 
 		this.setSize(200, 50);
-		imageIcon = new ImageIcon(new File(card.getType().getFolder(), "icon.jpg").getAbsolutePath());
+		
+		CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+		
+		imageIcon = new ImageIcon(new File(cardType.getFolder(), "icon.jpg").getAbsolutePath());
 
-		piecesNumber = card.getNumber() * card.getType().getFigureNames().size();
+		piecesNumber = card.getNumber() * cardType.getFigureNames().size();
 		for (int i = 0; i < card.getNumber(); i++ ) {
-			for (String figureName : card.getType().getFigureNames()) {
+			for (String figureName : cardType.getFigureNames()) {
 				pieceLeftToPlace.add(figureName);
 			}
 		}
@@ -90,7 +97,8 @@ public class ArmyCardPanel extends JPanel {
 		imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
 
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2, true);
-		border = BorderFactory.createTitledBorder(border, card.getType().getName(), TitledBorder.LEFT, TitledBorder.TOP);
+		
+		border = BorderFactory.createTitledBorder(border, cardType.getName(), TitledBorder.LEFT, TitledBorder.TOP);
 		setBorder(border);
 
 		setPreferredSize(new Dimension(150, 120));
@@ -159,12 +167,13 @@ public class ArmyCardPanel extends JPanel {
 		for (MarkerInstance marker : card.getMarkers()) {
 			ImageIcon markerIcon = null;
 			JLabel imageLabel = new JLabel();
-			switch (marker.getMarkerDefinition().getType()) {
+			MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
+			switch (markerDefinition.getType()) {
 			case NORMAL:
-				markerIcon = new ImageIcon(marker.getMarkerDefinition().getImage().getAbsolutePath());
+				markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
 				break;
 			case STACKABLE:
-				markerIcon = new ImageIcon(marker.getMarkerDefinition().getImage().getAbsolutePath());
+				markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
 				int number = ((StackableMarkerInstance)marker).getNumber();
 				String numberString = Integer.toString(number);
 				imageLabel.setText(numberString);
@@ -173,10 +182,10 @@ public class ArmyCardPanel extends JPanel {
 			case REVEALABLE:
 				boolean hidden = ((RevealableMarkerInstance)marker).isHidden();
 				if (hidden) {
-					markerIcon = new ImageIcon(((RevealableMarkerDefinition)marker.getMarkerDefinition()).getOwnerHiddenMarkerImage().getAbsolutePath());
+					markerIcon = new ImageIcon(((RevealableMarkerDefinition)markerDefinition).getOwnerHiddenMarkerImage().getAbsolutePath());
 					imageLabel.addMouseListener(new PopMenuClickListener(new RevealableMarkerMenu(card, (RevealableMarkerInstance)marker)));
 				} else {
-					markerIcon = new ImageIcon(marker.getMarkerDefinition().getImage().getAbsolutePath());
+					markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
 				}
 				break;
 			}

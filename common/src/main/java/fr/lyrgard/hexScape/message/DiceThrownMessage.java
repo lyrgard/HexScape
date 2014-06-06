@@ -2,14 +2,19 @@ package fr.lyrgard.hexScape.message;
 
 import java.util.List;
 
-public class DiceThrownMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class DiceThrownMessage extends AbstractUserMessage {
 
 	private String diceTypeId;
 	
 	private List<String> results;
 
-	public DiceThrownMessage(String playerId, String diceTypeId,
-			List<String> results) {
+	
+	public DiceThrownMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("diceTypeId") String diceTypeId,
+			@JsonProperty("results") List<String> results) {
 		super(playerId);
 		this.diceTypeId = diceTypeId;
 		this.results = results;

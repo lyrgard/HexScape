@@ -1,6 +1,9 @@
 package fr.lyrgard.hexScape.message;
 
-public class PostMessageMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class PostMessageMessage extends AbstractUserMessage {
 
 	private String message;
 	
@@ -8,8 +11,12 @@ public class PostMessageMessage extends AbstractMessage {
 	
 	private String gameId;
 	
-	public PostMessageMessage(String playerId, String message, String roomId,
-			String gameId) {
+	@JsonCreator
+	public PostMessageMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("message") String message, 
+			@JsonProperty("roomId") String roomId,
+			@JsonProperty("gameId") String gameId) {
 		super(playerId);
 		this.message = message;
 		this.roomId = roomId;

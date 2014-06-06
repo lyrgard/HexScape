@@ -3,13 +3,21 @@ package fr.lyrgard.hexScape.model.map;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Tile {
 
 	private TileType type;
 	
 	private int x,y,z;
 	
-	public Tile(TileType type, int x, int y , int z) {
+	@JsonCreator
+	public Tile(
+			@JsonProperty("type") TileType type, 
+			@JsonProperty("x") int x, 
+			@JsonProperty("y") int y , 
+			@JsonProperty("z") int z) {
 		this.type = type;
 		this.x = x;
 		this.y = y;

@@ -24,6 +24,7 @@ import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.CardService;
 
 public class SelectedCardPanel extends JPanel {
 
@@ -60,7 +61,7 @@ public class SelectedCardPanel extends JPanel {
 					if (player != null && player.getArmy() != null) {
 						CardInstance cardInstance = player.getArmy().getCardsById().get(cardId);
 						if (cardInstance != null) {
-							CardType card = cardInstance.getType();
+							CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardInstance.getCardTypeId());
 							buttonPanel.removeAll();
 							image = null;
 							if (card != null) {

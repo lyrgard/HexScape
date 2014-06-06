@@ -3,22 +3,29 @@ package fr.lyrgard.hexScape.model.card;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 
 public class CardInstance {
 	
 	private String id;
 	
-	private CardType type;
+	private String cardTypeId;
 	
 	private int number;
 	
 	private TreeSet<MarkerInstance> markers;
 
-	public CardInstance(String id, CardType type, int number) {
+	@JsonCreator
+	public CardInstance(
+			@JsonProperty("id") String id, 
+			@JsonProperty("cardTypeId") String cardTypeId, 
+			@JsonProperty("number") int number) {
 		super();
 		this.id = id;
-		this.type = type;
+		this.cardTypeId = cardTypeId;
 		this.number = number;
 	}
 
@@ -28,14 +35,6 @@ public class CardInstance {
 
 	public void setId(String id) {
 		this.id = id;
-	}
-
-	public CardType getType() {
-		return type;
-	}
-
-	public void setType(CardType type) {
-		this.type = type;
 	}
 
 	public int getNumber() {
@@ -49,15 +48,17 @@ public class CardInstance {
 
 	public TreeSet<MarkerInstance> getMarkers() {
 		if (markers == null) {
-			markers = new TreeSet<>(new Comparator<MarkerInstance>() {
-
-				@Override
-				public int compare(MarkerInstance m1, MarkerInstance m2) {
-					return m1.getMarkerDefinition().getId().compareTo(m2.getMarkerDefinition().getId());
-				}
-			});
+			markers = new TreeSet<>();
 		}
 		return markers;
+	}
+
+	public String getCardTypeId() {
+		return cardTypeId;
+	}
+
+	public void setCardTypeId(String cardTypeId) {
+		this.cardTypeId = cardTypeId;
 	}
 
 }

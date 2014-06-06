@@ -1,8 +1,12 @@
 package fr.lyrgard.hexScape.message;
 
-public class DisconnectFromServerMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-	public DisconnectFromServerMessage(String playerId) {
+public class DisconnectFromServerMessage extends AbstractUserMessage {
+
+	@JsonCreator
+	public DisconnectFromServerMessage(@JsonProperty("playerId") String playerId) {
 		super(playerId);
 	}
 

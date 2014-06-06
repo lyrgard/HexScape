@@ -2,11 +2,7 @@ package fr.lyrgard.hexScape.model.card;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.TreeSet;
-
-import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 
 public class CardType {
 

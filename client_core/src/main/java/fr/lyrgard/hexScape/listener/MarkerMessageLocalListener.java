@@ -77,17 +77,14 @@ public class MarkerMessageLocalListener {
 		
 		switch (markerDefinition.getType()) {
 		case NORMAL:
-			marker = new MarkerInstance();
-			marker.setMarkerDefinition(markerDefinition);
+			marker = new MarkerInstance(markerDefinition.getId());
 			card.getMarkers().add(marker);
 			break;
 		case STACKABLE:
 			addStackableMarkerToCard(card, markerDefinition, number);
 			break;
 		case REVEALABLE:
-			marker = new RevealableMarkerInstance();
-			((RevealableMarkerInstance)marker).setHidden(true);
-			marker.setMarkerDefinition(markerDefinition);
+			marker = new RevealableMarkerInstance(markerDefinition.getId(), true);
 			card.getMarkers().add(marker);
 			break;
 		}
@@ -98,15 +95,13 @@ public class MarkerMessageLocalListener {
 	private void addStackableMarkerToCard(CardInstance card, MarkerDefinition markerDefinition, int number) {
 		
 		for (MarkerInstance markerOnCard : card.getMarkers()) {
-			if (markerOnCard.getMarkerDefinition() == markerDefinition) {
+			if (markerOnCard.getMarkerDefinitionId().equals(markerDefinition.getId())) {
 				// a marker of this type is already on the card. Add "number" to it
 				((StackableMarkerInstance)markerOnCard).setNumber(((StackableMarkerInstance)markerOnCard).getNumber() + number);				
 				return;
 			}
 		}
-		StackableMarkerInstance marker = new StackableMarkerInstance();
-		marker.setMarkerDefinition(markerDefinition);
-		marker.setNumber(number);
+		StackableMarkerInstance marker = new StackableMarkerInstance(markerDefinition.getId(), number);
 		card.getMarkers().add(marker);
 	}
 
@@ -148,7 +143,7 @@ public class MarkerMessageLocalListener {
 				return;
 			}
 			for (MarkerInstance marker : card.getMarkers()) {
-				if (marker.getMarkerDefinition() == markerDefinition) {
+				if (marker.getMarkerDefinitionId().equals(markerDefinition.getId())) {
 					if (markerDefinition.getType() == MarkerType.STACKABLE) {
 						int currentNumber = ((StackableMarkerInstance)marker).getNumber();
 						if (currentNumber <= number) {
@@ -206,7 +201,7 @@ public class MarkerMessageLocalListener {
 		
 		
 		for (MarkerInstance marker : card.getMarkers()) {
-			if (marker.getMarkerDefinition() == markerDefinition) {
+			if (marker.getMarkerDefinitionId().equals(markerDefinition.getId())) {
 				((RevealableMarkerInstance)marker).setHidden(false);
 				MessageBus.post(new MarkerRevealedMessage(playerId, gameId, cardId, markerId, number));
 				break;

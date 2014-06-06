@@ -2,13 +2,18 @@ package fr.lyrgard.hexScape.message;
 
 import java.io.File;
 
-public class LoadArmyMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class LoadArmyMessage extends AbstractUserMessage {
 	
 	private File armyFile;
 	
 	
-
-	public LoadArmyMessage(String playerId, File armyFile) {
+	@JsonCreator
+	public LoadArmyMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("armyFile") File armyFile) {
 		super(playerId);
 		this.armyFile = armyFile;
 	}

@@ -1,11 +1,17 @@
 package fr.lyrgard.hexScape.message;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import fr.lyrgard.hexScape.model.card.Army;
 
-public class ArmyLoadedMessage extends AbstractMessage {
+public class ArmyLoadedMessage extends AbstractUserMessage {
 	private Army army;
 
-	public ArmyLoadedMessage(String playerId, Army army) {
+	@JsonCreator
+	public ArmyLoadedMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("army") Army army) {
 		super(playerId);
 		this.army = army;
 	}

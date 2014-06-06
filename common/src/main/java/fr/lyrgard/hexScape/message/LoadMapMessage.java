@@ -2,12 +2,17 @@ package fr.lyrgard.hexScape.message;
 
 import java.io.File;
 
-public class LoadMapMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class LoadMapMessage extends AbstractUserMessage {
 
 	private File mapFile;
 
-	
-	public LoadMapMessage(String playerId, File mapFile) {
+	@JsonCreator
+	public LoadMapMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("mapFile") File mapFile) {
 		super(playerId);
 		this.mapFile = mapFile;
 	}

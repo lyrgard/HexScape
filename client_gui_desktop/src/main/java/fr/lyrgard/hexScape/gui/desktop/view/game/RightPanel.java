@@ -25,12 +25,14 @@ import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.CardService;
 import fr.lyrgard.hexScape.service.DiceService;
 import fr.lyrgard.hexScape.service.MarkerService;
 
@@ -138,9 +140,10 @@ public class RightPanel extends JPanel {
 		
 		if (player != null && markerDefinition != null) {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
+			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			
 			if (card != null) {
-				chatPanel.addPlayerAction(player, "player " + player.getName() + " added " + number + " " + markerDefinition.getName() + " to " + card.getType().getName());
+				chatPanel.addPlayerAction(player, "player " + player.getName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
 			}
 		}
 	}
@@ -156,14 +159,15 @@ public class RightPanel extends JPanel {
 		
 		if (player != null) {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
+			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			if (card != null) {
 				if (allMarkers) {
-					chatPanel.addPlayerAction(player, "player " + player.getName() + " removed all markers from " + card.getType().getName());
+					chatPanel.addPlayerAction(player, "player " + player.getName() + " removed all markers from " + cardType.getName());
 				} else {
 					MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
 					
 					if (markerDefinition != null) {
-						chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + card.getType().getName());
+						chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
 					}
 				}
 			}
@@ -181,9 +185,10 @@ public class RightPanel extends JPanel {
 		
 		if (player != null && markerDefinition != null) {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
+			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			
 			if (card != null) {
-				chatPanel.addPlayerAction(player, "player " + player.getName() + " revealed " + markerDefinition.getName() + " on " + card.getType().getName());
+				chatPanel.addPlayerAction(player, "player " + player.getName() + " revealed " + markerDefinition.getName() + " on " + cardType.getName());
 			}
 		}
 	}

@@ -1,12 +1,18 @@
 package fr.lyrgard.hexScape.message;
 
-public class ThrowDiceMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class ThrowDiceMessage extends AbstractUserMessage {
 
 	private int number;
 	private String diceTypeId;
 	
-	
-	public ThrowDiceMessage(String playerId, int number, String diceTypeId) {
+	@JsonCreator
+	public ThrowDiceMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("number") int number, 
+			@JsonProperty("diceTypeId") String diceTypeId) {
 		super(playerId);
 		this.number = number;
 		this.diceTypeId = diceTypeId;

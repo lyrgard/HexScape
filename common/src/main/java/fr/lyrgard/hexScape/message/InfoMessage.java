@@ -1,12 +1,17 @@
 package fr.lyrgard.hexScape.message;
 
-public class InfoMessage extends AbstractMessage {
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class InfoMessage extends AbstractUserMessage {
 
 	private String message;
 
 	
-	
-	public InfoMessage(String playerId, String message) {
+	@JsonCreator
+	public InfoMessage(
+			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("message") String message) {
 		super(playerId);
 		this.message = message;
 	}

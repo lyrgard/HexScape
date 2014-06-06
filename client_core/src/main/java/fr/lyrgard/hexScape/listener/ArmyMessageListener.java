@@ -86,7 +86,7 @@ public class ArmyMessageListener {
 					}
 				} else {
 					String cardInstanceId = playerId + "-" + i; 
-					CardInstance cardInstance = new CardInstance(cardInstanceId, cardType, number);
+					CardInstance cardInstance = new CardInstance(cardInstanceId, cardType.getId(), number);
 					army.getCardsById().put(cardInstance.getId(), cardInstance);
 					i++;
 				}

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.lyrgard.hexScape</groupId>
 	<artifactId>hexScape_client_core</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 
 	<properties>
 		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
@@ -38,6 +38,12 @@
 			<artifactId>hexScape_common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>hexScape_client_network</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		
 	
 		<!-- The core library -->
 		<dependency>

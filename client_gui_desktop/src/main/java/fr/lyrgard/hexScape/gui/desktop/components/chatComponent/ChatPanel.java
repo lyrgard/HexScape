@@ -89,7 +89,7 @@ public class ChatPanel extends JPanel{
 	
 	public void addMessage(Player player, String line) {
 		try {
-			StyleConstants.setForeground(userNameStyle, player.getColor());
+			StyleConstants.setForeground(userNameStyle, player.getColor().getColor());
 			text.insertString(text.getEndPosition().getOffset(), player.getName() + " : ", userNameStyle);
 			text.insertString(text.getEndPosition().getOffset(), line + "\n", textStyle);
 			//The pane auto-scrolls with each new response added
@@ -112,7 +112,7 @@ public class ChatPanel extends JPanel{
 	
 	public void addPlayerAction(Player player, String line) {
 		try {
-			StyleConstants.setForeground(actionStyle, player.getColor());
+			StyleConstants.setForeground(actionStyle, player.getColor().getColor());
 			text.insertString(text.getEndPosition().getOffset(), "* " + line + " *\n", actionStyle);
 			//The pane auto-scrolls with each new response added
 			textPane.setCaretPosition(text.getEndPosition().getOffset() - 1);
@@ -123,7 +123,7 @@ public class ChatPanel extends JPanel{
 	
 	public void addDiceRoll(Player player, DiceType type, List<DiceFace> result) {
 		try {
-			StyleConstants.setForeground(userNameStyle, player.getColor());
+			StyleConstants.setForeground(userNameStyle, player.getColor().getColor());
 			String line = player.getName() + " rolled " + result.size() + " " + type.getName() + " :\n";
 			text.insertString(text.getEndPosition().getOffset(), line, userNameStyle);
 			for (DiceFace face : result) {

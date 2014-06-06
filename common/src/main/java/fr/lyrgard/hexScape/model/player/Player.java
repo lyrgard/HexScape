@@ -15,7 +15,7 @@ public class Player {
 	
 	private String name;
 	
-	private Color color;
+	private ColorEnum color;
 	
 	private Army army;
 	
@@ -28,7 +28,7 @@ public class Player {
 	public Player() {
 	}
 	
-	public Player(String name, Color color) {
+	public Player(String name, ColorEnum color) {
 		super();
 		this.name = name;
 		this.color = color;
@@ -42,11 +42,11 @@ public class Player {
 		this.name = name;
 	}
 
-	public Color getColor() {
+	public ColorEnum getColor() {
 		return color;
 	}
 
-	public void setColor(Color color) {
+	public void setColor(ColorEnum color) {
 		this.color = color;
 	}
 
