@@ -60,6 +60,7 @@ public class ClientWebSocket {
 	public void onMessage(String msg) {
 		try {
 			AbstractMessage message = MessageJsonMapper.getInstance().fromJson(msg);
+			System.out.println("received message " + message.getClass() + " from server");
 			MessageBus.post(message);
 		} catch (JsonParseException e) {
 			e.printStackTrace();

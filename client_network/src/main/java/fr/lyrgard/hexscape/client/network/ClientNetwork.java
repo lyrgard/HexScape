@@ -71,6 +71,7 @@ public class ClientNetwork {
 		if (socket != null) {
 			try {
 				socket.getSession().getRemote().sendString(MessageJsonMapper.getInstance().toJson(message));
+				System.out.println("Sent message " + message.getClass() + " to server");
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

@@ -1,8 +1,9 @@
 package fr.lyrgard.hexScape.model.player;
 
-import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.game.Game;
@@ -17,12 +18,16 @@ public class Player {
 	
 	private ColorEnum color;
 	
+	@JsonIgnore
 	private Army army;
 	
+	@JsonIgnore
 	private Room room;
 	
+	@JsonIgnore
 	private Game game;
 	
+	@JsonIgnore
 	private Map<String, PieceInstance> piecesById = new HashMap<>(); 
 
 	public Player() {

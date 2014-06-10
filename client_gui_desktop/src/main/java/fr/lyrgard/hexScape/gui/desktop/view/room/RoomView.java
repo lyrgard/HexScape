@@ -18,9 +18,14 @@ import fr.lyrgard.hexScape.gui.desktop.action.DisconnectAction;
 import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.room.GameListPanel;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
+import fr.lyrgard.hexScape.message.MessagePostedMessage;
+import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
 import fr.lyrgard.hexScape.model.ChatTypeEnum;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.service.RoomService;
 
 public class RoomView extends AbstractView {
 
@@ -56,7 +61,7 @@ public class RoomView extends AbstractView {
 		chatPanel = new ChatPanel(HexScapeCore.getInstance().getRoomId(), null);
 		add(chatPanel, BorderLayout.CENTER);
 		
-		// TODO MessageBus.register(this);
+		MessageBus.register(this);
 	}
 	
 	// TODO
@@ -68,17 +73,39 @@ public class RoomView extends AbstractView {
 //		
 //	}
 //	
-//	@Subscribe public void onRoomMessageReceived(RoomMessagePostedEvent event) {
-//		Player player = event.getPlayer();
-//		String message = event.getMessage();
-//		chatPanel.addMessage(player, message);
-//	}
-//	
-//	@Subscribe public void onPlayerJoined(PlayerJoinedRoomEvent event) {
-//		Player player = event.getPlayer();
-//		playerListModel.addPlayer(player);
-//		chatPanel.addAction("player " + player.getName() + " joined the room");
-//	}
+	@Subscribe public void onRoomMessageReceived(MessagePostedMessage message) {
+		String playerId = message.getPlayerId();
+		String roomId = message.getRoomId();
+		String messageContent = message.getMessage();
+		
+		if (HexScapeCore.getInstance().getRoomId().equals(roomId)) {
+			Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+			
+			if (player != null) {
+				chatPanel.addMessage(player, messageContent);
+			}
+		}
+		
+	}
+	
+	@Subscribe public void onPlayerJoined(PlayerJoinedRoomMessage message) {
+		String playerId = message.getPlayerId();
+		String name = message.getName();
+		ColorEnum color = message.getColor();
+		
+		
+		if (!HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			Player player = new Player(name, color);
+			player.setId(playerId);
+			
+			RoomService.getInstance().playerJoinedRoom(player);
+
+			if (player != null) {
+				playerListModel.addPlayer(player);
+				chatPanel.addAction("player " + player.getName() + " joined the room");
+			}
+		}
+	}
 //	
 //	@Subscribe public void onPlayerLeft(PlayerLeftRoomEvent event) {
 //		Player player = event.getPlayer();
@@ -88,7 +115,16 @@ public class RoomView extends AbstractView {
 
 	@Override
 	public void refresh() {
-		// TODOHexScapeCore.getInstance().getMultiplayerService().requestRoomContent(Room.DEFAULT_ROOM_ID);
+		String roomId = HexScapeCore.getInstance().getRoomId();
+		
+		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
+		
+		if (room != null) {
+			chatPanel.setRoomId(roomId);
+			roomTitle.setText(room.getName());
+			playerListModel.setPlayers(room.getPlayers());
+			chatPanel.addAction("Room " + room.getName() + " joined.");
+		}
 	}
 	
 	

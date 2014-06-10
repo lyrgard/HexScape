@@ -45,7 +45,20 @@ public class PlayerListModel extends AbstractListModel<Player> {
 	private static class PlayerNameComparator implements Comparator<Player> {
 
 		public int compare(Player p1, Player p2) {
-			return p1.getName().compareTo(p2.getName());
+			if (p1 == null) {
+				if (p2 == null) {
+					return 0;
+				} else {
+					return -1;
+				}
+			} else {
+				if (p2 == null) {
+					return 1;
+				} else {
+					return p1.getName().compareTo(p2.getName());
+				}
+			}
+			
 		}
 		
 	}

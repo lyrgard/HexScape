@@ -3,28 +3,25 @@ package fr.lyrgard.hexScape.server;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.jme3.network.HostedConnection;
-import com.jme3.network.Server;
-
+import fr.lyrgard.hexScape.model.ServerConstant;
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.server.listener.RoomMessageListener;
 import fr.lyrgard.hexScape.server.service.IdService;
 import fr.lyrgard.hexScape.server.service.RoomService;
+import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class HexScapeServer {
 
 	private static final HexScapeServer instance = new HexScapeServer();
-	
-	private HexScapeServerJme3Application app;
 	
 	private Map<String, Room> rooms = new HashMap<>();
 	
 	private Map<String, Game> games = new HashMap<>();
 	
 	private Map<String, Player> players = new HashMap<>();
-	
-	private Map<String, HostedConnection> connectionByPlayerIds = new HashMap<>();
 	
 	private RoomService roomService = new RoomService();
 	
@@ -36,10 +33,17 @@ public class HexScapeServer {
 	
 	private HexScapeServer() {
 		Room room = new Room();
+		room.setId(Room.DEFAULT_ROOM_ID);
 		room.setName(Room.DEFAULT_ROOM_ID);
-		rooms.put(Room.DEFAULT_ROOM_ID, room);
-		app = new HexScapeServerJme3Application();
-		app.start();
+		Universe.getInstance().getRoomsByRoomIds().put(Room.DEFAULT_ROOM_ID, room);
+		
+		RoomMessageListener.start();
+		try {
+			ServerNetwork.getInstance().start(ServerConstant.SERVER_PORT);
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
 	public static void main(String... args) {
@@ -63,13 +67,5 @@ public class HexScapeServer {
 
 	public IdService getIdService() {
 		return idService;
-	}
-	
-	public Server getServer() {
-		return app.getServer();
-	}
-
-	public Map<String, HostedConnection> getConnectionByPlayerIds() {
-		return connectionByPlayerIds;
 	}
 }

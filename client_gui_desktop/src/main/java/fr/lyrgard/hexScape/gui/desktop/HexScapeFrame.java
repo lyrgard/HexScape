@@ -16,6 +16,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import com.google.common.eventbus.Subscribe;
 
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
@@ -24,9 +25,14 @@ import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
 import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
+import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
+import fr.lyrgard.hexScape.message.JoinRoomMessage;
+import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.message.WarningMessage;
+import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.service.RoomService;
 
 public class HexScapeFrame extends JFrame {
 
@@ -92,13 +98,32 @@ public class HexScapeFrame extends JFrame {
 		viewsMap.get(view).refresh();
 	}
 	
-	@Subscribe public void onConnectedToServer(ConnectedToServerMessage message) {
+
+	
+	@Subscribe public void onRoomJoined(RoomJoinedMessage message) {
+		Room room = message.getRoom();
+		
+		RoomService.getInstance().joinRoom(room);
+		
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
 				showView(ViewEnum.ROOM);
 			}
 		});
+	}
+	
+	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
+		String playerId = message.getPlayerId();
+
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					showView(ViewEnum.HOME);
+				}
+			});
+		}
 	}
 	
 	@Subscribe public void onMessage(final InfoMessage message) {

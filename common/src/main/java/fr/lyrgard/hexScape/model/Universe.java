@@ -1,7 +1,7 @@
 package fr.lyrgard.hexScape.model;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -19,11 +19,11 @@ public class Universe {
 		
 	}
 	
-	private Map<String, Player> playersByIds = new HashMap<>();
+	private Map<String, Player> playersByIds = new ConcurrentHashMap<>();
 	
-	private Map<String, Room> roomsByRoomIds = new HashMap<>();
+	private Map<String, Room> roomsByRoomIds = new ConcurrentHashMap<>();
 	
-	private Map<String, Game> gamesByGameIds = new HashMap<>();
+	private Map<String, Game> gamesByGameIds = new ConcurrentHashMap<>();
 
 	public Map<String, Player> getPlayersByIds() {
 		return playersByIds;

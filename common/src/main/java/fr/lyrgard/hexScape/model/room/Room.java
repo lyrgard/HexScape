@@ -8,7 +8,7 @@ import fr.lyrgard.hexScape.model.player.Player;
 
 public class Room {
 	
-	public static final String DEFAULT_ROOM_ID = "HexScape";
+	public static final String DEFAULT_ROOM_ID = "hexscape";
 
 	private String id;
 	

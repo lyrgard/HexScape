@@ -40,7 +40,13 @@ public class ChatPanel extends JPanel{
 	
 	private final Style iconStyle;
 	
+	private String roomId;
+	
+	private String gameId;
+	
 	public ChatPanel(final String roomId, final String gameId) {
+		this.roomId = roomId;
+		this.gameId = gameId;
 		
 		setLayout(new BorderLayout());
 		
@@ -71,7 +77,7 @@ public class ChatPanel extends JPanel{
 				String messageContent = userInputField.getText();
 
 				if (messageContent != null) {
-					PostMessageMessage message = new PostMessageMessage(HexScapeCore.getInstance().getPlayerId(), messageContent, roomId, gameId);
+					PostMessageMessage message = new PostMessageMessage(HexScapeCore.getInstance().getPlayerId(), messageContent, ChatPanel.this.roomId, ChatPanel.this.gameId);
 					MessageBus.post(message);
 					//We reset our text field to "" each time the user presses Enter
 					userInputField.setText("");
@@ -87,6 +93,14 @@ public class ChatPanel extends JPanel{
 		MessageBus.register(this);
 	}
 	
+	public void setRoomId(String roomId) {
+		this.roomId = roomId;
+	}
+
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
+	}
+
 	public void addMessage(Player player, String line) {
 		try {
 			StyleConstants.setForeground(userNameStyle, player.getColor().getColor());

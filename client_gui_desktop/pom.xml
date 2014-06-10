@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.lyrgard.hexScape</groupId>
-	<artifactId>hexScape_client_gui_desktop</artifactId>
+	<groupId>fr.lyrgard.hexscape</groupId>
+	<artifactId>hexscape_client_gui_desktop</artifactId>
 	<version>0.0.4-SNAPSHOT</version>
 
 	<build>
@@ -10,6 +10,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
 				<configuration>
 					<source>1.7</source>
 					<target>1.7</target>
@@ -34,7 +35,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>hexScape_client_core</artifactId>
+			<artifactId>hexscape_client_core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -1,5 +1,5 @@
 package fr.lyrgard.hexScape.model;
 
 public interface ServerConstant {
-	public static final int SERVER_PORT = 6143;
+	public static final int SERVER_PORT = 4242;
 }

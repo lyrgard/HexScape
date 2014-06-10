@@ -1,7 +1,5 @@
 package fr.lyrgard.hexScape.gui.desktop.view.home;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
@@ -33,7 +31,8 @@ public class HomeView extends AbstractView {
 //			}
 //		});
 		add(multiplayer);
-		multiplayer.setEnabled(false);
+
+		
 	}
 
 	@Override

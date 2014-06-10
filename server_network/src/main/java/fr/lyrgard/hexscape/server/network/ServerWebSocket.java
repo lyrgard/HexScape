@@ -1,6 +1,5 @@
 package fr.lyrgard.hexscape.server.network;
 
-import java.awt.Color;
 import java.io.IOException;
 
 import org.eclipse.jetty.websocket.api.Session;
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fr.lyrgard.hexScape.bus.MessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
+import fr.lyrgard.hexScape.message.AbstractUserMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -28,13 +28,14 @@ import fr.lyrgard.hexscape.server.network.id.IdGenerator;
 @WebSocket
 public class ServerWebSocket extends WebSocketHandler {
 
-	private String userId;
+	private String playerId;
 
 	private Session session;
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
 		System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
+		ServerNetwork.getInstance().unRegisterSocket(playerId);
 	}
 
 	@OnWebSocketError
@@ -45,7 +46,7 @@ public class ServerWebSocket extends WebSocketHandler {
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
 		this.session = session;
-		userId = IdGenerator.getInstance().getNewUserId(); 
+		playerId = IdGenerator.getInstance().getNewUserId(); 
 	}
 
 	@OnWebSocketMessage
@@ -56,10 +57,16 @@ public class ServerWebSocket extends WebSocketHandler {
 				String name = ((UserInformationMessage) message).getName();
 				ColorEnum color = ((UserInformationMessage) message).getColor();
 				Player player = new Player(name, color);
-				player.setId(userId);
-				Universe.getInstance().getPlayersByIds().put(userId, player);
-				send(new UserIdAllocatedMessage(userId));
+				player.setId(playerId);
+				Universe.getInstance().getPlayersByIds().put(playerId, player);
+				System.out.println("User connected : " + playerId + ",  " + player.getName() + ", " + player.getColor() );
+				send(new UserIdAllocatedMessage(playerId));
+				ServerNetwork.getInstance().registerSocket(playerId, this);
 			} else {
+				System.out.println("Received message " + message.getClass() + " from player " + playerId);
+				if (message instanceof AbstractUserMessage) {
+					((AbstractUserMessage)message).setPlayerId(playerId);
+				}
 				MessageBus.post(message);
 			}
 		} catch (JsonParseException e) {
