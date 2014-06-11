@@ -4,7 +4,7 @@ package fr.lyrgard.hexScape.gui.desktop.view.home;
 import javax.swing.JButton;
 
 import fr.lyrgard.hexScape.gui.desktop.action.ConnectToServerAction;
-import fr.lyrgard.hexScape.gui.desktop.action.StartNewGameAction;
+import fr.lyrgard.hexScape.gui.desktop.action.OpenNewGameDialogAction;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 
 public class HomeView extends AbstractView {
@@ -12,7 +12,7 @@ public class HomeView extends AbstractView {
 	private static final long serialVersionUID = 7669212340835857265L;
 
 	public HomeView() {
-		JButton soloGame = new JButton(new StartNewGameAction(false));
+		JButton soloGame = new JButton(new OpenNewGameDialogAction(false));
 		soloGame.setText("Solo game");
 //		soloGame.addActionListener(new ActionListener() {
 //			

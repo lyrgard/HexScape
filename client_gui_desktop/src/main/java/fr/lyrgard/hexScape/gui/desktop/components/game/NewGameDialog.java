@@ -2,10 +2,7 @@ package fr.lyrgard.hexScape.gui.desktop.components.game;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -19,12 +16,12 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
-import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
+import fr.lyrgard.hexScape.gui.desktop.action.CreateNewGameAction;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.map.Map;
 
 import net.miginfocom.swing.MigLayout;
@@ -33,14 +30,23 @@ public class NewGameDialog extends JDialog {
 
 	private static final long serialVersionUID = 1619661196299179236L;
 	
-	JTextField gameName;
+	private JTextField gameName;
 	
-	JTextField mapNameLabel;
+	private JTextField mapNameLabel;
 	
-	JButton startGame;
+	private JButton startGame;
+	
+	private JSpinner playerNumber;
+	
+	private Game game;
+	
+	
 	
 	public NewGameDialog(boolean multiplayer) {
 		setTitle("Create a new game");
+		
+		game = new Game();
+		
 		this.setLayout(new MigLayout(
 				 "", // Layout Constraints
 				 "[right][left]", // Column constraints
@@ -76,7 +82,7 @@ public class NewGameDialog extends JDialog {
 		} else {
 			numberModel = new SpinnerNumberModel(1, 1, 1, 1);
 		}
-		JSpinner playerNumber = new JSpinner(numberModel);
+		playerNumber = new JSpinner(numberModel);
 		if (!multiplayer) {
 			playerNumber.setEnabled(false);
 		}
@@ -85,16 +91,7 @@ public class NewGameDialog extends JDialog {
 		mapNameLabel = new JTextField(50);
 		mapNameLabel.setEditable(false);
 		
-		ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/addGame.png"));
-		startGame = new JButton("Start", icon);
-		startGame.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				HexScapeFrame.getInstance().showView(ViewEnum.GAME);
-				NewGameDialog.this.dispose();
-			}
-		});
+		startGame = new JButton(new CreateNewGameAction(game));
 		startGame.setEnabled(false);
 		
 		
@@ -131,6 +128,9 @@ public class NewGameDialog extends JDialog {
 
 			public void run() {
 				if (StringUtils.isNotEmpty(mapNameLabel.getText()) && StringUtils.isNotEmpty(gameName.getText())) {
+					game.setName(gameName.getText());
+					game.setMap(HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMapManager().getMap());
+					game.setPlayerNumber(((SpinnerNumberModel)playerNumber.getModel()).getNumber().intValue());
 					NewGameDialog.this.startGame.setEnabled(true);
 				} else {
 					NewGameDialog.this.startGame.setEnabled(false);

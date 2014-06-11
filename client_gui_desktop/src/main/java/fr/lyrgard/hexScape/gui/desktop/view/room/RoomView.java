@@ -142,9 +142,7 @@ public class RoomView extends AbstractView {
 	
 	@Subscribe public void onGameCreated(GameCreatedMessage message) {
 		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
-		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		Game game = message.getGame();
 
 		if (game != null) {
 			if (!HexScapeCore.getInstance().getPlayerId().equals(playerId)) {

@@ -14,7 +14,7 @@ public class CreateGameMessage extends AbstractUserMessage {
 	private int playerNumber;
 
 	@JsonCreator
-	private CreateGameMessage(
+	public CreateGameMessage(
 			@JsonProperty("playerId") String playerId, 
 			@JsonProperty("name") String name, 
 			@JsonProperty("map") Map map,

@@ -39,13 +39,14 @@ public class GameMessageListener {
 			String gameId = IdGenerator.getInstance().getNewGameId();
 			Game game = new Game();
 			game.setId(gameId);
+			game.setName(name);
 			game.setMap(map);
 			game.setPlayerNumber(playerNumber);
 			game.getPlayersIds().add(player.getId());
 			player.setGame(game);
 			Universe.getInstance().getGamesByGameIds().put(gameId, game);
 			
-			GameCreatedMessage resultMessage = new GameCreatedMessage(playerId, gameId, name, map.getName(), playerNumber, playerNumber - game.getPlayersIds().size());
+			GameCreatedMessage resultMessage = new GameCreatedMessage(playerId, game);
 			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
 		}
 	}
