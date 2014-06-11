@@ -27,7 +27,7 @@ import com.jme3.texture.Texture.MinFilter;
 import com.jme3.util.BufferUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.io.virtualScape.VirtualScapeMapReader;
 import fr.lyrgard.hexScape.message.WarningMessage;
@@ -63,7 +63,7 @@ public class MapManager {
 
 	public void placePiece(PieceManager piece) {
 		if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene() == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to place pieces"));
+			CoreMessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to place pieces"));
 			return;
 		}
 		PieceControlerAppState pieceController = HexScapeCore.getInstance().getHexScapeJme3Application().getPieceControlerAppState();
@@ -73,7 +73,7 @@ public class MapManager {
 	public boolean placePiece(PieceManager piece, int x, int y, int z) {
 		Scene scene = HexScapeCore.getInstance().getHexScapeJme3Application().getScene();
 		if (scene == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to place pieces"));
+			CoreMessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to place pieces"));
 			return false;
 		}
 		
@@ -99,7 +99,7 @@ public class MapManager {
 
 	public void moveSelectedPiece() {
 		if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene() == null) {
-			MessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to move a piece"));
+			CoreMessageBus.post(new WarningMessage(HexScapeCore.getInstance().getPlayerId(), "No map was loaded. Please load a map before trying to move a piece"));
 			return;
 		}
 		PieceControlerAppState pieceController = HexScapeCore.getInstance().getHexScapeJme3Application().getPieceControlerAppState();

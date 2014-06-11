@@ -13,7 +13,7 @@ import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -61,7 +61,7 @@ public class ClientWebSocket {
 		try {
 			AbstractMessage message = MessageJsonMapper.getInstance().fromJson(msg);
 			System.out.println("received message " + message.getClass() + " from server");
-			MessageBus.post(message);
+			CoreMessageBus.post(message);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (JsonMappingException e) {

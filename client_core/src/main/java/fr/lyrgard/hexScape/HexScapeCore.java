@@ -1,11 +1,16 @@
 package fr.lyrgard.hexScape;
 
+import java.util.logging.ErrorManager;
+
 import fr.lyrgard.hexScape.listener.ArmyMessageListener;
-import fr.lyrgard.hexScape.listener.ChatMessageLocalListener;
-import fr.lyrgard.hexScape.listener.DiceMessageLocalListener;
+import fr.lyrgard.hexScape.listener.ChatMessageListener;
+import fr.lyrgard.hexScape.listener.DiceMessageListener;
+import fr.lyrgard.hexScape.listener.ErrorMessageListener;
+import fr.lyrgard.hexScape.listener.GameMessageListener;
 import fr.lyrgard.hexScape.listener.MapMessageListener;
-import fr.lyrgard.hexScape.listener.MarkerMessageLocalListener;
+import fr.lyrgard.hexScape.listener.MarkerMessageListener;
 import fr.lyrgard.hexScape.listener.PieceMessageListener;
+import fr.lyrgard.hexScape.listener.RoomMessageListener;
 import fr.lyrgard.hexScape.listener.ServerListener;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardCollection;
@@ -23,6 +28,8 @@ public class HexScapeCore {
 	
 	private HexScapeJme3Application hexScapeJme3Application;
 	
+	private boolean online = false;
+	
 	private CardCollection cardInventory;
 	
 	private String playerId = "1";
@@ -38,11 +45,14 @@ public class HexScapeCore {
 		Universe.getInstance().getPlayersByIds().put(playerId, new Player("Player2", ColorEnum.RED));
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();
-		ChatMessageLocalListener.start();
-		DiceMessageLocalListener.start();
+		ChatMessageListener.start();
+		DiceMessageListener.start();
+		ErrorMessageListener.start();
+		GameMessageListener.start();
 		MapMessageListener.start();
-		MarkerMessageLocalListener.start();
+		MarkerMessageListener.start();
 		PieceMessageListener.start();
+		RoomMessageListener.start();
 		ServerListener.start();
 	}
 
@@ -84,6 +94,14 @@ public class HexScapeCore {
 
 	public void setMapManager(MapManager mapManager) {
 		this.mapManager = mapManager;
+	}
+
+	public boolean isOnline() {
+		return online;
+	}
+
+	public void setOnline(boolean online) {
+		this.online = online;
 	}
 	
 }

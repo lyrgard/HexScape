@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.RevealMarkerMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
@@ -29,7 +29,7 @@ public class RevealOrderMarkerAction extends AbstractAction {
 		String gameId = HexScapeCore.getInstance().getGameId();
 		
 		RevealMarkerMessage message = new RevealMarkerMessage(playerId, gameId, card.getId(), marker.getMarkerDefinitionId(), 1);
-		MessageBus.post(message);		
+		CoreMessageBus.post(message);		
 	}
 	
 	

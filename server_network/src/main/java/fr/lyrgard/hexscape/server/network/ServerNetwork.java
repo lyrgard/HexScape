@@ -71,15 +71,27 @@ public class ServerNetwork {
 		}
 	}
 	
+	public void sendMessageToRoomExceptPlayer(AbstractMessage message, String roomId, String playerId) {
+		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
+		
+		if (room != null) {
+			for (Player player : room.getPlayers()) {
+				if (!playerId.equals(player.getId())) {
+					sendMessageToPlayer(message, player.getId());
+				}
+			}
+		}
+	}
+	
 	public void sendMessageToGame(AbstractMessage message, String gameId) {
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (game != null) {
-			for (Player player : game.getPlayers()) {
-				sendMessageToPlayer(message, player.getId());
+			for (String playerId : game.getPlayersIds()) {
+				sendMessageToPlayer(message, playerId);
 			}
-			for (Player player : game.getObservers()) {
-				sendMessageToPlayer(message, player.getId());
+			for (String playerId : game.getObserversIds()) {
+				sendMessageToPlayer(message, playerId);
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.PlacePieceMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 
@@ -29,7 +29,7 @@ public class AddPieceAction extends AbstractAction {
 		String gameId = HexScapeCore.getInstance().getGameId();
 		
 		PlacePieceMessage message = new PlacePieceMessage(playerId, gameId, card.getId(), pieceModelId);
-		MessageBus.post(message);	
+		CoreMessageBus.post(message);	
 		
 	}
 }

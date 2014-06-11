@@ -2,7 +2,6 @@ package fr.lyrgard.hexscape.client.network;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.concurrent.TimeUnit;
 
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
@@ -53,17 +52,11 @@ public class ClientNetwork {
 	public void disconnect() {
 		if (socket != null) {
 			try {
-				socket.awaitClose(5, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
+				client.stop();
+			} catch (Exception e) {
 				e.printStackTrace();
-			} finally {
-				try {
-					client.stop();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				socket = null;
 			}
+			socket = null;
 		}
 	}
 	

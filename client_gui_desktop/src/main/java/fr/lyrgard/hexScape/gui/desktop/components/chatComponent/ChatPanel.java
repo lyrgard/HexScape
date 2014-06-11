@@ -18,7 +18,8 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.PostMessageMessage;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
@@ -78,7 +79,7 @@ public class ChatPanel extends JPanel{
 
 				if (messageContent != null) {
 					PostMessageMessage message = new PostMessageMessage(HexScapeCore.getInstance().getPlayerId(), messageContent, ChatPanel.this.roomId, ChatPanel.this.gameId);
-					MessageBus.post(message);
+					CoreMessageBus.post(message);
 					//We reset our text field to "" each time the user presses Enter
 					userInputField.setText("");
 				}
@@ -90,7 +91,7 @@ public class ChatPanel extends JPanel{
 		Dimension dim = new Dimension(200, 400);
 		setPreferredSize(dim);
 
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 	
 	public void setRoomId(String roomId) {
@@ -152,6 +153,18 @@ public class ChatPanel extends JPanel{
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void clearText() {
+		textPane.setText("");
+	}
+
+	public String getRoomId() {
+		return roomId;
+	}
+
+	public String getGameId() {
+		return gameId;
 	}	
 	
 }

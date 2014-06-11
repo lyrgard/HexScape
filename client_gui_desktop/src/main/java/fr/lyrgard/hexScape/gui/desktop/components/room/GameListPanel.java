@@ -11,7 +11,7 @@ import javax.swing.ListSelectionModel;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.StartNewGameAction;
 import fr.lyrgard.hexScape.gui.desktop.view.room.GameListModel;
 import fr.lyrgard.hexScape.model.game.Game;

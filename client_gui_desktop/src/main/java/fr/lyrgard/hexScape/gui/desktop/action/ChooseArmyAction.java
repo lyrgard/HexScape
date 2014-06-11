@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LoadArmyMessage;
 
 public class ChooseArmyAction extends AbstractAction {
@@ -36,7 +36,7 @@ public class ChooseArmyAction extends AbstractAction {
 			final File armyFile = chooser.getSelectedFile();
 			
 			LoadArmyMessage message = new LoadArmyMessage(HexScapeCore.getInstance().getPlayerId(), armyFile);
-			MessageBus.post(message);			
+			CoreMessageBus.post(message);			
 		}
 	}
 }

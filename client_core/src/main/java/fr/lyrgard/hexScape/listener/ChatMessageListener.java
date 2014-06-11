@@ -2,29 +2,23 @@ package fr.lyrgard.hexScape.listener;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.PostMessageMessage;
 
-public class ChatMessageLocalListener {
+public class ChatMessageListener extends AbstractMessageListener {
 
-	private static ChatMessageLocalListener instance;
+	private static ChatMessageListener instance;
 	
 	public static void start() {
 		if (instance == null) {
-			instance = new ChatMessageLocalListener();
-			MessageBus.register(instance);
+			instance = new ChatMessageListener();
+			CoreMessageBus.register(instance);
 		}
 	}
 	
-	public static void stop() {
-		if (instance != null) {
-			MessageBus.unregister(instance);
-			instance = null;
-		}
-	}
-	
-	private ChatMessageLocalListener() {
+	private ChatMessageListener() {
 	}
 	
 	
@@ -34,6 +28,10 @@ public class ChatMessageLocalListener {
 		String gameId = message.getGameId();
 		String roomId = message.getRoomId();
 		String messageContent = message.getMessage();
-		MessageBus.post(new MessagePostedMessage(playerId, messageContent, roomId, gameId));
+		sendMessage(new MessagePostedMessage(playerId, messageContent, roomId, gameId));
+	}
+	
+	@Subscribe public void onMessagePosted(MessagePostedMessage message) {
+		GuiMessageBus.post(message);
 	}
 }

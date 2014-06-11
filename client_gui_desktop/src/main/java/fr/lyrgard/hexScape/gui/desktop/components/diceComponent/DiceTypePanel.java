@@ -8,7 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ThrowDiceMessage;
 import fr.lyrgard.hexScape.model.dice.DiceType;
 
@@ -28,7 +28,7 @@ public class DiceTypePanel extends JPanel {
 				
 				public void actionPerformed(ActionEvent e) {
 					ThrowDiceMessage message = new ThrowDiceMessage(HexScapeCore.getInstance().getPlayerId(), number, diceType.getId());
-					MessageBus.post(message);
+					CoreMessageBus.post(message);
 				}
 			});
 			add(rollDiceButton);

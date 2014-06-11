@@ -22,7 +22,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>hexScape_common</artifactId>
+			<artifactId>hexscape_common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -9,7 +9,8 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.diceComponent.DiceTabbedPane;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
@@ -49,7 +50,7 @@ public class RightPanel extends JPanel {
 		add(chatPanel);
 		add(new DiceTabbedPane());
 		
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 	
 	@Subscribe public void onPiecePlaced(PiecePlacedMessage message) {

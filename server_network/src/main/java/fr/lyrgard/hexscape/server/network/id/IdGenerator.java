@@ -17,4 +17,9 @@ public class IdGenerator {
 		UUID newId = UUID.randomUUID();
 		return newId.toString();
 	}
+	
+	public String getNewGameId() {
+		UUID newId = UUID.randomUUID();
+		return newId.toString();
+	}
 }

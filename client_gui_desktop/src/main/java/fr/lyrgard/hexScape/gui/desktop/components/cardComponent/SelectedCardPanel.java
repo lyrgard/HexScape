@@ -16,7 +16,8 @@ import javax.swing.JPanel;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.ShowCardAction;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
@@ -46,7 +47,7 @@ public class SelectedCardPanel extends JPanel {
 		buttonPanel.setOpaque(false);
 		this.add(buttonPanel,BorderLayout.PAGE_END);
 		
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 	
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {

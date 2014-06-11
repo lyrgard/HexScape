@@ -10,7 +10,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LoadMapMessage;
 
 public class ChooseMapAction extends AbstractAction {
@@ -36,7 +36,7 @@ public class ChooseMapAction extends AbstractAction {
 			final File mapFile = chooser.getSelectedFile();
 			
 			LoadMapMessage message = new LoadMapMessage(HexScapeCore.getInstance().getPlayerId(), mapFile);
-			MessageBus.post(message);		
+			CoreMessageBus.post(message);		
 		}
 	}
 }

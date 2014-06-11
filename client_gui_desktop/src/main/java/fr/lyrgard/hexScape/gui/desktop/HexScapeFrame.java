@@ -16,23 +16,17 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import com.google.common.eventbus.Subscribe;
 
 
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
-import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
-import fr.lyrgard.hexScape.message.JoinRoomMessage;
-import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.message.WarningMessage;
-import fr.lyrgard.hexScape.model.room.Room;
-import fr.lyrgard.hexScape.service.RoomService;
 
 public class HexScapeFrame extends JFrame {
 
@@ -44,12 +38,15 @@ public class HexScapeFrame extends JFrame {
 		return instance;
 	}
 	
+	private Canvas panel3d;
+	
 	private final CardLayout layout = new CardLayout();
 	
 	private final Map<ViewEnum, AbstractView> viewsMap = new HashMap<ViewEnum, AbstractView>();
 
 	public HexScapeFrame(final Canvas panel3d) {
 		super("HexScape");
+		this.panel3d = panel3d;
 
 		
 		instance = this;
@@ -90,40 +87,22 @@ public class HexScapeFrame extends JFrame {
 		
 		panel3d.transferFocusBackward();
 		
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 	
 	public void showView(ViewEnum view) {
 		layout.show(this.getContentPane(), view.name());
 		viewsMap.get(view).refresh();
 	}
-	
 
 	
-	@Subscribe public void onRoomJoined(RoomJoinedMessage message) {
-		Room room = message.getRoom();
-		
-		RoomService.getInstance().joinRoom(room);
-		
+	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				showView(ViewEnum.ROOM);
+				showView(ViewEnum.HOME);
 			}
 		});
-	}
-	
-	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
-		String playerId = message.getPlayerId();
-
-		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
-			EventQueue.invokeLater(new Runnable() {
-
-				public void run() {
-					showView(ViewEnum.HOME);
-				}
-			});
-		}
 	}
 	
 	@Subscribe public void onMessage(final InfoMessage message) {
@@ -160,5 +139,9 @@ public class HexScapeFrame extends JFrame {
 				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
 			}
 		});
+	}
+
+	public Canvas getPanel3d() {
+		return panel3d;
 	}
 }

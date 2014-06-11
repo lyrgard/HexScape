@@ -21,6 +21,8 @@ public class PlayerJoinedRoomMessage extends AbstractUserMessage {
 			@JsonProperty("roomId") String roomId) {
 		super(playerId);
 		this.roomId = roomId;
+		this.name = name;
+		this.color = color;
 	}
 
 	public String getName() {

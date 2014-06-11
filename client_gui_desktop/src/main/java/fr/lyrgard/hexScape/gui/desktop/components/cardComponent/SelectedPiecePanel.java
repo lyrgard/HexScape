@@ -9,7 +9,8 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.MovePieceAction;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
@@ -19,7 +20,7 @@ public class SelectedPiecePanel extends JPanel {
 	private static final long serialVersionUID = 7100885729187357599L;
 
 	public SelectedPiecePanel() {
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {

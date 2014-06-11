@@ -3,7 +3,8 @@ package fr.lyrgard.hexScape.listener;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ConnectToServerMessage;
 import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
@@ -21,14 +22,7 @@ public class ServerListener {
 	public static void start() {
 		if (instance == null) {
 			instance = new ServerListener();
-			MessageBus.register(instance);
-		}
-	}
-	
-	public static void stop() {
-		if (instance != null) {
-			MessageBus.unregister(instance);
-			instance = null;
+			CoreMessageBus.register(instance);
 		}
 	}
 	
@@ -49,11 +43,22 @@ public class ServerListener {
 	
 	@Subscribe public void onDisconnectFromServerMessage(DisconnectFromServerMessage message) {
 		ClientNetwork.getInstance().disconnect();
+		
+		String oldPlayerId = HexScapeCore.getInstance().getPlayerId();
+		Player player = Universe.getInstance().getPlayersByIds().get(oldPlayerId);
+		
+		Universe.getInstance().getGamesByGameIds().clear();
+		Universe.getInstance().getRoomsByRoomIds().clear();
+		Universe.getInstance().getPlayersByIds().clear();
+		
 		String newPlayerId = "1";
 		HexScapeCore.getInstance().setPlayerId(newPlayerId);
-		ChatMessageLocalListener.start();
+		player.setId(newPlayerId);
+		Universe.getInstance().getPlayersByIds().put(newPlayerId, player);
+		
+		HexScapeCore.getInstance().setOnline(false);
 		DisconnectedFromServerMessage resultMessage = new DisconnectedFromServerMessage(newPlayerId);
-		MessageBus.post(resultMessage);
+		GuiMessageBus.post(resultMessage);
 	}
 
 
@@ -73,14 +78,15 @@ public class ServerListener {
 			Universe.getInstance().getPlayersByIds().remove(oldPlayerId);
 		}
 		ConnectedToServerMessage resultMessage = new ConnectedToServerMessage(playerId);
-		MessageBus.post(resultMessage);
+		CoreMessageBus.post(resultMessage);
 	}
 	
 	@Subscribe public void onConnectedToServer(ConnectedToServerMessage message) {
 		String playerId = message.getPlayerId();
 
-		ChatMessageLocalListener.stop();
-		ChatMessageServerListener.start();
+		HexScapeCore.getInstance().setOnline(true);
+		GuiMessageBus.post(message);
+		
 		JoinRoomMessage resultMessage = new JoinRoomMessage(playerId, "hexscape"); 
 		ClientNetwork.getInstance().send(resultMessage);
 	}

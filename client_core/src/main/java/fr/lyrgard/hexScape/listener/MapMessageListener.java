@@ -6,20 +6,21 @@ import java.util.concurrent.Callable;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.LoadMapMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.model.Scene;
 import fr.lyrgard.hexScape.service.MapManager;
 
-public class MapMessageListener {
+public class MapMessageListener extends AbstractMessageListener {
 	
 	private static MapMessageListener instance;
 	
 	public static void start() {
 		if (instance == null) {
 			instance = new MapMessageListener();
-			MessageBus.register(instance);
+			CoreMessageBus.register(instance);
 		}
 	}
 	
@@ -43,11 +44,13 @@ public class MapMessageListener {
 				
 				HexScapeCore.getInstance().setMapManager(mapManager);
 				
-				MessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
+				sendMessage(new MapLoadedMessage(playerId, mapManager.getMap()));
 				return null;
 			}
 		});		
-
-		
+	}
+	
+	@Subscribe public void onMapLoaded(MapLoadedMessage message) {
+		GuiMessageBus.post(message);
 	}
 }

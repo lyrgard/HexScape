@@ -2,6 +2,8 @@ package fr.lyrgard.hexScape.model.game;
 
 import java.util.ArrayList;
 import java.util.Collection;
+
+import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.player.Player;
 
 public class Game {
@@ -10,24 +12,26 @@ public class Game {
 	
 	private String name;
 	
-	private int placesLeft;
-
-	private Collection<Player> players;
+	private Map map;
 	
-	private Collection<Player> observers;
+	private int playerNumber;
 
-	public Collection<Player> getPlayers() {
-		if (players == null) {
-			players = new ArrayList<>();
+	private Collection<String> playersIds;
+	
+	private Collection<String> observersIds;
+
+	public Collection<String> getPlayersIds() {
+		if (playersIds == null) {
+			playersIds = new ArrayList<>();
 		}
-		return players;
+		return playersIds;
 	}
 
-	public Collection<Player> getObservers() {
-		if (observers == null) {
-			observers = new ArrayList<>();
+	public Collection<String> getObserversIds() {
+		if (observersIds == null) {
+			observersIds = new ArrayList<>();
 		}
-		return observers;
+		return observersIds;
 	}
 
 	public String getName() {
@@ -46,12 +50,21 @@ public class Game {
 		this.id = id;
 	}
 
-	public int getPlacesLeft() {
-		return placesLeft;
+
+	public Map getMap() {
+		return map;
 	}
 
-	public void setPlacesLeft(int placesLeft) {
-		this.placesLeft = placesLeft;
+	public void setMap(Map map) {
+		this.map = map;
+	}
+
+	public int getPlayerNumber() {
+		return playerNumber;
+	}
+
+	public void setPlayerNumber(int playerNumber) {
+		this.playerNumber = playerNumber;
 	}
 
 	

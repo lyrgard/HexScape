@@ -2,6 +2,7 @@ package fr.lyrgard.hexScape.service;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -16,22 +17,23 @@ private static final RoomService INSTANCE = new RoomService();
 	private RoomService() {
 	}
 	
-	public void joinRoom(Room room) {
-		Universe.getInstance().getRoomsByRoomIds().put(room.getId(), room);
-		HexScapeCore.getInstance().setRoomId(room.getId());
-		
-		for (Player player : room.getPlayers()) {
-			Universe.getInstance().getPlayersByIds().put(player.getId(), player);
-		}
-	}
+
 	
-	public void playerJoinedRoom(Player player) {
-		String roomId = HexScapeCore.getInstance().getRoomId();
-		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
+	public void createdGame(String gameId, String name, int playerNumber) {
+		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
-		if (room != null) {
-			Universe.getInstance().getPlayersByIds().put(player.getId(), player);
-			room.getPlayers().add(player);
+		Game game = new Game();
+		game.setId(gameId);
+		game.setName(name);
+		game.setPlayerNumber(playerNumber);
+		game.setMap(HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMapManager().getMap());
+		game.getPlayersIds().add(playerId);
+		
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player != null) {
+			
 		}
+		
+		Universe.getInstance().getGamesByGameIds().put(gameId, game);
 	}
 }

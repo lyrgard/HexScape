@@ -19,7 +19,8 @@ import javax.swing.border.TitledBorder;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ArmyCardMenu;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.PopMenuClickListener;
@@ -104,7 +105,7 @@ public class ArmyCardPanel extends JPanel {
 		setPreferredSize(new Dimension(150, 120));
 		setMaximumSize(new Dimension(150, 120));
 
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 
 

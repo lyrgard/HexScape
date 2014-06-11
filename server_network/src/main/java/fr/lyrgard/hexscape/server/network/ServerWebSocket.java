@@ -14,9 +14,11 @@ import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.AbstractUserMessage;
+import fr.lyrgard.hexScape.message.LeaveRoomMessage;
+import fr.lyrgard.hexScape.message.RoomLeftMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -36,6 +38,11 @@ public class ServerWebSocket extends WebSocketHandler {
 	public void onClose(int statusCode, String reason) {
 		System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
 		ServerNetwork.getInstance().unRegisterSocket(playerId);
+		
+		// Make the user to leave room
+		RoomLeftMessage message = new RoomLeftMessage(playerId);
+		CoreMessageBus.post(message);
+		
 	}
 
 	@OnWebSocketError
@@ -67,7 +74,7 @@ public class ServerWebSocket extends WebSocketHandler {
 				if (message instanceof AbstractUserMessage) {
 					((AbstractUserMessage)message).setPlayerId(playerId);
 				}
-				MessageBus.post(message);
+				CoreMessageBus.post(message);
 			}
 		} catch (JsonParseException e) {
 			e.printStackTrace();

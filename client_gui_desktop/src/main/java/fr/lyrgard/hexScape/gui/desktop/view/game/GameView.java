@@ -15,7 +15,8 @@ import javax.swing.SwingUtilities;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.ArmyCardPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedCardPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedPiecePanel;
@@ -70,7 +71,7 @@ public class GameView extends AbstractView {
 		
 		panel3d.transferFocusBackward();
 		
-		MessageBus.register(this);
+		GuiMessageBus.register(this);
 	}
 	
 	@Subscribe public void onArmyLoaded(final ArmyLoadedMessage message) {

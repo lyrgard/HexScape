@@ -6,7 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ConnectToServerMessage;
 import fr.lyrgard.hexScape.model.ServerConstant;
 
@@ -39,7 +39,7 @@ public class ConnectToServerAction extends AbstractAction {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
 		ConnectToServerMessage message = new ConnectToServerMessage(playerId, url, port);
-		MessageBus.post(message);
+		CoreMessageBus.post(message);
 	}
 	
 	

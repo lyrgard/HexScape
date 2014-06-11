@@ -12,7 +12,7 @@ import java.util.Properties;
 import org.apache.commons.lang.StringUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.ImageExtensionEnum;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
@@ -81,7 +81,7 @@ public class DiceService {
 										faceFile = null;
 									}
 									if (faceFile == null) {
-										MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
+										CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
 										break diceDefinition;
 									}
 								}
@@ -104,7 +104,7 @@ public class DiceService {
 				}
 			}
 		} else {
-			MessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The dice definition folder \"" + baseFolder + "\" was not found"));
+			CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The dice definition folder \"" + baseFolder + "\" was not found"));
 		}
 		
 	}

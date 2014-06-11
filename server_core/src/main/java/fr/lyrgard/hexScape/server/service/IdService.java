@@ -7,4 +7,8 @@ public class IdService {
 	public String getNewPlayerId() {
 		return Integer.toString(RandomUtils.nextInt());
 	}
+	
+	public String getNewGameId() {
+		return Integer.toString(RandomUtils.nextInt());
+	}
 }

@@ -6,7 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.MessageBus;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 
 public class DisconnectAction extends AbstractAction {
@@ -22,7 +22,7 @@ public class DisconnectAction extends AbstractAction {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
 		DisconnectFromServerMessage message = new DisconnectFromServerMessage(playerId);
-		MessageBus.post(message);
+		CoreMessageBus.post(message);
 	}
 
 }
