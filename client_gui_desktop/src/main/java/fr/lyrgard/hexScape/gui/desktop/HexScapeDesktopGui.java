@@ -10,6 +10,7 @@ import com.jme3.system.AppSettings;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 
@@ -46,7 +47,7 @@ public class HexScapeDesktopGui {
 				
 				app.getHexScapeJme3Application().startCanvas();
 				
-		        new HexScapeFrame(panel3d);
+		        new HexScapeFrame(new View3d(panel3d));
 		        
 		        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 			}

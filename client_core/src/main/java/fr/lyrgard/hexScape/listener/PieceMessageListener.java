@@ -15,6 +15,7 @@ import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.message.PlacePieceMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.PieceManager;
@@ -53,11 +54,33 @@ public class PieceMessageListener extends AbstractMessageListener {
 	}
 	
 	@Subscribe public void onPiecePlaced(PiecePlacedMessage message) {
-//		final String playerId = message.getPlayerId();
-//		final String pieceModelId = message.getModelId();
-//		final String cardInstanceId = message.getCardInstanceId();
+		final String playerId = message.getPlayerId();
+		final String pieceModelId = message.getModelId();
+		final String pieceId = message.getPieceId();
+		final String cardInstanceId = message.getCardInstanceId();
+		final int x = message.getX();
+		final int y = message.getY();
+		final int z = message.getZ();
+		final Direction direction = message.getDirection();
 			
-		// TODO others players
+		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, place the piece
+			Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+			
+			if (player != null && player.getArmy() != null) {
+				CardInstance cardInstance = player.getArmy().getCardsById().get(cardInstanceId);
+				PieceInstance piece = new PieceInstance(pieceId, pieceModelId, cardInstance);
+				piece.setDirection(direction);
+				PieceManager pieceManager = new PieceManager(piece);
+				pieceManager.rotate(direction);
+				HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z);
+			}
+		}
 		GuiMessageBus.post(message);		
 	}
 	

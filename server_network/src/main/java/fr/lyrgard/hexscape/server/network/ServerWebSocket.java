@@ -17,6 +17,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.AbstractUserMessage;
+import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
 import fr.lyrgard.hexScape.message.RoomLeftMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
@@ -40,7 +41,7 @@ public class ServerWebSocket extends WebSocketHandler {
 		ServerNetwork.getInstance().unRegisterSocket(playerId);
 		
 		// Make the user to leave room
-		RoomLeftMessage message = new RoomLeftMessage(playerId);
+		DisconnectedFromServerMessage message = new DisconnectedFromServerMessage(playerId);
 		CoreMessageBus.post(message);
 		
 	}

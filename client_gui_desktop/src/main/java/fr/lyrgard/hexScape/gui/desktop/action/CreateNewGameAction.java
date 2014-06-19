@@ -29,6 +29,4 @@ public class CreateNewGameAction extends AbstractAction {
 		CreateGameMessage message = new CreateGameMessage(playerId, game.getName(), game.getMap(), game.getPlayerNumber());
 		CoreMessageBus.post(message);
 	}
-	
-
 }

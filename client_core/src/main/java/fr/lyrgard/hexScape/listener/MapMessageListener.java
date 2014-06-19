@@ -12,6 +12,8 @@ import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.LoadMapMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.model.Scene;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.service.MapManager;
 
@@ -44,22 +46,27 @@ public class MapMessageListener extends AbstractMessageListener {
 	}
 	
 	@Subscribe public void onDisplayMap(DisplayMapMessage message) {
-		Map map = message.getMap();
-		final MapManager mapManager = new MapManager(map);
-		
-		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+		String gameId = message.getGameId();
 
-			public Void call() throws Exception {
-				HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
-				
-				Scene scene = new Scene();
-				scene.setMapManager(mapManager);
-				HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
-				
-				HexScapeCore.getInstance().setMapManager(mapManager);
-			
-				return null;
-			}
-		});		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game != null && game.getMap() != null) {
+
+			final MapManager mapManager = new MapManager(game.getMap());
+
+			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+				public Void call() throws Exception {
+					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
+
+					Scene scene = new Scene();
+					scene.setMapManager(mapManager);
+					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
+
+					HexScapeCore.getInstance().setMapManager(mapManager);
+
+					return null;
+				}
+			});		
+		}
 	}
 }

@@ -95,4 +95,19 @@ public class ServerNetwork {
 			}
 		}
 	}
+	
+	public void sendMessageToGameExceptPlayer(AbstractMessage message, String gameId, String playerId) {
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		
+		if (game != null) {
+			for (String otherPlayerId : game.getPlayersIds()) {
+				if (!otherPlayerId.equals(playerId)) {
+					sendMessageToPlayer(message, otherPlayerId);
+				}
+			}
+			for (String otherPlayerId : game.getObserversIds()) {
+				sendMessageToPlayer(message, otherPlayerId);
+			}
+		}
+	}
 }

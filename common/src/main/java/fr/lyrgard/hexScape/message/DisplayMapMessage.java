@@ -1,19 +1,19 @@
 package fr.lyrgard.hexScape.message;
 
-import fr.lyrgard.hexScape.model.map.Map;
+public class DisplayMapMessage extends AbstractMessage {
 
-public class DisplayMapMessage {
+	private String gameId;
 
-	private Map map;
-
-	public DisplayMapMessage(Map map) {
+	public DisplayMapMessage(String gameId) {
 		super();
-		this.map = map;
+		this.gameId = gameId;
 	}
 
-	public Map getMap() {
-		return map;
+	public String getGameId() {
+		return gameId;
 	}
+
+	
 	
 	
 }

@@ -1,14 +1,14 @@
 package fr.lyrgard.hexScape.message;
 
-public abstract class AbstractPieceMessage extends AbstractGameMessage {
+public abstract class AbstractPieceMessage extends AbstractUserMessage {
 
 	private String cardInstanceId;
 	
 	private String pieceId;
 
 	
-	public AbstractPieceMessage(String playerId, String gameId, String cardInstanceId, String pieceId) {
-		super(playerId, gameId);
+	public AbstractPieceMessage(String playerId, String cardInstanceId, String pieceId) {
+		super(playerId);
 		this.cardInstanceId = cardInstanceId;
 		this.pieceId = pieceId;
 	}

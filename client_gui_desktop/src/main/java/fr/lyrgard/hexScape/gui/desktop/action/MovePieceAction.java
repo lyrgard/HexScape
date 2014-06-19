@@ -31,9 +31,8 @@ public class MovePieceAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
-		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		MovePieceMessage message = new MovePieceMessage(playerId, gameId, cardId, pieceId);
+		MovePieceMessage message = new MovePieceMessage(playerId, cardId, pieceId);
 		CoreMessageBus.post(message);
 		
 	}

@@ -26,9 +26,8 @@ public class AddPieceAction extends AbstractAction {
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
-		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		PlacePieceMessage message = new PlacePieceMessage(playerId, gameId, card.getId(), pieceModelId);
+		PlacePieceMessage message = new PlacePieceMessage(playerId, card.getId(), pieceModelId);
 		CoreMessageBus.post(message);	
 		
 	}

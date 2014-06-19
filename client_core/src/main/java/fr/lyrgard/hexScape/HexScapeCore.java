@@ -1,7 +1,5 @@
 package fr.lyrgard.hexScape;
 
-import java.util.logging.ErrorManager;
-
 import fr.lyrgard.hexScape.listener.ArmyMessageListener;
 import fr.lyrgard.hexScape.listener.ChatMessageListener;
 import fr.lyrgard.hexScape.listener.DiceMessageListener;
@@ -33,10 +31,6 @@ public class HexScapeCore {
 	private CardCollection cardInventory;
 	
 	private String playerId = "1";
-	
-	private String roomId = "NO_ROOM";
-	
-	private String gameId = "NO_GAME";
 	
 	private MapManager mapManager;
 
@@ -77,20 +71,24 @@ public class HexScapeCore {
 	}
 
 	public String getGameId() {
-		return gameId;
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player != null && player.getGame() != null) {
+			return player.getGame().getId();
+		} else {
+			return "";
+		}
 	}
 
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
-	}
 
 	public String getRoomId() {
-		return roomId;
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (player != null && player.getRoom() != null) {
+			return player.getRoom().getId();
+		} else {
+			return "";
+		}
 	}
 
-	public void setRoomId(String roomId) {
-		this.roomId = roomId;
-	}
 
 	public void setMapManager(MapManager mapManager) {
 		this.mapManager = mapManager;

@@ -3,7 +3,8 @@ package fr.lyrgard.hexScape.io.virtualScape.bean;
 import java.util.HashMap;
 import java.util.Map;
 
-import fr.lyrgard.hexScape.model.Direction;
+import fr.lyrgard.hexScape.model.map.Direction;
+
 
 @SuppressWarnings("serial")
 public enum VirtualScapeDecorType {

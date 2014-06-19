@@ -27,7 +27,7 @@ public class DiceTypePanel extends JPanel {
 			rollDiceButton.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {
-					ThrowDiceMessage message = new ThrowDiceMessage(HexScapeCore.getInstance().getPlayerId(), number, diceType.getId());
+					ThrowDiceMessage message = new ThrowDiceMessage(HexScapeCore.getInstance().getPlayerId(), number, diceType.getId(), diceType.getFaces().size());
 					CoreMessageBus.post(message);
 				}
 			});

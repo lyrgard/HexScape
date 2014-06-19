@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.action;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 
 import javax.swing.AbstractAction;
@@ -14,13 +15,16 @@ public class OpenNewGameDialogAction extends AbstractAction {
 
 	private boolean muliplayer;
 	
-	public OpenNewGameDialogAction(boolean muliplayer) {
+	private Component parent;
+	
+	public OpenNewGameDialogAction(boolean muliplayer, Component parent) {
 		super("Start new game", icon);
 		this.muliplayer = muliplayer;
+		this.parent = parent;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		NewGameDialog newGameDialog = new NewGameDialog(muliplayer);
+		NewGameDialog newGameDialog = new NewGameDialog(muliplayer, parent);
 		newGameDialog.setVisible(true);
 	}
 

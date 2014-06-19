@@ -8,13 +8,13 @@ public class DiceThrownMessage extends AbstractUserMessage {
 
 	private String diceTypeId;
 	
-	private List<String> results;
+	private List<Integer> results;
 
 	
 	public DiceThrownMessage(
 			@JsonProperty("playerId") String playerId, 
 			@JsonProperty("diceTypeId") String diceTypeId,
-			@JsonProperty("results") List<String> results) {
+			@JsonProperty("results") List<Integer> results) {
 		super(playerId);
 		this.diceTypeId = diceTypeId;
 		this.results = results;
@@ -24,7 +24,7 @@ public class DiceThrownMessage extends AbstractUserMessage {
 		return diceTypeId;
 	}
 
-	public List<String> getResults() {
+	public List<Integer> getResults() {
 		return results;
 	}
 	

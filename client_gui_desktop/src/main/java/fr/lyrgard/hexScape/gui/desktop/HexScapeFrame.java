@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
-import java.awt.Canvas;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
@@ -16,7 +15,9 @@ import javax.swing.UIManager.LookAndFeelInfo;
 import com.google.common.eventbus.Subscribe;
 
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
@@ -32,25 +33,25 @@ public class HexScapeFrame extends JFrame {
 
 	private static final long serialVersionUID = 7043232675085791117L;
 
-	public static HexScapeFrame instance;
+	private static HexScapeFrame instance;
 
 	public static HexScapeFrame getInstance() {
 		return instance;
 	}
-	
-	private Canvas panel3d;
-	
+
+	private View3d view3d;
+
 	private final CardLayout layout = new CardLayout();
-	
+
 	private final Map<ViewEnum, AbstractView> viewsMap = new HashMap<ViewEnum, AbstractView>();
 
-	public HexScapeFrame(final Canvas panel3d) {
+	public HexScapeFrame(final View3d view3d) {
 		super("HexScape");
-		this.panel3d = panel3d;
+		this.view3d = view3d;
 
-		
+
 		instance = this;
-		
+
 		try {
 			for (LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
 				if ("Nimbus".equals(info.getName())) {
@@ -63,48 +64,48 @@ public class HexScapeFrame extends JFrame {
 		}
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		
+
 		setLayout(layout);
-		
+
 		viewsMap.put(ViewEnum.HOME, new HomeView());
 		viewsMap.put(ViewEnum.ROOM, new RoomView());
-		viewsMap.put(ViewEnum.GAME, new GameView(panel3d));
-		
+		viewsMap.put(ViewEnum.GAME, new GameView(view3d));
+
 		for (Entry<ViewEnum, AbstractView> entry : viewsMap.entrySet()) {
 			add(entry.getValue(), entry.getKey().name());
 		}
 		showView(ViewEnum.HOME);
-		
-		
-		
-		setJMenuBar(new MenuBar());
+
+
+
+		//setJMenuBar(new MenuBar());
 
 		// Display Swing window including JME canvas!
 		setExtendedState(JFrame.MAXIMIZED_BOTH); // aligns itself with windows task bar
 		// set maximum screen   
 		setSize((int)Toolkit.getDefaultToolkit().getScreenSize().getWidth(), (int)Toolkit.getDefaultToolkit().getScreenSize().getHeight());
 		setVisible(true);
-		
-		panel3d.transferFocusBackward();
-		
+
 		GuiMessageBus.register(this);
 	}
-	
+
 	public void showView(ViewEnum view) {
 		layout.show(this.getContentPane(), view.name());
 		viewsMap.get(view).refresh();
 	}
 
-	
-	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
-		EventQueue.invokeLater(new Runnable() {
 
-			public void run() {
-				showView(ViewEnum.HOME);
-			}
-		});
+	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
+		if (message.getPlayerId().equals(HexScapeCore.getInstance().getPlayerId())) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					showView(ViewEnum.HOME);
+				}
+			});
+		}
 	}
-	
+
 	@Subscribe public void onMessage(final InfoMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
@@ -116,7 +117,7 @@ public class HexScapeFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	@Subscribe public void onMessage(final WarningMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
@@ -128,7 +129,7 @@ public class HexScapeFrame extends JFrame {
 			}
 		});
 	}
-	
+
 	@Subscribe public void onMessage(final ErrorMessage message) {
 		EventQueue.invokeLater(new Runnable() {
 
@@ -141,7 +142,8 @@ public class HexScapeFrame extends JFrame {
 		});
 	}
 
-	public Canvas getPanel3d() {
-		return panel3d;
+	public View3d getView3d() {
+		return view3d;
 	}
+
 }

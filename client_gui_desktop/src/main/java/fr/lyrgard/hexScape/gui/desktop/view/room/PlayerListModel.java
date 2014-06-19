@@ -37,6 +37,12 @@ public class PlayerListModel extends AbstractListModel<Player> {
 		setPlayers(players);
 	}
 
+	public void removeAllPlayers() {
+		players.clear();
+		setPlayers(players);
+	}
+
+	
 	public void addPlayer(Player player) {
 		players.add(player);
 		setPlayers(players);

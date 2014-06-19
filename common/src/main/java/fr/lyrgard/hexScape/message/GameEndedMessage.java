@@ -3,20 +3,17 @@ package fr.lyrgard.hexScape.message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GameJoinedMessage extends AbstractUserMessage {
+public class GameEndedMessage extends AbstractMessage {
 
 	private String gameId;
 
 	@JsonCreator
-	public GameJoinedMessage(
-			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("gameId") String gameId) {
-		super(playerId);
+	public GameEndedMessage(@JsonProperty("gameId") String gameId) {
+		super();
 		this.gameId = gameId;
 	}
 
 	public String getGameId() {
 		return gameId;
 	}
-	
 }

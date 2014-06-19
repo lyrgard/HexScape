@@ -3,12 +3,14 @@ package fr.lyrgard.hexScape.server.listener;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
+import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
-import fr.lyrgard.hexScape.message.RoomLeftMessage;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
@@ -48,21 +50,35 @@ public class RoomMessageListener  {
 		}
 	}
 	
-	@Subscribe public void onRoomLeft(RoomLeftMessage message) {
+	@Subscribe public void onRoomLeft(DisconnectedFromServerMessage message) {
 		String playerId = message.getPlayerId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
 		if (player != null) {
 			Room room = player.getRoom();
+			Game game = player.getGame();
 
 			if (room != null) {
 				room.getPlayers().remove(player);
 				player.setRoom(null);
 
-				RoomLeftMessage returnMessage = new RoomLeftMessage(playerId);
+				DisconnectedFromServerMessage returnMessage = new DisconnectedFromServerMessage(playerId);
 				ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage, room.getId(), playerId);
+				
+				if (game != null) {
+					game.getPlayersIds().remove(playerId);
+					player.setGame(null);
+					if (game.getPlayersIds().isEmpty()) {
+						room.getGames().remove(game);
+						Universe.getInstance().getGamesByGameIds().remove(game.getId());
+						GameEndedMessage returnMessage2 = new GameEndedMessage(game.getId());
+						ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage2, room.getId(), playerId);
+					}
+				}
 			}
+			
+			Universe.getInstance().getPlayersByIds().remove(playerId);
 		}
 	}
 	

@@ -1,7 +1,10 @@
 package fr.lyrgard.hexScape.gui.desktop.components.game;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -38,11 +41,14 @@ public class NewGameDialog extends JDialog {
 	
 	private JSpinner playerNumber;
 	
+	private Map map;
+	
 	private Game game;
 	
 	
 	
-	public NewGameDialog(boolean multiplayer) {
+	public NewGameDialog(boolean multiplayer, Component parent) {
+		setLocationRelativeTo(parent);
 		setTitle("Create a new game");
 		
 		game = new Game();
@@ -92,6 +98,13 @@ public class NewGameDialog extends JDialog {
 		mapNameLabel.setEditable(false);
 		
 		startGame = new JButton(new CreateNewGameAction(game));
+		startGame.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				NewGameDialog.this.dispose();
+			}
+		});
 		startGame.setEnabled(false);
 		
 		
@@ -117,6 +130,7 @@ public class NewGameDialog extends JDialog {
 			public void run() {
 				Map map = message.getMap();
 				mapNameLabel.setText(map.getName());
+				NewGameDialog.this.map = map;
 				NewGameDialog.this.validateForm();
 			}
 		});
@@ -127,9 +141,9 @@ public class NewGameDialog extends JDialog {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				if (StringUtils.isNotEmpty(mapNameLabel.getText()) && StringUtils.isNotEmpty(gameName.getText())) {
+				if (StringUtils.isNotEmpty(mapNameLabel.getText()) && map != null ) {
 					game.setName(gameName.getText());
-					game.setMap(HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMapManager().getMap());
+					game.setMap(map);
 					game.setPlayerNumber(((SpinnerNumberModel)playerNumber.getModel()).getNumber().intValue());
 					NewGameDialog.this.startGame.setEnabled(true);
 				} else {

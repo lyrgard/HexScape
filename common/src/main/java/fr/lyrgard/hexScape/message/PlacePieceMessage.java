@@ -10,10 +10,9 @@ public class PlacePieceMessage extends AbstractPieceMessage {
 	@JsonCreator
 	public PlacePieceMessage(
 			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("gameId") String gameId, 
 			@JsonProperty("cardInstanceId") String cardInstanceId,
 			@JsonProperty("pieceModelId") String pieceModelId) {
-		super(playerId, gameId, cardInstanceId, null);
+		super(playerId, cardInstanceId, null);
 		this.pieceModelId = pieceModelId;
 	}
 

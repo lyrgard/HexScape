@@ -8,6 +8,9 @@ import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.server.listener.DiceMessageListener;
+import fr.lyrgard.hexScape.server.listener.GameMessageListener;
+import fr.lyrgard.hexScape.server.listener.PieceMessageListener;
 import fr.lyrgard.hexScape.server.listener.RoomMessageListener;
 import fr.lyrgard.hexScape.server.service.IdService;
 import fr.lyrgard.hexScape.server.service.RoomService;
@@ -38,6 +41,9 @@ public class HexScapeServer {
 		Universe.getInstance().getRoomsByRoomIds().put(Room.DEFAULT_ROOM_ID, room);
 		
 		RoomMessageListener.start();
+		GameMessageListener.start();
+		DiceMessageListener.start();
+		PieceMessageListener.start();
 		try {
 			ServerNetwork.getInstance().start(ServerConstant.SERVER_PORT);
 		} catch (Exception e) {

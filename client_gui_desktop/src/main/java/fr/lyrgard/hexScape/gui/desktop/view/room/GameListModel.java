@@ -31,6 +31,31 @@ public class GameListModel extends AbstractListModel<Game> {
 		Collections.sort(this.games, comparator);
 		fireContentsChanged(this, 0, games.size());
 	}
+	
+	public void removeGame(Game game) {
+		games.remove(game);
+		setGames(games);
+	}
+	
+	public void removeGame(String gameId) {
+		for (Game game : games) {
+			if (game.getId().equals(gameId)) {
+				games.remove(game);
+				setGames(games);
+				break;
+			}
+		}
+	}
+	
+	public void removeAllGames() {
+		games.clear();
+		setGames(games);
+	}
+
+	public void addGame(Game game) {
+		games.add(game);
+		setGames(games);
+	}
 
 	private static class GameNameComparator implements Comparator<Game> {
 

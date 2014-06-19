@@ -11,10 +11,14 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.diceComponent.DiceTabbedPane;
+import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
+import fr.lyrgard.hexScape.message.DisplayMapMessage;
+import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
@@ -107,19 +111,17 @@ public class RightPanel extends JPanel {
 	
 	@Subscribe public void onDiceThrown(DiceThrownMessage message) {
 		String diceTypeId = message.getDiceTypeId();
-		List<String> results = message.getResults();
+		List<Integer> results = message.getResults();
 		String playerId = message.getPlayerId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		if (player != null) {
 			DiceType diceType = DiceService.getInstance().getDiceType(diceTypeId);
 			List<DiceFace> faces = new ArrayList<>();
-			for (String faceName : results) {
-				for (DiceFace face : diceType.getFaces()) {
-					if (face.getId().equals(faceName)) {
-						faces.add(face);
-						break;
-					}
+			for (Integer result : results) {
+				DiceFace face = diceType.getFaces().get(result);
+				if (face != null) {
+					faces.add(face);
 				}
 			}
 			if (faces.size() == results.size()) {
@@ -205,5 +207,10 @@ public class RightPanel extends JPanel {
 				chatPanel.addMessage(player, messageContent);
 			}
 		}
+	}
+	
+	@Subscribe public void onGameStarted(GameStartedMessage message) {
+		String gameId = message.getGameId();
+		chatPanel.setGameId(gameId);
 	}
 }

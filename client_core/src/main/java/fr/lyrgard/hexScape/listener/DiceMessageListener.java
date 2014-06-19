@@ -42,17 +42,17 @@ public class DiceMessageListener {
 			if (type == null) {
 				CoreMessageBus.post(new ErrorMessage(playerId, "The dice type \"" + diceTypeId + "\" was not found"));
 			} else {
-				List<String> results = new ArrayList<>();
+				List<Integer> results = new ArrayList<>();
 				for (int i = 0; i < number; i++) {
-					results.add(type.getFaces().get(roll(type)).getId());
+					results.add(roll(type.getFaces().size()));
 				}
 				CoreMessageBus.post(new DiceThrownMessage(playerId, diceTypeId, results));
 			}
 		}
 	}
 
-	private int roll(DiceType type) {
-		return (int)(Math.random() * (type.getFaces().size())); 
+	private int roll(int numberOfFace) {
+		return (int)(Math.random() * (numberOfFace)); 
 	}
 	
 	@Subscribe public void onDiceThrownMessage(DiceThrownMessage message) {

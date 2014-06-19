@@ -37,21 +37,21 @@ public class TileService {
 		topTextures.put(TileType.CONCRETE,TileTexture.CONCRETE); 
 		topTextures.put(TileType.ASPHALT,TileTexture.ASPHALT);
 
-		sideTextures.put(TileType.GRASS,TileTexture.GRASS); 
-		sideTextures.put(TileType.ROCK,TileTexture.ROCK); 
-		sideTextures.put(TileType.SAND,TileTexture.SAND);
-		sideTextures.put(TileType.WATER,TileTexture.WATER);
-		sideTextures.put(TileType.SWAMP,TileTexture.SWAMP);
-		sideTextures.put(TileType.SWAMP_WATER,TileTexture.SWAMP_WATER);
-		sideTextures.put(TileType.ROAD,TileTexture.ROAD);
-		sideTextures.put(TileType.LAVA_FIELD,TileTexture.LAVA_FIELD); 
-		sideTextures.put(TileType.MOLTEN_LAVA,TileTexture.MOLTEN_LAVA);
-		sideTextures.put(TileType.SNOW,TileTexture.SNOW);
-		sideTextures.put(TileType.ICE,TileTexture.ICE);
-		sideTextures.put(TileType.DUNGEON,TileTexture.DUNGEON);
-		sideTextures.put(TileType.SHADOW,TileTexture.SHADOW);
-		sideTextures.put(TileType.CONCRETE,TileTexture.CONCRETE);
-		sideTextures.put(TileType.ASPHALT,TileTexture.ASPHALT);
+		sideTextures.put(TileType.GRASS,TileTexture.GROUND_SIDE); 
+		sideTextures.put(TileType.ROCK,TileTexture.GROUND_SIDE); 
+		sideTextures.put(TileType.SAND,TileTexture.GROUND_SIDE);
+		sideTextures.put(TileType.WATER,TileTexture.WATER_SIDE);
+		sideTextures.put(TileType.SWAMP,TileTexture.SWAMP_SIDE);
+		sideTextures.put(TileType.SWAMP_WATER,TileTexture.SWAMP_WATER_SIDE);
+		sideTextures.put(TileType.ROAD,TileTexture.ROAD_SIDE);
+		sideTextures.put(TileType.LAVA_FIELD,TileTexture.LAVA_FIELD_SIDE); 
+		sideTextures.put(TileType.MOLTEN_LAVA,TileTexture.MOLTEN_LAVA_SIDE);
+		sideTextures.put(TileType.SNOW,TileTexture.SNOW_SIDE);
+		sideTextures.put(TileType.ICE,TileTexture.ICE_SIDE);
+		sideTextures.put(TileType.DUNGEON,TileTexture.DUNGEON_SIDE);
+		sideTextures.put(TileType.SHADOW,TileTexture.SHADOW_SIDE);
+		sideTextures.put(TileType.CONCRETE,TileTexture.CONCRETE_SIDE);
+		sideTextures.put(TileType.ASPHALT,TileTexture.ASPHALT_SIDE);
 		
 		halfSizes.put(TileType.GRASS,Boolean.FALSE); 
 		halfSizes.put(TileType.ROCK,Boolean.FALSE); 

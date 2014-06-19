@@ -11,8 +11,6 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -177,7 +175,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				piece = placePieceByMouseAppState.getPieceToPlace();
 				if (piece != null) {
 					HexScapeCore.getInstance().getMapManager().removePiece(piece);
-					CoreMessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				}
 				changeStateTo(State.WAITING);
 				break;
@@ -185,7 +183,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				piece = selectPieceByMouseAppState.getSelectedPiece();
 				if (piece != null) {
 					HexScapeCore.getInstance().getMapManager().removePiece(piece);
-					CoreMessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceRemovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				}
 				changeStateTo(State.WAITING);
 				break;
@@ -195,10 +193,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 	
 	public void rotatePiece(PieceManager pieceManager, boolean clockwise) {
 		Direction newDir = DirectionService.getInstance().rotate(pieceManager.getPiece().getDirection(), clockwise);
-		pieceManager.getPiece().setDirection(newDir);
-		
-		float angle = DirectionService.getInstance().getAngle(pieceManager.getPiece().getDirection());
-		pieceManager.getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+		pieceManager.rotate(newDir);
 	}
 	
 	private void changeStateTo(State newState) {
@@ -209,12 +204,12 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 			switch (currentState) {
 			case SELECTING_PIECE:
 				piece = selectPieceByMouseAppState.getSelectedPiece();
-				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				selectPieceByMouseAppState.cancelSelection();
 				break;
 			case MOVING_PIECE:
 				piece = selectPieceByMouseAppState.getSelectedPiece();
-				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				selectPieceByMouseAppState.cancelSelection();
 				break;
 			default:
@@ -230,7 +225,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				break;
 			case SELECTING_PIECE:
 				piece = selectPieceByMouseAppState.getSelectedPiece();
-				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+				CoreMessageBus.post(new PieceUnselectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				selectPieceByMouseAppState.cancelSelection();
 				break;
 			case ADDING_PIECE:
@@ -261,27 +256,27 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 			case WAITING:
 				if (selectPieceByMouseAppState.selectPiece()) {
 					piece = selectPieceByMouseAppState.getSelectedPiece();
-					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				}
 				break;
 			case SELECTING_PIECE:
 				if (selectPieceByMouseAppState.selectPiece()) {
 					piece = selectPieceByMouseAppState.getSelectedPiece();
-					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				}
 				break;
 			case ADDING_PIECE:
 				piece = placePieceByMouseAppState.getPieceToPlace();
 				if (placePieceByMouseAppState.placePiece()) {
-					CoreMessageBus.post(new PiecePlacedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId(), piece.getPiece().getModelId()));
+					CoreMessageBus.post(new PiecePlacedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId(), piece.getPiece().getModelId(), piece.getPiece().getX(), piece.getPiece().getY(),piece.getPiece().getZ(), piece.getPiece().getDirection()));
 					selectPieceByMouseAppState.selectPiece(piece);
-					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 				}
 				break;
 			case MOVING_PIECE:
 				piece = placePieceByMouseAppState.getPieceToPlace();
 				if (placePieceByMouseAppState.placePiece()) {
-					CoreMessageBus.post(new PieceMovedMessage(HexScapeCore.getInstance().getPlayerId(), HexScapeCore.getInstance().getGameId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
+					CoreMessageBus.post(new PieceMovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId()));
 					selectPieceByMouseAppState.selectPiece(piece);
 				}
 				break;

@@ -3,12 +3,9 @@ package fr.lyrgard.hexScape.service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.Map.Entry;
 
 import com.jme3.asset.AssetManager;
@@ -43,8 +40,6 @@ import fr.lyrgard.hexScape.utils.CoordinateUtils;
 public class MapManager {
 
 	private static VirtualScapeMapReader mapReader = new VirtualScapeMapReader();
-	
-	private Set<Tile> tilesSet = new HashSet<>();
 	
 	private Map map;
 	
@@ -114,69 +109,7 @@ public class MapManager {
 	}
 	
 	public void addTile(TileType type, int x, int y, int z) {
-
-		Tile tile = new Tile(type, x, y, z);
-
-		setTile(tile);
-
-		Tile newNeighbour;
-
-		// North-East
-
-		newNeighbour = map.getTile(x, y+1, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.SOUTH_WEST, tile);
-			tile.getNeighbours().put(Direction.NORTH_EAST, newNeighbour);
-		}
-
-		// East
-		newNeighbour = map.getTile(x+1, y, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.WEST, tile);
-			tile.getNeighbours().put(Direction.EAST, newNeighbour);
-		}
-
-		// South-East
-		newNeighbour = map.getTile(x+1, y-1, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.NORTH_WEST, tile);
-			tile.getNeighbours().put(Direction.SOUTH_EAST, newNeighbour);
-		}
-
-		// South-West
-		newNeighbour = map.getTile(x, y-1, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.NORTH_EAST, tile);
-			tile.getNeighbours().put(Direction.SOUTH_WEST, newNeighbour);
-		}
-
-		// West
-		newNeighbour = map.getTile(x-1, y, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.EAST, tile);
-			tile.getNeighbours().put(Direction.WEST, newNeighbour);
-		}
-
-		// North-West
-		newNeighbour = map.getTile(x-1, y+1, z);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.SOUTH_EAST, tile);
-			tile.getNeighbours().put(Direction.NORTH_WEST, newNeighbour);
-		}
-
-		// Top
-		newNeighbour = map.getTile(x, y, z+1);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.BOTTOM, tile);
-			tile.getNeighbours().put(Direction.TOP, newNeighbour);
-		}
-
-		// Bottom
-		newNeighbour = map.getTile(x, y, z-1);
-		if (newNeighbour != null) {
-			newNeighbour.getNeighbours().put(Direction.TOP, tile);
-			tile.getNeighbours().put(Direction.BOTTOM, newNeighbour);
-		}
+		map.addTile(type, x, y, z);
 	}
 	
 	public Tile getNearestTile(int x, int y, int z) {
@@ -208,24 +141,6 @@ public class MapManager {
 			}
 		}
 		return results;
-	}
-
-	private void setTile(Tile tile) {
-		int x = tile.getX();
-		int y = tile.getY();
-		int z = tile.getZ();
-		java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ = map.getTiles().get(z);
-		if (byZ == null) {
-			byZ = new HashMap<Integer, java.util.Map<Integer,Tile>>();
-			map.getTiles().put(z, byZ);
-		}
-		java.util.Map<Integer, Tile> byY = byZ.get(y);
-		if (byY == null) {
-			byY = new HashMap<Integer, Tile>();
-			byZ.put(y, byY);
-		}
-		byY.put(x, tile);
-		tilesSet.add(tile);
 	}
 
 	public List<Decor> getDecors() {
@@ -276,9 +191,15 @@ public class MapManager {
 		List<Vector2f> texCoord = new ArrayList<Vector2f>();
 		List<Integer> indexes = new ArrayList<Integer>();
 		List<Vector3f> normals = new ArrayList<Vector3f>();
-		Queue<Tile> notAddedYetTiles = new LinkedList<>(tilesSet);
+		Queue<Tile> notAddedYetTiles = new LinkedList<>();
 
-
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
+				for (Tile tile : byY.values()) {
+					notAddedYetTiles.add(tile);
+				}
+			}
+		}
 
 		while (notAddedYetTiles.size() != 0) {
 			Tile tile = notAddedYetTiles.poll();
