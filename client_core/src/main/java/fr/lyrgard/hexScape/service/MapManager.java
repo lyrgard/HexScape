@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -46,6 +47,8 @@ public class MapManager {
 	private Node mapNode;
 	
 	private Spatial mapWithoutDecorsSpatial;
+	
+	private java.util.Map<String, PieceManager> pieceManagersByPieceIds = new ConcurrentHashMap<String, PieceManager>();
 
 	public MapManager(Map map) {
 		super();
@@ -84,6 +87,8 @@ public class MapManager {
 		if (scene.contains(piece)) {
 			scene.removePiece(piece);
 		}
+		
+		pieceManagersByPieceIds.put(piece.getPiece().getId(), piece);
 		HexScapeCore.getInstance().getHexScapeJme3Application().getScene().addPiece(piece, nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
 		return true;
 	}
@@ -104,6 +109,7 @@ public class MapManager {
 	public void removePiece(PieceManager piece) {
 		Scene scene = HexScapeCore.getInstance().getHexScapeJme3Application().getScene();
 		if (scene.contains(piece)) {
+			pieceManagersByPieceIds.remove(piece.getPiece().getId());
 			scene.removePiece(piece);
 		}
 	}
@@ -297,6 +303,10 @@ public class MapManager {
 
 	public Spatial getMapWithoutDecorsSpatial() {
 		return mapWithoutDecorsSpatial;
+	}
+
+	public java.util.Map<String, PieceManager> getPieceManagersByPieceIds() {
+		return pieceManagersByPieceIds;
 	}
 
 }

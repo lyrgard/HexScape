@@ -8,9 +8,8 @@ public class MovePieceMessage extends AbstractPieceMessage {
 	@JsonCreator
 	public MovePieceMessage(
 			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("cardInstanceId") String cardInstanceId, 
 			@JsonProperty("pieceId") String pieceId) {
-		super(playerId, cardInstanceId, pieceId);
+		super(playerId, pieceId);
 	}
 
 }

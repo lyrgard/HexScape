@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import fr.lyrgard.hexScape.model.game.Game;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -24,6 +25,8 @@ public class Universe {
 	private Map<String, Room> roomsByRoomIds = new ConcurrentHashMap<>();
 	
 	private Map<String, Game> gamesByGameIds = new ConcurrentHashMap<>();
+	
+	private Map<String, PieceInstance> piecesByPieceIds = new ConcurrentHashMap<>();
 
 	public Map<String, Player> getPlayersByIds() {
 		return playersByIds;
@@ -35,6 +38,10 @@ public class Universe {
 
 	public Map<String, Game> getGamesByGameIds() {
 		return gamesByGameIds;
+	}
+
+	public Map<String, PieceInstance> getPiecesByPieceIds() {
+		return piecesByPieceIds;
 	}
 	
 	

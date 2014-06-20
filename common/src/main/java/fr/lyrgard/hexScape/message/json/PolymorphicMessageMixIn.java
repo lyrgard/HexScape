@@ -17,6 +17,7 @@ import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
+import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
@@ -47,9 +48,10 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = JoinRoomMessage.class, name = "JoinRoomMessage"),
 		@Type(value = LeaveRoomMessage.class, name = "LeaveRoomMessage"),
 	    @Type(value = MessagePostedMessage.class, name = "MessagePostedMessage"),
-	    @Type(value = PieceSelectedMessage.class, name = "PieceSelectedMessage"),
+	    @Type(value = PieceMovedMessage.class, name = "PieceMovedMessage"),
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),
+	    @Type(value = PieceSelectedMessage.class, name = "PieceSelectedMessage"),
 	    @Type(value = PostMessageMessage.class, name = "PostMessageMessage"),
 	    @Type(value = RoomJoinedMessage.class, name = "RoomJoinedMessage"),
 	    @Type(value = RoomLeftMessage.class, name = "RoomLeftMessage"),

@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.model.card;
 
-import java.util.Comparator;
 import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonCreator;

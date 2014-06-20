@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.server.listener;
 
-import java.util.concurrent.Callable;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -44,7 +43,17 @@ public class PieceMessageListener {
 	}
 	
 	@Subscribe public void onPieceMoved(PieceMovedMessage message) {
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		final int x = message.getX();
+		final int y = message.getY();
+		final int z = message.getZ();
 		
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		
+		if (player != null && player.getGame() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		}
 	}
 	
 	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {

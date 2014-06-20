@@ -4,12 +4,10 @@ import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.MovePieceAction;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
@@ -25,7 +23,6 @@ public class SelectedPiecePanel extends JPanel {
 
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
 
-		final String cardId = message.getCardInstanceId();
 		final String pieceId = message.getPieceId();
 		String playerId = message.getPlayerId();
 
@@ -34,10 +31,10 @@ public class SelectedPiecePanel extends JPanel {
 
 				public void run() {
 					SelectedPiecePanel.this.removeAll();
-					add(new JButton(new MovePieceAction(pieceId, cardId)));
+					add(new JButton(new MovePieceAction(pieceId)));
 					validate();
 					repaint();
-					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+					//SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
 				}
 			});
 		}
@@ -53,7 +50,7 @@ public class SelectedPiecePanel extends JPanel {
 					SelectedPiecePanel.this.removeAll();
 					validate();
 					repaint();
-					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+					//SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
 				}
 			});
 		}
@@ -69,7 +66,7 @@ public class SelectedPiecePanel extends JPanel {
 					SelectedPiecePanel.this.removeAll();
 					validate();
 					repaint();
-					SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
+					//SwingUtilities.getWindowAncestor(SelectedPiecePanel.this).pack();
 				}
 			});
 		}

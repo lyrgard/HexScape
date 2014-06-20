@@ -19,7 +19,6 @@ import javax.swing.border.TitledBorder;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ArmyCardMenu;
@@ -143,12 +142,12 @@ public class ArmyCardPanel extends JPanel {
 			public void run() {
 				String playerId = message.getPlayerId();
 				String pieceId = message.getPieceId();
-				String cardId = message.getCardInstanceId();
 				
 				Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 				if (player != null) {
 					PieceInstance piece = player.getPiecesById().get(pieceId);
-					if (piece != null) {
+					if (piece != null && piece.getCard() != null) {
+						String cardId = piece.getCard().getId();
 						if (card.getId().equals(cardId)) {
 							pieceLeftToPlace.add(piece.getModelId());
 							if (pieceLeftToPlace.size() == 1) {

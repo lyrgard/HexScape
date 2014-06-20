@@ -18,6 +18,7 @@ import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexscape.client.network.ClientNetwork;
 
@@ -76,18 +77,55 @@ public class PieceMessageListener extends AbstractMessageListener {
 				CardInstance cardInstance = player.getArmy().getCardsById().get(cardInstanceId);
 				PieceInstance piece = new PieceInstance(pieceId, pieceModelId, cardInstance);
 				piece.setDirection(direction);
-				PieceManager pieceManager = new PieceManager(piece);
+				final PieceManager pieceManager = new PieceManager(piece);
 				pieceManager.rotate(direction);
-				HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z);
+				HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+					@Override
+					public Void call() throws Exception {
+						HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z);
+						return null;
+					}
+					
+				});
+				
 			}
 		}
 		GuiMessageBus.post(message);		
 	}
 	
 	@Subscribe public void onPieceMoved(PieceMovedMessage message) {
-		if (HexScapeCore.getInstance().isOnline()) {
-			ClientNetwork.getInstance().send(message);
-		}
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		final int x = message.getX();
+		final int y = message.getY();
+		final int z = message.getZ();
+		final Direction direction = message.getDirection();
+			
+		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, place the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+			
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				if (pieceManager != null) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.moveTo(x, y, z, direction);
+							return null;
+						}
+						
+					});
+				}
+			}
+		}	
 		GuiMessageBus.post(message);
 	}
 	

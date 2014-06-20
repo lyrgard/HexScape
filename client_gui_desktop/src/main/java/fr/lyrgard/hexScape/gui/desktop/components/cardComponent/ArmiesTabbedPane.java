@@ -4,7 +4,6 @@ package fr.lyrgard.hexScape.gui.desktop.components.cardComponent;
 import java.awt.EventQueue;
 
 import javax.swing.JTabbedPane;
-import javax.swing.SwingUtilities;
 
 import com.google.common.eventbus.Subscribe;
 

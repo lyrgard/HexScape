@@ -19,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
 import fr.lyrgard.hexScape.gui.desktop.action.CreateNewGameAction;

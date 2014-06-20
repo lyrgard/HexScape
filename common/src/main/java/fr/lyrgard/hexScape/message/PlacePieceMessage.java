@@ -7,17 +7,25 @@ public class PlacePieceMessage extends AbstractPieceMessage {
 
 	private String pieceModelId;
 	
+	private String cardInstanceId;
+	
 	@JsonCreator
 	public PlacePieceMessage(
 			@JsonProperty("playerId") String playerId, 
 			@JsonProperty("cardInstanceId") String cardInstanceId,
 			@JsonProperty("pieceModelId") String pieceModelId) {
-		super(playerId, cardInstanceId, null);
+		super(playerId, null);
+		
 		this.pieceModelId = pieceModelId;
+		this.cardInstanceId = cardInstanceId;
 	}
 
 	public String getPieceModelId() {
 		return pieceModelId;
+	}
+
+	public String getCardInstanceId() {
+		return cardInstanceId;
 	}
 
 }

@@ -8,6 +8,7 @@ import fr.lyrgard.hexScape.model.map.Direction;
 public class PiecePlacedMessage extends AbstractPieceMessage {
 
 	private String modelId;
+	private String cardInstanceId;
 	
 	private int x;
 	private int y;
@@ -24,8 +25,9 @@ public class PiecePlacedMessage extends AbstractPieceMessage {
 			@JsonProperty("y") int y,
 			@JsonProperty("z") int z,
 			@JsonProperty("direction") Direction direction) {
-		super(playerId, cardInstanceId, pieceId);
+		super(playerId, pieceId);
 		this.modelId = modelId;
+		this.cardInstanceId = cardInstanceId;
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -50,6 +52,10 @@ public class PiecePlacedMessage extends AbstractPieceMessage {
 
 	public Direction getDirection() {
 		return direction;
+	}
+
+	public String getCardInstanceId() {
+		return cardInstanceId;
 	}
 	
 }

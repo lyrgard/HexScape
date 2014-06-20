@@ -8,9 +8,8 @@ public class PieceSelectedMessage extends AbstractPieceMessage {
 	@JsonCreator
 	public PieceSelectedMessage(
 			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("cardInstanceId") String cardInstanceId, 
 			@JsonProperty("pieceId") String pieceId) {
-		super(playerId, cardInstanceId, pieceId);
+		super(playerId, pieceId);
 	}
 
 

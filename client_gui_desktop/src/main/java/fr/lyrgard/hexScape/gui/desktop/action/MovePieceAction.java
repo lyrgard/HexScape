@@ -17,22 +17,19 @@ public class MovePieceAction extends AbstractAction {
 
 	private String pieceId;
 	
-	private String cardId;
-	
 	public MovePieceAction(PieceInstance piece) {
-		this(piece.getCard().getId(), piece.getId());
+		this(piece.getId());
 	}
 
-	public MovePieceAction(String pieceId, String cardId) {
+	public MovePieceAction(String pieceId) {
 		super("move", icon);
 		this.pieceId = pieceId;
-		this.cardId = cardId;
 	}
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
-		MovePieceMessage message = new MovePieceMessage(playerId, cardId, pieceId);
+		MovePieceMessage message = new MovePieceMessage(playerId, pieceId);
 		CoreMessageBus.post(message);
 		
 	}
