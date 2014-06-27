@@ -14,6 +14,7 @@ import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.service.ColorService;
 
 public class RoomMessageListener {
 
@@ -37,6 +38,9 @@ public class RoomMessageListener {
 		
 		for (Player otherPlayers : room.getPlayers()) {
 			if (!otherPlayers.getId().equals(HexScapeCore.getInstance().getPlayerId())) {
+				if (otherPlayers.getColor() == player.getColor()) {
+					otherPlayers.setColor(ColorService.getInstance().getNextColorThatIsNot(player.getColor()));
+				}
 				Universe.getInstance().getPlayersByIds().put(otherPlayers.getId(), otherPlayers);
 			}
 		}
@@ -49,17 +53,22 @@ public class RoomMessageListener {
 	
 	@Subscribe public void onPlayerJoindedRoom(PlayerJoinedRoomMessage message) {
 		String playerId = message.getPlayerId();
-
 		String name = message.getName();
 		ColorEnum color = message.getColor();
-		Player player = new Player(name, color);
-		player.setId(playerId);
+		
+		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
+		
+		Player joiningPlayer = new Player(name, color);
+		joiningPlayer.setId(playerId);
 
 		String roomId = HexScapeCore.getInstance().getRoomId();
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 		if (room != null) {
-			Universe.getInstance().getPlayersByIds().put(player.getId(), player);
-			room.getPlayers().add(player);
+			if (joiningPlayer.getColor() == player.getColor()) {
+				joiningPlayer.setColor(ColorService.getInstance().getNextColorThatIsNot(player.getColor()));
+			}
+			Universe.getInstance().getPlayersByIds().put(joiningPlayer.getId(), joiningPlayer);
+			room.getPlayers().add(joiningPlayer);
 		}
 
 		GuiMessageBus.post(message);

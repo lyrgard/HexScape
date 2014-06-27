@@ -15,13 +15,13 @@ public class AddStackableMarkerToCardAction extends AbstractAction {
 
 	private static final long serialVersionUID = 7209605070483212248L;
 
-	private MarkerDefinition marker;
+	private MarkerDefinition markerType;
 	
 	private CardInstance card;
 	
 	private int number;
 	
-	public AddStackableMarkerToCardAction(MarkerDefinition marker, CardInstance card, int number) {
+	public AddStackableMarkerToCardAction(MarkerDefinition markerType, CardInstance card, int number) {
 		super();
 		String name = null;
 		if (number < 0 ) {
@@ -30,7 +30,7 @@ public class AddStackableMarkerToCardAction extends AbstractAction {
 			name = "+" + number;
 		}
 		putValue(Action.NAME, name);
-		this.marker = marker;
+		this.markerType = markerType;
 		this.card = card;
 		this.number = number;
 	}
@@ -39,7 +39,7 @@ public class AddStackableMarkerToCardAction extends AbstractAction {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		PlaceMarkerMessage message = new PlaceMarkerMessage(playerId, gameId, card.getId(), marker.getId(), number);
+		PlaceMarkerMessage message = new PlaceMarkerMessage(playerId, gameId, card.getId(), markerType.getId(), number, null);
 		CoreMessageBus.post(message);
 	}
 

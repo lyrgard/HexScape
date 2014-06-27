@@ -12,7 +12,6 @@ import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -101,7 +100,7 @@ public class GameMessageListener {
 	
 	@Subscribe public void onArmyLoaded(ArmyLoadedMessage message) {
 		String playerId = message.getPlayerId();
-		Army army = message.getArmy();
+		//Army army = message.getArmy();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		if (player != null && player.getGame() != null) {

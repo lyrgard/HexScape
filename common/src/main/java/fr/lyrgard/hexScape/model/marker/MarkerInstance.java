@@ -15,9 +15,11 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 		@Type(value = MarkerInstance.class, name = "MarkerInstance"),
 		@Type(value = RevealableMarkerInstance.class, name = "RevealableMarkerInstance"),
 	    @Type(value = StackableMarkerInstance.class, name = "StackableMarkerInstance"),
-	    
+	    @Type(value = HiddenMarkerInstance.class, name = "HiddenMarkerInstance"),
 	    }) 
 public class MarkerInstance implements Comparable<MarkerInstance>{
+	
+	private String id;
 	
 	private String markerDefinitionId;
 
@@ -33,9 +35,23 @@ public class MarkerInstance implements Comparable<MarkerInstance>{
 	public void setMarkerDefinitionId(String markerDefinitionId) {
 		this.markerDefinitionId = markerDefinitionId;
 	}
+	
+	public String getId() {
+		return id;
+	}
 
 	@Override
 	public int compareTo(MarkerInstance m2) {
-		return getMarkerDefinitionId().compareTo(m2.getMarkerDefinitionId());
+		int result = getMarkerDefinitionId().compareTo(m2.getMarkerDefinitionId());
+		if (result == 0) {
+			result = getId().compareTo(m2.getId());
+		}
+		return result;
 	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	
 }

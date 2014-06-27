@@ -8,7 +8,7 @@ import fr.lyrgard.hexScape.model.room.Room;
 
 public class RoomService {
 
-private static final RoomService INSTANCE = new RoomService();
+	private static final RoomService INSTANCE = new RoomService();
 	
 	public static RoomService getInstance() {
 		return INSTANCE;

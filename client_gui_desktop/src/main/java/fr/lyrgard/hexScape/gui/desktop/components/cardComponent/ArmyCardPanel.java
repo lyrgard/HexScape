@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -16,6 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -32,10 +35,10 @@ import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
-import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -166,7 +169,7 @@ public class ArmyCardPanel extends JPanel {
 		markerPanel.removeAll();
 		for (MarkerInstance marker : card.getMarkers()) {
 			ImageIcon markerIcon = null;
-			JLabel imageLabel = new JLabel();
+			final JLabel imageLabel = new JLabel();
 			MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
 			switch (markerDefinition.getType()) {
 			case NORMAL:
@@ -180,12 +183,29 @@ public class ArmyCardPanel extends JPanel {
 				imageLabel.setIconTextGap(1);
 				break;
 			case REVEALABLE:
-				boolean hidden = ((RevealableMarkerInstance)marker).isHidden();
-				if (hidden) {
-					markerIcon = new ImageIcon(((RevealableMarkerDefinition)markerDefinition).getOwnerHiddenMarkerImage().getAbsolutePath());
-					imageLabel.addMouseListener(new PopMenuClickListener(new RevealableMarkerMenu(card, (RevealableMarkerInstance)marker)));
-				} else {
-					markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
+				markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
+				break;
+			case HIDDEN:
+				markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());
+
+				String hiddenMarkerTypeId = ((HiddenMarkerInstance)marker).getHiddenMarkerDefinitionId();
+				if (StringUtils.isNotEmpty(hiddenMarkerTypeId)) {
+					MarkerDefinition hiddenMarkerDefinition = MarkerService.getInstance().getMarkersByIds().get(hiddenMarkerTypeId);
+					final ImageIcon hiddenMarkerIcon = new ImageIcon(hiddenMarkerDefinition.getImage().getAbsolutePath());
+					final ImageIcon normalMarkerIcon = markerIcon;
+					
+					imageLabel.addMouseListener(new PopMenuClickListener(new RevealableMarkerMenu(card, (HiddenMarkerInstance)marker)));
+					imageLabel.addMouseListener(new MouseAdapter() {
+						@Override
+			            public void mouseEntered(java.awt.event.MouseEvent evt) {
+							imageLabel.setIcon(hiddenMarkerIcon);
+			            }
+
+			            @Override
+			            public void mouseExited(java.awt.event.MouseEvent evt) {
+			            	imageLabel.setIcon(normalMarkerIcon);
+			            }
+					});
 				}
 				break;
 			}

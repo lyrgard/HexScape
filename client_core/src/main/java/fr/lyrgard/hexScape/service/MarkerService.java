@@ -5,13 +5,18 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
+
+import org.apache.commons.lang.StringUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
@@ -28,12 +33,10 @@ public class MarkerService {
 	private static final String markerPropertiesFilename = "marker.properties";
 	private static final String markerIconFilename = "icon.png";
 	
-	private static final String ownerHiddenMarkerIconFilename = "ownerHiddenIcon.png";
-	private static final String notOwnerHiddenMarkerIconFilename = "notOwnerHiddenIcon.png";
-	
 	private static final String NAME = "name";
-	private static final String HIDDEN_NAME = "hiddenName";
 	private static final String TYPE = "type";
+	private static final String POSSIBLE_MARKERS_HIDDEN = "possibleMarkersHidden";
+	private static final String CAN_BE_PLACED_REVEALED = "canBePlacedRevealed";
 	
 	private static final MarkerService INSTANCE = new MarkerService();
 	
@@ -49,6 +52,8 @@ public class MarkerService {
 		}
 		
 		markersByIds = new TreeMap<>();
+		
+		Map<String, String[]> hiddenMarkerTempCollection = new HashMap<>();
 		if (baseFolder.exists()) {
 			markerDefinition: for (File folder : baseFolder.listFiles()) {
 				if (folder.exists() && folder.isDirectory()) {
@@ -62,6 +67,7 @@ public class MarkerService {
 							markerProperties.load(input);
 							
 							MarkerDefinition marker = null;
+							String id = folder.getName();
 							
 							String name = markerProperties.getProperty(NAME);
 							
@@ -87,24 +93,18 @@ public class MarkerService {
 								break;
 							case REVEALABLE:
 								marker = new RevealableMarkerDefinition();
-								((RevealableMarkerDefinition)marker).setHiddenName(markerProperties.getProperty(HIDDEN_NAME));
-								File ownerHiddenMarkerIconFile = new File(folder, ownerHiddenMarkerIconFilename);
-								if (ownerHiddenMarkerIconFile.exists() && ownerHiddenMarkerIconFile.isFile() && ownerHiddenMarkerIconFile.canRead() ) {
-									((RevealableMarkerDefinition)marker).setOwnerHiddenMarkerImage(ownerHiddenMarkerIconFile);	
-								} else {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
-									continue markerDefinition;
-								}
-								File notOwnerHiddenMarkerIconFile = new File(folder, notOwnerHiddenMarkerIconFilename);
-								if (notOwnerHiddenMarkerIconFile.exists() && notOwnerHiddenMarkerIconFile.isFile() && notOwnerHiddenMarkerIconFile.canRead() ) {
-									((RevealableMarkerDefinition)marker).setNotOwnerHiddenMarkerImage(notOwnerHiddenMarkerIconFile);	
-								} else {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No " + notOwnerHiddenMarkerIconFilename + " file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
-									continue markerDefinition;
+								((RevealableMarkerDefinition)marker).setCanBePlacedRevealed(Boolean.TRUE.toString().equalsIgnoreCase(markerProperties.getProperty(CAN_BE_PLACED_REVEALED, Boolean.FALSE.toString())));
+								break;
+							case HIDDEN:
+								marker = new HiddenMarkerDefinition();
+								String possibleHiddenMarkersList = markerProperties.getProperty(POSSIBLE_MARKERS_HIDDEN);
+								if (possibleHiddenMarkersList != null) {
+									String[] array = possibleHiddenMarkersList.split(",");
+									hiddenMarkerTempCollection.put(id, array);
 								}
 								break;
 							}
-							marker.setId(folder.getName());
+							marker.setId(id);
 							marker.setType(type);
 							marker.setName(name);
 							marker.setImage(iconFile);
@@ -120,6 +120,18 @@ public class MarkerService {
 			}
 		} else {
 			CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker definition folder \"" + baseFolder + "\" was not found"));
+		}
+		
+		// process HiddenMarker now that all marker definition are loaded
+		for (Entry<String, String[]> entry : hiddenMarkerTempCollection.entrySet()) {
+			HiddenMarkerDefinition definition = (HiddenMarkerDefinition)markersByIds.get(entry.getKey());
+			for (String possibleMarkerId : entry.getValue()) {
+				MarkerDefinition possibleMarkerDefinition = markersByIds.get(StringUtils.trim(possibleMarkerId));
+				if (possibleMarkerDefinition != null && possibleMarkerDefinition instanceof RevealableMarkerDefinition) {
+					definition.getPossibleMarkersHidden().add((RevealableMarkerDefinition)possibleMarkerDefinition);
+					((RevealableMarkerDefinition)possibleMarkerDefinition).setHiddenMarkerDefinition(definition);
+				}
+			}
 		}
 		
 		

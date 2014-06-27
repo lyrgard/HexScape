@@ -1,5 +1,7 @@
 package fr.lyrgard.hexScape.control;
 
+import java.util.Collection;
+
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
@@ -18,8 +20,9 @@ import com.jme3.scene.Spatial;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
-import fr.lyrgard.hexScape.model.SelectCross;
+import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.service.PieceManager;
+import fr.lyrgard.hexScape.service.SelectMarkerService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class SelectPieceByMouseAppState extends AbstractAppState {
@@ -31,11 +34,9 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	
 	private Camera cam;
 	
-	private Spatial selectMarker;
+	//private Spatial selectMarker;
 	
-	private AmbientLight selectedLigth;
-	
-	private Node rootNode;
+	//private AmbientLight selectedLigth;
 	
 	private float selectMarkerY;
 	private float selectMarkerYOffset = 0.3f;
@@ -49,9 +50,8 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 		super.initialize(stateManager, app);
 		this.inputManager = app.getInputManager();
 		this.cam = app.getCamera();
-		this.rootNode = ((HexScapeJme3Application)app).getRootNode();
 		
-		selectMarker = new SelectCross().getSpatial();
+		//selectMarker = new SelectMarker().getSpatial();
 	}
 
 	@Override
@@ -75,23 +75,25 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 			cancelSelection();
 			selectedPiece = piece;
 
+			piece.select(HexScapeCore.getInstance().getPlayerId());
 
-			BoundingBox boundingBox = (BoundingBox)selectedPiece.getSpatial().getWorldBound();
-
-			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(piece.getPiece().getX(), piece.getPiece().getY(), piece.getPiece().getZ());
-			selectMarkerY = boundingBox.getCenter().y - boundingBox.getYExtent() + selectMarkerYOffset;
-			spacePos.y = selectMarkerY;
-			selectMarker.setLocalTranslation(spacePos);
-
-			rootNode.attachChild(selectMarker);
+//			BoundingBox boundingBox = (BoundingBox)selectedPiece.getSpatial().getWorldBound();
+//
+//			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(piece.getPiece().getX(), piece.getPiece().getY(), piece.getPiece().getZ());
+//			selectMarkerY = boundingBox.getCenter().y - boundingBox.getYExtent() + selectMarkerYOffset;
+//			spacePos.y = selectMarkerY;
+//			selectMarker.setLocalTranslation(spacePos);
+//
+//			rootNode.attachChild(selectMarker);
 		}
 	}
 	
 	public void cancelSelection() {
 		if (selectedPiece != null) {
-			selectedPiece.getSpatial().removeLight(selectedLigth);
+			//selectedPiece.getSpatial().removeLight(selectedLigth);
+			selectedPiece.unselect(HexScapeCore.getInstance().getPlayerId());
 		}
-		rootNode.detachChild(selectMarker);
+		//rootNode.detachChild(selectMarker);
 		selectedPiece = null;
 	}
 
@@ -146,12 +148,20 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		time = (time + 2 * tpf) % FastMath.TWO_PI;
-		selectMarkerRotation = (time + tpf/128) % FastMath.TWO_PI;
-		Vector3f localTranslation = selectMarker.getLocalTranslation();
-		localTranslation.y = selectMarkerY + selectMarkerYVariation * FastMath.sin(time);
-		selectMarker.setLocalTranslation(localTranslation);
-		selectMarker.getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
+		
+		time = time + 2 * tpf;
+		Collection<SelectMarker> selectMarkers = SelectMarkerService.getInstance().getSelectMarkers();
+		int i = 0;
+		int number = selectMarkers.size();
+		for (SelectMarker selectMarker : selectMarkers) {
+			float thisMarkerTime = (time + FastMath.TWO_PI * i/number) % FastMath.TWO_PI;
+			selectMarkerRotation = (thisMarkerTime + tpf/128) % FastMath.TWO_PI;
+			Vector3f localTranslation = selectMarker.getSpatial().getLocalTranslation();
+			localTranslation.y = selectMarkerYOffset + selectMarkerYVariation * FastMath.sin(thisMarkerTime);
+			selectMarker.getSpatial().setLocalTranslation(localTranslation);
+			selectMarker.getSpatial().getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
+			i++;
+		}
 	}
 	
 }

@@ -2,9 +2,11 @@ package fr.lyrgard.hexScape.service;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
@@ -15,7 +17,7 @@ public class PieceManager {
 
 	private PieceInstance piece;
 	
-	private Spatial pieceNode;
+	private Node pieceNode;
 
 	public PieceManager(PieceInstance piece) {
 		super();
@@ -30,7 +32,8 @@ public class PieceManager {
 	
 	public Spatial getSpatial() {
 		if (pieceNode == null) {
-			pieceNode = ExternalModelService.getInstance().getModel(piece.getModelId());
+			pieceNode = new Node();
+			pieceNode.attachChild(ExternalModelService.getInstance().getModel(piece.getModelId()));
 		}
 		return pieceNode;
 	}
@@ -57,5 +60,19 @@ public class PieceManager {
 		if (direction != piece.getDirection()) {
 			rotate(direction);
 		}
+	}
+	
+	public void remove() {
+		HexScapeCore.getInstance().getMapManager().removePiece(this);
+	}
+	
+	public void select(String playerId) {
+		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
+		pieceNode.attachChild(selectMarker.getSpatial());
+		selectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+	}
+	
+	public void unselect(String playerId) {
+		pieceNode.detachChild(SelectMarkerService.getInstance().getSelectMarker(playerId).getSpatial());
 	}
 }

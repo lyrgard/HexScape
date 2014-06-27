@@ -6,10 +6,7 @@ import java.awt.EventQueue;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -19,7 +16,6 @@ import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.DisconnectAction;
 import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.game.SelectedGamePanel;
-import fr.lyrgard.hexScape.gui.desktop.components.player.PlayerCellRenderer;
 import fr.lyrgard.hexScape.gui.desktop.components.player.PlayerList;
 import fr.lyrgard.hexScape.gui.desktop.components.room.GameListPanel;
 import fr.lyrgard.hexScape.gui.desktop.message.GameSelectedMessage;
@@ -27,12 +23,10 @@ import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
-import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
-import fr.lyrgard.hexScape.message.RoomLeftMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -151,24 +145,26 @@ public class RoomView extends AbstractView {
 		final String playerId = message.getPlayerId();
 		final Game game = message.getGame();
 
-		if (game != null) {
+		if (HexScapeCore.getInstance().isOnline()) {
+			if (game != null) {
 
-			EventQueue.invokeLater(new Runnable() {
+				EventQueue.invokeLater(new Runnable() {
 
-				public void run() {
-					if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
-						GuiMessageBus.post(new GameSelectedMessage(game));
-						selectedGamePanel.setVisible(true);
-					} 
-					
-					Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+					public void run() {
+						if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+							GuiMessageBus.post(new GameSelectedMessage(game));
+							selectedGamePanel.setVisible(true);
+						} 
 
-					if (player != null) {
-						chatPanel.addAction("player " + player.getName() + " created game " + game.getName());
+						Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+
+						if (player != null) {
+							chatPanel.addAction("player " + player.getName() + " created game " + game.getName());
+						}
 					}
-				}
-			});
-		} 
+				});
+			} 
+		}
 	}
 	
 	@Subscribe public void gameJoined(GameJoinedMessage message) {

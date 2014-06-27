@@ -77,20 +77,23 @@ public class MapManager {
 		
 		Tile nearestTile = getNearestTile(x, y, z);
 		
-		
-		PieceManager alreadyTherePiece = scene.getPiece(nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
-		if (alreadyTherePiece != null && alreadyTherePiece != piece) {
-			// already another piece here !
+		if (nearestTile != null) {
+			PieceManager alreadyTherePiece = scene.getPiece(nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
+			if (alreadyTherePiece != null && alreadyTherePiece != piece) {
+				// already another piece here !
+				return false;
+			}
+			
+			if (scene.contains(piece)) {
+				scene.removePiece(piece);
+			}
+			
+			pieceManagersByPieceIds.put(piece.getPiece().getId(), piece);
+			HexScapeCore.getInstance().getHexScapeJme3Application().getScene().addPiece(piece, nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
+			return true;
+		} else {
 			return false;
 		}
-		
-		if (scene.contains(piece)) {
-			scene.removePiece(piece);
-		}
-		
-		pieceManagersByPieceIds.put(piece.getPiece().getId(), piece);
-		HexScapeCore.getInstance().getHexScapeJme3Application().getScene().addPiece(piece, nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
-		return true;
 	}
 
 	public Map getMap() {

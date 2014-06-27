@@ -8,7 +8,9 @@ public class StackableMarkerInstance extends MarkerInstance {
 	private int number;
 
 	@JsonCreator
-	public StackableMarkerInstance(@JsonProperty("markerDefinitionId") String markerDefinitionId, @JsonProperty("number") int number) {
+	public StackableMarkerInstance(
+			@JsonProperty("markerDefinitionId") String markerDefinitionId, 
+			@JsonProperty("number") int number) {
 		super(markerDefinitionId);
 		this.number = number;
 	}

@@ -28,7 +28,7 @@ public class RemoveAllMarkersFromCardAction extends AbstractAction {
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		RemoveMarkerMessage message = new RemoveMarkerMessage(playerId, gameId, card.getId(), null, 0, true);
+		RemoveMarkerMessage message = new RemoveMarkerMessage(playerId, gameId, card.getId(), null, null, 0, true);
 		CoreMessageBus.post(message);
 	}
 

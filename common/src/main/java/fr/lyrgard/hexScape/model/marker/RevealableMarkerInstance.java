@@ -1,20 +1,13 @@
 package fr.lyrgard.hexScape.model.marker;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RevealableMarkerInstance extends MarkerInstance {
 
-	private boolean hidden;
-
-	public RevealableMarkerInstance(String markerDefinitionId, boolean hidden) {
+	@JsonCreator
+	public RevealableMarkerInstance(@JsonProperty("markerDefinitionId") String markerDefinitionId) {
 		super(markerDefinitionId);
-		this.hidden = hidden;
-	}
-
-	public boolean isHidden() {
-		return hidden;
-	}
-
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
 	}
 	
 }

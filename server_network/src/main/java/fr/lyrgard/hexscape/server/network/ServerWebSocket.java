@@ -18,8 +18,7 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.AbstractUserMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
-import fr.lyrgard.hexScape.message.LeaveRoomMessage;
-import fr.lyrgard.hexScape.message.RoomLeftMessage;
+import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -55,13 +54,17 @@ public class ServerWebSocket extends WebSocketHandler {
 	public void onConnect(Session session) {
 		this.session = session;
 		playerId = IdGenerator.getInstance().getNewUserId(); 
+		
+		
 	}
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
 		try {
 			AbstractMessage message = MessageJsonMapper.getInstance().fromJson(msg);
-			if (message instanceof UserInformationMessage) {
+			if (message instanceof HeartBeatMessage) {
+				//System.out.println("Heart beat from player " + playerId);
+			} else if (message instanceof UserInformationMessage) {
 				String name = ((UserInformationMessage) message).getName();
 				ColorEnum color = ((UserInformationMessage) message).getColor();
 				Player player = new Player(name, color);

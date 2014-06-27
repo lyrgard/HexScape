@@ -84,6 +84,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 					@Override
 					public Void call() throws Exception {
 						HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z);
+						pieceManager.select(playerId);
 						return null;
 					}
 					
@@ -130,22 +131,91 @@ public class PieceMessageListener extends AbstractMessageListener {
 	}
 	
 	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {
-		if (HexScapeCore.getInstance().isOnline()) {
-			ClientNetwork.getInstance().send(message);
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		
+		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, delete the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				if (pieceManager != null) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.remove();
+							return null;
+						}
+					});
+				}
+			}			
 		}
 		GuiMessageBus.post(message);
 	}
 	
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
-		if (HexScapeCore.getInstance().isOnline()) {
-			ClientNetwork.getInstance().send(message);
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		
+		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, delete the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				if (pieceManager != null) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.select(playerId);
+							return null;
+						}
+					});
+				}
+			}			
 		}
 		GuiMessageBus.post(message);
 	}
 	
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
-		if (HexScapeCore.getInstance().isOnline()) {
-			ClientNetwork.getInstance().send(message);
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		
+		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, delete the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				if (pieceManager != null) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.unselect(playerId);
+							return null;
+						}
+					});
+				}
+			}			
 		}
 		GuiMessageBus.post(message);
 	}

@@ -1,50 +1,25 @@
 package fr.lyrgard.hexScape.model.marker;
 
-import java.io.File;
-
 public class RevealableMarkerDefinition extends MarkerDefinition {
 
-	private boolean hidden;
+	private boolean canBePlacedRevealed;
 	
-	/** Name of the marker for a player that can't see the marker value */ 
-	private String hiddenName;
-	
-	/** image of the hidden marker for a player that can't see the value */
-	private File notOwnerHiddenMarkerImage;
-	
-	/** image of the hidden marker for a player that can see the value */
-	private File ownerHiddenMarkerImage;
+	private HiddenMarkerDefinition hiddenMarkerDefinition;
 
-	public String getHiddenName() {
-		return hiddenName;
+	public boolean canBePlacedRevealed() {
+		return canBePlacedRevealed;
 	}
 
-	public void setHiddenName(String hiddenName) {
-		this.hiddenName = hiddenName;
+	public void setCanBePlacedRevealed(boolean canBePlacedRevealed) {
+		this.canBePlacedRevealed = canBePlacedRevealed;
 	}
 
-	public File getNotOwnerHiddenMarkerImage() {
-		return notOwnerHiddenMarkerImage;
+	public HiddenMarkerDefinition getHiddenMarkerDefinition() {
+		return hiddenMarkerDefinition;
 	}
 
-	public void setNotOwnerHiddenMarkerImage(File notOwnerHiddenMarkerImage) {
-		this.notOwnerHiddenMarkerImage = notOwnerHiddenMarkerImage;
+	public void setHiddenMarkerDefinition(
+			HiddenMarkerDefinition hiddenMarkerDefinition) {
+		this.hiddenMarkerDefinition = hiddenMarkerDefinition;
 	}
-
-	public File getOwnerHiddenMarkerImage() {
-		return ownerHiddenMarkerImage;
-	}
-
-	public void setOwnerHiddenMarkerImage(File ownerHiddenMarkerImage) {
-		this.ownerHiddenMarkerImage = ownerHiddenMarkerImage;
-	}
-
-	public boolean isHidden() {
-		return hidden;
-	}
-
-	public void setHidden(boolean hidden) {
-		this.hidden = hidden;
-	}
-
 }

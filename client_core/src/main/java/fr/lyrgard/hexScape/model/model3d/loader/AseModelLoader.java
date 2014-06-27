@@ -1,4 +1,4 @@
-package fr.lyrgard.hexScape.model.model3d.aseImport;
+package fr.lyrgard.hexScape.model.model3d.loader;
 
 /*
  * Copyright (c) 2003, jMonkeyEngine - Mojo Monkey Coding All rights reserved.
@@ -46,15 +46,15 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Mesh;
-import com.jme3.scene.Node;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.WrapMode;
 import com.jme3.util.BufferUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.model.model3d.AseExternalModel;
+import fr.lyrgard.hexScape.model.model3d.AseExternalModel.MeshMaterialPair;
 import fr.lyrgard.hexScape.model.model3d.ExternalModel;
-import fr.lyrgard.hexScape.model.model3d.ExternalModel.MeshMaterialPair;
 
 
 /**
@@ -67,9 +67,9 @@ import fr.lyrgard.hexScape.model.model3d.ExternalModel.MeshMaterialPair;
  * @author Mark Powell
  * @version $Id: ASEModel.java,v 1.5 2004-02-15 20:22:39 mojomonkey Exp $
  */
-public class ASEModelLoader extends Node{
+public class AseModelLoader implements ModelLoader {
 	
-	private static final Logger LOGGER = Logger.getLogger(ASEModelLoader.class.getCanonicalName());
+	private static final Logger LOGGER = Logger.getLogger(AseModelLoader.class.getCanonicalName());
 
 	//ASE file tags.
 	private static final String OBJECT = "*GEOMOBJECT";
@@ -97,9 +97,6 @@ public class ASEModelLoader extends Node{
 	private static final String MATERIAL_SPECULAR = "*MATERIAL_SPECULAR";
 	private static final String MATERIAL_SHINE = "*MATERIAL_SHINE";
 
-	//path to the model and texture file.
-	
-	private String baseFolder = "asset/3dObject/ase/";
 	
 //	private String absoluteFilePath;
 //	private BufferedReader reader = null;
@@ -113,15 +110,23 @@ public class ASEModelLoader extends Node{
 //	private ArrayList<ASEObject> objectList = new ArrayList<ASEObject>();
 
 
-	public ASEModelLoader() {
+	public AseModelLoader() {
 		super();
 	}
 	
+	public boolean canLoad(String name) {
+		return getAseFile(name).exists();
+	}
+	
+	private File getAseFile(String name) {
+		File folder = new File(ModelLoader.BASE_FOLDER, name);
+		return new File(folder, name + ".ase");
+	}
+	
 	public ExternalModel load(String name) {
-		ExternalModel model = new ExternalModel();
+		AseExternalModel model = new AseExternalModel();
 		
-		File folder = new File(baseFolder, name);
-		File aseFile = new File(folder, name + ".ase");
+		File aseFile = getAseFile(name);
 		String fileContents = null;
 		ArrayList<ASEObject> objectList = new ArrayList<ASEObject>();
 	
@@ -808,7 +813,7 @@ public class ASEModelLoader extends Node{
 			Material mat = new Material(assetManager, 
 					"Common/MatDefs/Light/Lighting.j3md");
 			
-			Texture TileTexture = assetManager.loadTexture(baseFolder + mainObjectName + "/Textures/" + name + ".bmp");
+			Texture TileTexture = assetManager.loadTexture(ModelLoader.BASE_FOLDER + mainObjectName + "/Textures/" + name + ".bmp");
 			TileTexture.setWrap(WrapMode.Repeat);
 			mat.setTexture("DiffuseMap", TileTexture);
 			mat.setColor("Ambient", ColorRGBA.White);

@@ -13,6 +13,7 @@ import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
+import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
@@ -21,6 +22,7 @@ import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
+import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.PostMessageMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
@@ -44,6 +46,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = GameEndedMessage.class, name = "GameEndedMessage"),
 		@Type(value = GameJoinedMessage.class, name = "GameJoinedMessage"),
 		@Type(value = GameStartedMessage.class, name = "GameStartedMessage"),
+		@Type(value = HeartBeatMessage.class, name = "HeartBeatMessage"),
 		@Type(value = JoinGameMessage.class, name = "JoinGameMessage"),
 		@Type(value = JoinRoomMessage.class, name = "JoinRoomMessage"),
 		@Type(value = LeaveRoomMessage.class, name = "LeaveRoomMessage"),
@@ -52,6 +55,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),
 	    @Type(value = PieceSelectedMessage.class, name = "PieceSelectedMessage"),
+	    @Type(value = PieceUnselectedMessage.class, name = "PieceUnselectedMessage"),
 	    @Type(value = PostMessageMessage.class, name = "PostMessageMessage"),
 	    @Type(value = RoomJoinedMessage.class, name = "RoomJoinedMessage"),
 	    @Type(value = RoomLeftMessage.class, name = "RoomLeftMessage"),
