@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -17,6 +19,8 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
+import fr.lyrgard.hexScape.gui.desktop.components.BackgroundPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
@@ -41,6 +45,8 @@ public class HexScapeFrame extends JFrame {
 
 	private View3d view3d;
 
+	private BackgroundPanel bgPanel;
+	
 	private final CardLayout layout = new CardLayout();
 
 	private final Map<ViewEnum, AbstractView> viewsMap = new HashMap<ViewEnum, AbstractView>();
@@ -65,14 +71,19 @@ public class HexScapeFrame extends JFrame {
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		setLayout(layout);
+		ImageIcon image = new ImageIcon(HexScapeFrame.class.getResource("/gui/images/background.jpg"));
+		bgPanel = new BackgroundPanel(image.getImage());
+		bgPanel.setTransparentAdd(true);
+		add(bgPanel);
+		
+		bgPanel.setLayout(layout);
 
 		viewsMap.put(ViewEnum.HOME, new HomeView());
 		viewsMap.put(ViewEnum.ROOM, new RoomView());
 		viewsMap.put(ViewEnum.GAME, new GameView(view3d));
 
 		for (Entry<ViewEnum, AbstractView> entry : viewsMap.entrySet()) {
-			add(entry.getValue(), entry.getKey().name());
+			bgPanel.add(entry.getValue(), entry.getKey().name());
 		}
 		showView(ViewEnum.HOME);
 
@@ -90,7 +101,7 @@ public class HexScapeFrame extends JFrame {
 	}
 
 	public void showView(ViewEnum view) {
-		layout.show(this.getContentPane(), view.name());
+		layout.show(bgPanel, view.name());
 		viewsMap.get(view).refresh();
 	}
 

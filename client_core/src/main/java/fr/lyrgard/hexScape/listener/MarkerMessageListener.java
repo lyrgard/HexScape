@@ -148,8 +148,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			String cardId = message.getCardId();
 			String markerId = message.getMarkerId();
 			int number = message.getNumber();
-			boolean allMarkers = message.isAllMarkers();
-			MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(playerId, gameId, cardId, markerId, number, allMarkers);
+			MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(playerId, gameId, cardId, markerId, number);
 			CoreMessageBus.post(resultMessage);
 		}
 	}
@@ -160,7 +159,6 @@ public class MarkerMessageListener extends AbstractMessageListener {
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		int number = message.getNumber();
-		boolean allMarkers = message.isAllMarkers();
 		
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
@@ -181,33 +179,27 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		}
 		
-		if (allMarkers) {
-			if (!card.getMarkers().isEmpty()) {
-				card.getMarkers().clear();
-			}
-		} else {
-			
-			for (MarkerInstance marker : card.getMarkers()) {
-				if (marker.getId().equals(markerId)) {
-					
-					MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
-					if (markerDefinition == null) {
-						CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find marker type " + markerId));
-						return;
-					}
-					
-					if (markerDefinition.getType() == MarkerType.STACKABLE) {
-						int currentNumber = ((StackableMarkerInstance)marker).getNumber();
-						if (currentNumber <= number) {
-							card.getMarkers().remove(marker);
-						} else {
-							((StackableMarkerInstance)marker).setNumber(currentNumber - number);
-						}
-					} else {
-						card.getMarkers().remove(marker);
-					}
-					break;
+
+		for (MarkerInstance marker : card.getMarkers()) {
+			if (marker.getId().equals(markerId)) {
+
+				MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
+				if (markerDefinition == null) {
+					CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find marker type " + markerId));
+					return;
 				}
+
+				if (markerDefinition.getType() == MarkerType.STACKABLE) {
+					int currentNumber = ((StackableMarkerInstance)marker).getNumber();
+					if (currentNumber <= number) {
+						card.getMarkers().remove(marker);
+					} else {
+						((StackableMarkerInstance)marker).setNumber(currentNumber - number);
+					}
+				} else {
+					card.getMarkers().remove(marker);
+				}
+				break;
 			}
 		}
 		GuiMessageBus.post(message);

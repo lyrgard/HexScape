@@ -8,12 +8,13 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 import fr.lyrgard.hexScape.service.MarkerService;
 import fr.lyrgard.hexScape.gui.desktop.action.AddMarkerToCardAction;
 import fr.lyrgard.hexScape.gui.desktop.action.AddStackableMarkerToCardAction;
-import fr.lyrgard.hexScape.gui.desktop.action.RemoveAllMarkersFromCardAction;
+import fr.lyrgard.hexScape.gui.desktop.action.RemoveAllMarkersOfTypeForPlayerdAction;
 
 public class ArmyCardMenu extends JPopupMenu {
 
@@ -50,9 +51,11 @@ public class ArmyCardMenu extends JPopupMenu {
 			}
 		}
 		
-		if (!markerTypes.isEmpty()) {
-			JMenuItem removeMarkersItem = new JMenuItem(new RemoveAllMarkersFromCardAction(card));
-			add(removeMarkersItem);
+		for (final MarkerDefinition markerType : markerTypes) {
+			if (markerType instanceof HiddenMarkerDefinition) {
+				JMenuItem removeMarkersItem = new JMenuItem(new RemoveAllMarkersOfTypeForPlayerdAction(markerType));
+				add(removeMarkersItem);
+			}
 		}
 	}
 }

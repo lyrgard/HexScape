@@ -22,4 +22,9 @@ public class IdGenerator {
 		UUID newId = UUID.randomUUID();
 		return newId.toString();
 	}
+	
+	public String getNewMarkerId() {
+		UUID newId = UUID.randomUUID();
+		return newId.toString();
+	}
 }

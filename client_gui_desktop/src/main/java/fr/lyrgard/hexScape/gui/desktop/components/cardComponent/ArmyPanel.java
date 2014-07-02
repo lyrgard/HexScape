@@ -38,7 +38,7 @@ public class ArmyPanel extends JScrollPane {
 		this.playerId = playerId;
 		armyPanel.removeAll();
 		for (CardInstance card : army.getCardsById().values()) {
-			armyPanel.add(new ArmyCardPanel(card));
+			armyPanel.add(new ArmyCardPanel(card, playerId));
 
 		}
 		armyPanel.validate();

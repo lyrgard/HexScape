@@ -17,12 +17,8 @@ public class RemoveMarkerMessage extends AbstractMarkerMessage {
 			@JsonProperty("gameId") String gameId, 
 			@JsonProperty("cardId") String cardId, 
 			@JsonProperty("markerId") String markerId,
-			@JsonProperty("markerTypeId") String markerTypeId,
-			@JsonProperty("number") int number, 
-			@JsonProperty("allMarkers") boolean allMarkers) {
+			@JsonProperty("number") int number) {
 		super(playerId, gameId, cardId, markerId);
-		this.markerTypeId = markerTypeId;
-		this.allMarkers = allMarkers;
 		this.number = number;
 	}
 

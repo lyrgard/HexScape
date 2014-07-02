@@ -44,6 +44,24 @@ public class MarkerInstance implements Comparable<MarkerInstance>{
 	public int compareTo(MarkerInstance m2) {
 		int result = getMarkerDefinitionId().compareTo(m2.getMarkerDefinitionId());
 		if (result == 0) {
+			if (this instanceof HiddenMarkerInstance) {
+				if (((HiddenMarkerInstance)this).getHiddenMarkerDefinitionId() == null) {
+					if (((HiddenMarkerInstance)m2).getHiddenMarkerDefinitionId() == null) {
+						result = 0;
+					} else {
+						result = 1;
+					}
+				} else {
+					if (((HiddenMarkerInstance)m2).getHiddenMarkerDefinitionId() == null) {
+						result = -1;
+					} else {
+						result = ((HiddenMarkerInstance)this).getHiddenMarkerDefinitionId().compareTo(((HiddenMarkerInstance)m2).getHiddenMarkerDefinitionId());
+					}
+				}
+			}
+			
+		}
+		if (result == 0) {
 			result = getId().compareTo(m2.getId());
 		}
 		return result;

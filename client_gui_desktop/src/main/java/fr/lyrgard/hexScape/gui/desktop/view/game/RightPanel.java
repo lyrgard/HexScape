@@ -152,7 +152,6 @@ public class RightPanel extends JPanel {
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		int number = message.getNumber();
-		boolean allMarkers = message.isAllMarkers();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
@@ -160,14 +159,10 @@ public class RightPanel extends JPanel {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
 			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			if (card != null) {
-				if (allMarkers) {
-					chatPanel.addPlayerAction(player, "player " + player.getName() + " removed all markers from " + cardType.getName());
-				} else {
-					MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
-					
-					if (markerDefinition != null) {
-						chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
-					}
+				MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
+
+				if (markerDefinition != null) {
+					chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
 				}
 			}
 		}

@@ -22,6 +22,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.eventbus.Subscribe;
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ArmyCardMenu;
@@ -38,7 +39,6 @@ import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
-import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -63,7 +63,7 @@ public class ArmyCardPanel extends JPanel {
 
 	private JPanel markerPanel;
 
-	public ArmyCardPanel(CardInstance card) {
+	public ArmyCardPanel(CardInstance card, String playerId) {
 		this.card = card;
 
 		setLayout(new BorderLayout());
@@ -97,7 +97,9 @@ public class ArmyCardPanel extends JPanel {
 		JLabel imageLabel = new JLabel(imageIcon);
 		add(imageLabel, BorderLayout.LINE_END);
 
-		imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
+		}
 
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2, true);
 		

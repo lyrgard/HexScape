@@ -2,9 +2,10 @@ package fr.lyrgard.hexScape.model.game;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 
 import fr.lyrgard.hexScape.model.map.Map;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.marker.MarkerInfo;
 
 public class Game {
 	
@@ -19,6 +20,8 @@ public class Game {
 	private Collection<String> playersIds;
 	
 	private Collection<String> observersIds;
+	
+	private java.util.Map<String, MarkerInfo> markersById = new HashMap<>();
 
 	public Collection<String> getPlayersIds() {
 		if (playersIds == null) {
@@ -65,6 +68,10 @@ public class Game {
 
 	public void setPlayerNumber(int playerNumber) {
 		this.playerNumber = playerNumber;
+	}
+
+	public java.util.Map<String, MarkerInfo> getMarkersById() {
+		return markersById;
 	}
 
 	

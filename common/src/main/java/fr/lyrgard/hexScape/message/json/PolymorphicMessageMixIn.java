@@ -17,14 +17,20 @@ import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
+import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
+import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
+import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
+import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.PostMessageMessage;
+import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
+import fr.lyrgard.hexScape.message.RevealMarkerMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.message.RoomLeftMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
@@ -50,13 +56,19 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = JoinGameMessage.class, name = "JoinGameMessage"),
 		@Type(value = JoinRoomMessage.class, name = "JoinRoomMessage"),
 		@Type(value = LeaveRoomMessage.class, name = "LeaveRoomMessage"),
+		@Type(value = MarkerPlacedMessage.class, name = "MarkerPlacedMessage"),
+		@Type(value = MarkerRemovedMessage.class, name = "MarkerRemovedMessage"),
+		@Type(value = MarkerRevealedMessage.class, name = "MarkerRevealedMessage"),
 	    @Type(value = MessagePostedMessage.class, name = "MessagePostedMessage"),
+	    @Type(value = PlaceMarkerMessage.class, name = "PlaceMarkerMessage"),
 	    @Type(value = PieceMovedMessage.class, name = "PieceMovedMessage"),
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),
 	    @Type(value = PieceSelectedMessage.class, name = "PieceSelectedMessage"),
 	    @Type(value = PieceUnselectedMessage.class, name = "PieceUnselectedMessage"),
 	    @Type(value = PostMessageMessage.class, name = "PostMessageMessage"),
+	    @Type(value = RemoveMarkerMessage.class, name = "RemoveMarkerMessage"),
+	    @Type(value = RevealMarkerMessage.class, name = "RevealMarkerMessage"),
 	    @Type(value = RoomJoinedMessage.class, name = "RoomJoinedMessage"),
 	    @Type(value = RoomLeftMessage.class, name = "RoomLeftMessage"),
 	    @Type(value = StartGameMessage.class, name = "StartGameMessage"),
