@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.jme3.asset.AssetManager;
@@ -217,7 +216,8 @@ public class MapManager {
 			float y3d = tile.getZ() * TileMesh.HEX_SIZE_Y;
 			float z3d = (tile.getY()) * TileMesh.TRANSLATION_Z;
 			
-			addTileAndNeighbours(tile, vertices, texCoord, indexes, normals, notAddedYetTiles, x3d, y3d, z3d);
+			addTileToMesh(tile, vertices, texCoord, indexes, normals, x3d, y3d, z3d);
+			//addTileAndNeighbours(tile, vertices, texCoord, indexes, normals, notAddedYetTiles, x3d, y3d, z3d);
 		}
 
 		mapMesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices.toArray(new Vector3f[vertices.size()])));
@@ -250,8 +250,8 @@ public class MapManager {
 		return geo;
 	}
 
-	private void addTileAndNeighbours(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, Queue<Tile> notAddedYetTiles, float currentX, float currentY, float currentZ) {
-
+	
+	private void addTileToMesh(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, float currentX, float currentY, float currentZ) {
 		for (Direction dir : Direction.values()) {
 			Tile neighboor = tile.getNeighbours().get(dir);
 			if (neighboor == null || TileService.getInstance().isHalfTile(neighboor.getType())) {
@@ -262,40 +262,8 @@ public class MapManager {
 				normals.addAll(TileMesh.getNormals(dir));
 			}
 		}
-
-		for (Entry<Direction, Tile> entry : tile.getNeighbours().entrySet()) {
-			Tile neighbour = entry.getValue();
-			if (notAddedYetTiles.contains(neighbour)) {
-				notAddedYetTiles.remove(neighbour);
-				switch (entry.getKey()) {
-				case BOTTOM:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX, currentY - TileMesh.HEX_SIZE_Y, currentZ);
-					break;
-				case TOP:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX, currentY + TileMesh.HEX_SIZE_Y, currentZ);
-					break;
-				case NORTH_EAST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX + TileMesh.TRANSLATION_X, currentY, currentZ + TileMesh.TRANSLATION_Z);
-					break;
-				case EAST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX + 2 * TileMesh.TRANSLATION_X, currentY, currentZ);
-					break;
-				case SOUTH_EAST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX + TileMesh.TRANSLATION_X, currentY, currentZ - TileMesh.TRANSLATION_Z);
-					break;
-				case SOUTH_WEST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX - TileMesh.TRANSLATION_X, currentY, currentZ - TileMesh.TRANSLATION_Z);
-					break;
-				case WEST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX - 2* TileMesh.TRANSLATION_X, currentY, currentZ);
-					break;
-				case NORTH_WEST:
-					addTileAndNeighbours(neighbour, vertices, texCoord, indexes, normals, notAddedYetTiles, currentX - TileMesh.TRANSLATION_X, currentY, currentZ + TileMesh.TRANSLATION_Z);
-					break;
-				}
-			}
-		}
 	}
+	
 
 	private int[] toIntArray(List<Integer> list){
 		int[] ret = new int[list.size()];

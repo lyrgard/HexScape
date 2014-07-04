@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 import com.google.common.eventbus.Subscribe;
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
@@ -19,6 +20,8 @@ import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.player.Player;
 
 public class GameView extends AbstractView {
 
@@ -28,6 +31,8 @@ public class GameView extends AbstractView {
 		setLayout(new BorderLayout());
 		final JPanel leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+		leftPanel.setMaximumSize(new Dimension(180, Integer.MAX_VALUE));
+		
 		add(leftPanel, BorderLayout.LINE_START);
 
 		ArmiesTabbedPane armiesTabbedPane = new ArmiesTabbedPane();
@@ -47,9 +52,15 @@ public class GameView extends AbstractView {
 	
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
 		String gameId = message.getGameId();
-		DisplayMapMessage displayMap = new DisplayMapMessage(gameId);
-		CoreMessageBus.post(displayMap);
-		HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+		
+		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
+		
+		if (player != null && player.getGame() != null && gameId.equals(player.getGame().getId())) {
+		
+			DisplayMapMessage displayMap = new DisplayMapMessage(gameId);
+			CoreMessageBus.post(displayMap);
+			HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+		}
 	}
 
 	@Override

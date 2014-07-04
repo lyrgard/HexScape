@@ -54,12 +54,14 @@ public class MessageJsonMapperTest {
 		assertNotNull(m);
 	}
 	
-	private final static String ARMY_LOADED_MESSAGE_JSON = "{\"type\":\"ArmyLoadedMessage\",\"playerId\":\"playerId\",\"army\":{\"name\":\"armyName\",\"cardsById\":{\"cardInstance1\":{\"id\":\"cardInstance1\",\"cardTypeId\":\"cardTypeId1\",\"number\":1,\"markers\":[{\"type\":\"MarkerInstance\",\"markerDefinitionId\":\"markerDefinition1\"},{\"type\":\"StackableMarkerInstance\",\"markerDefinitionId\":\"markerDefinition2\",\"number\":2}]},\"cardInstance2\":{\"id\":\"cardInstance2\",\"cardTypeId\":\"cardTypeId2\",\"number\":2,\"markers\":[]}}}}";
+	private final static String ARMY_LOADED_MESSAGE_JSON = "{\"type\":\"ArmyLoadedMessage\",\"playerId\":\"playerId\",\"army\":{\"name\":\"armyName\",\"cardsById\":{\"cardInstance2\":{\"id\":\"cardInstance2\",\"cardTypeId\":\"cardTypeId2\",\"number\":2,\"markers\":[]},\"cardInstance1\":{\"id\":\"cardInstance1\",\"cardTypeId\":\"cardTypeId1\",\"number\":1,\"markers\":[{\"type\":\"MarkerInstance\",\"markerDefinitionId\":\"markerDefinition1\",\"id\":\"markerInstance1\"},{\"type\":\"StackableMarkerInstance\",\"markerDefinitionId\":\"markerDefinition2\",\"number\":2,\"id\":\"markerInstance2\"}]}}}}";
 	
 	@Test
 	public void testToJsonArmyLoaded() {
 		MarkerInstance marker1 = new MarkerInstance("markerDefinition1");
+		marker1.setId("markerInstance1");
 		StackableMarkerInstance marker2 = new StackableMarkerInstance("markerDefinition2", 2);
+		marker2.setId("markerInstance2");
 		CardInstance cardInstance1 = new CardInstance("cardInstance1", "cardTypeId1", 1);
 		cardInstance1.getMarkers().add(marker1);
 		cardInstance1.getMarkers().add(marker2);

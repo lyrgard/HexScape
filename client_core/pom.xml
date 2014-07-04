@@ -6,7 +6,7 @@
 	<version>0.0.4-SNAPSHOT</version>
 
 	<properties>
-		<jmonkey.version>3.0.0.20121220-SNAPSHOT</jmonkey.version>
+		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
 	</properties>
 	
 	<build>

@@ -42,6 +42,7 @@ public class HomeView extends AbstractView {
 //			}
 //		});
 		add(multiplayer);
+		//multiplayer.setEnabled(false);
 		GuiMessageBus.register(this);
 	}
 

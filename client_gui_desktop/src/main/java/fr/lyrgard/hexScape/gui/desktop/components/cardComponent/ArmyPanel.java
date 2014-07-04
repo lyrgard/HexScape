@@ -25,6 +25,7 @@ public class ArmyPanel extends JScrollPane {
 		setViewportView(armyPanel);
 		setPreferredSize(new Dimension(180, 500));
 		setMaximumSize(new Dimension(180, 500));
+		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 		
 		armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor())));
 	}

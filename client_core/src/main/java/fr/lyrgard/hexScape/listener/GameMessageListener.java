@@ -82,7 +82,13 @@ private static GameMessageListener instance;
 	}
 	
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
-		GuiMessageBus.post(message);
+		String gameId = message.getGameId();
+		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game != null) {
+			game.setStarted(true);
+			GuiMessageBus.post(message);
+		}
 	}
 	
 	@Subscribe public void onGameEnded(GameEndedMessage message) {

@@ -69,8 +69,6 @@ public class ArmyCardPanel extends JPanel {
 		setLayout(new BorderLayout());
 		markerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		add(markerPanel, BorderLayout.CENTER);
-
-		this.setSize(200, 50);
 		
 		CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 		
@@ -106,8 +104,10 @@ public class ArmyCardPanel extends JPanel {
 		border = BorderFactory.createTitledBorder(border, cardType.getName(), TitledBorder.LEFT, TitledBorder.TOP);
 		setBorder(border);
 
-		setPreferredSize(new Dimension(150, 120));
-		setMaximumSize(new Dimension(150, 120));
+		
+		setSize(180, 125);
+		setMaximumSize(new Dimension(175, 125));
+		setPreferredSize(new Dimension(175, 125));
 
 		GuiMessageBus.register(this);
 	}

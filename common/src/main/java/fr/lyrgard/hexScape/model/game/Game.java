@@ -16,6 +16,8 @@ public class Game {
 	private Map map;
 	
 	private int playerNumber;
+	
+	private boolean started;
 
 	private Collection<String> playersIds;
 	
@@ -74,5 +76,12 @@ public class Game {
 		return markersById;
 	}
 
-	
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public void setStarted(boolean started) {
+		this.started = started;
+	}
 }

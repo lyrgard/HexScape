@@ -9,11 +9,13 @@ import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
+import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.HeartBeatMessage;
+import fr.lyrgard.hexScape.message.InfoMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
@@ -37,6 +39,7 @@ import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.message.ThrowDiceMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
+import fr.lyrgard.hexScape.message.WarningMessage;
 
 @JsonTypeInfo(  
 	    use = JsonTypeInfo.Id.NAME,  
@@ -46,6 +49,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = ArmyLoadedMessage.class, name = "ArmyLoadedMessage"),
 		@Type(value = ConnectedToServerMessage.class, name = "ConnectedToServerMessage"),
 		@Type(value = CreateGameMessage.class, name = "CreateGameMessage"),
+		@Type(value = ErrorMessage.class, name = "ErrorMessage"),
 		@Type(value = DiceThrownMessage.class, name = "DiceThrownMessage"),
 		@Type(value = DisconnectedFromServerMessage.class, name = "DisconnectedFromServerMessage"),
 		@Type(value = GameCreatedMessage.class, name = "GameCreatedMessage"),
@@ -53,6 +57,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = GameJoinedMessage.class, name = "GameJoinedMessage"),
 		@Type(value = GameStartedMessage.class, name = "GameStartedMessage"),
 		@Type(value = HeartBeatMessage.class, name = "HeartBeatMessage"),
+		@Type(value = InfoMessage.class, name = "InfoMessage"),
 		@Type(value = JoinGameMessage.class, name = "JoinGameMessage"),
 		@Type(value = JoinRoomMessage.class, name = "JoinRoomMessage"),
 		@Type(value = LeaveRoomMessage.class, name = "LeaveRoomMessage"),
@@ -61,6 +66,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 		@Type(value = MarkerRevealedMessage.class, name = "MarkerRevealedMessage"),
 	    @Type(value = MessagePostedMessage.class, name = "MessagePostedMessage"),
 	    @Type(value = PlaceMarkerMessage.class, name = "PlaceMarkerMessage"),
+	    @Type(value = PlayerJoinedRoomMessage.class, name = "PlayerJoinedRoomMessage"),
 	    @Type(value = PieceMovedMessage.class, name = "PieceMovedMessage"),
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),
@@ -75,7 +81,7 @@ import fr.lyrgard.hexScape.message.UserInformationMessage;
 	    @Type(value = ThrowDiceMessage.class, name = "ThrowDiceMessage"),
 	    @Type(value = UserIdAllocatedMessage.class, name = "UserIdAllocatedMessage"),
 	    @Type(value = UserInformationMessage.class, name = "UserInformationMessage"),
-	    @Type(value = PlayerJoinedRoomMessage.class, name = "PlayerJoinedRoomMessage"),
+	    @Type(value = WarningMessage.class, name = "WarningMessage")
 	    }) 
 public interface PolymorphicMessageMixIn {
 

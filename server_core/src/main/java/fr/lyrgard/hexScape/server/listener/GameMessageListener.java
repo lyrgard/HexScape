@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
+import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
@@ -65,10 +66,17 @@ public class GameMessageListener {
 		String gameId = message.getGameId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
-		if (player != null && player.getRoom() != null && player.getRoom().getId() != null) {
-			GameStartedMessage resultMessage = new GameStartedMessage(playerId, gameId);
-			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+		if (player != null && player.getRoom() != null && player.getRoom().getId() != null && game != null && game.getPlayersIds().contains(playerId)) {
+			if (!game.isStarted()) {
+				game.setStarted(true);
+				GameStartedMessage resultMessage = new GameStartedMessage(playerId, gameId);
+				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+			} else {
+				ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to start the game : the game has already started");
+				ServerNetwork.getInstance().sendMessageToPlayer(resultMessage, playerId);
+			}
 		}
 	}
 	
@@ -81,11 +89,16 @@ public class GameMessageListener {
 		
 		if (player != null && game != null) {
 			if (player.getGame() == null && !game.getPlayersIds().contains(playerId) && game.getPlayerNumber() > game.getPlayersIds().size()) {
-				player.setGame(game);
-				game.getPlayersIds().add(playerId);
-				GameJoinedMessage resultMessage = new GameJoinedMessage(playerId, gameId); 
-				
-				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+				if (!game.isStarted()) {
+					player.setGame(game);
+					game.getPlayersIds().add(playerId);
+					GameJoinedMessage resultMessage = new GameJoinedMessage(playerId, gameId); 
+					
+					ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+				} else {
+					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game : the game has already started");
+					ServerNetwork.getInstance().sendMessageToPlayer(resultMessage, playerId);
+				}
 			}
 		}
 	}

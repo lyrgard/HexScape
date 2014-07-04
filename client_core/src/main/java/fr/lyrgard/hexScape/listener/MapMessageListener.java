@@ -14,7 +14,6 @@ import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.model.Scene;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class MapMessageListener extends AbstractMessageListener {
@@ -37,8 +36,10 @@ public class MapMessageListener extends AbstractMessageListener {
 		final File file = message.getMapFile();
 		
 		MapManager mapManager = MapManager.fromFile(file);
-						
-		CoreMessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
+		
+		if (mapManager != null) {
+			CoreMessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
+		}
 	}
 	
 	@Subscribe public void onMapLoaded(MapLoadedMessage message) {
