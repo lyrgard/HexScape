@@ -88,16 +88,7 @@ public class SelectedGamePanel extends JPanel {
 				DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId());
 				CoreMessageBus.post(displayMapMessage);
 
-				String title = getName();
-				if (game.isStarted()) {
-					title += " - ALREADY STARTED";
-				} else if (game.getPlayerNumber() > game.getPlayersIds().size()) {
-					title += " - WAITING PLAYERS";
-				} else {
-					title += " - READY TO START";
-				}
-
-				gameTitle.setText(title);
+				gameTitle.setText(getTitle());
 
 				playerListModel.removeAllPlayers();
 				boolean canJoin = !game.isStarted() && (game.getPlayerNumber() > game.getPlayersIds().size());
@@ -135,6 +126,18 @@ public class SelectedGamePanel extends JPanel {
 			}
 		});
 	}
+	
+	private String getTitle() {
+		String title = game.getName();
+		if (game.isStarted()) {
+			title += " - STARTED";
+		} else if (game.getPlayerNumber() > game.getPlayersIds().size()) {
+			title += " - WAITING PLAYERS";
+		} else {
+			title += " - READY TO START";
+		}
+		return title;
+	}
 
 	@Subscribe public void onGameEnded(GameEndedMessage message) {
 		final String gameId = message.getGameId();
@@ -168,17 +171,12 @@ public class SelectedGamePanel extends JPanel {
 							joinButton.setVisible(false);
 							startButton.setAction(new StartGameAction(gameId));
 							startButton.setVisible(true);
-							String title = getName();
-							if (game.isStarted()) {
-								title += " - ALREADY STARTED";
-							} else if (game.getPlayerNumber() > game.getPlayersIds().size()) {
-								title += " - WAITING PLAYERS";
-							} else {
-								title += " - READY TO START";
+						} else {
+							if (game.getPlayerNumber() <= game.getPlayersIds().size()) {
+								joinButton.setVisible(false);
 							}
-
-							gameTitle.setText(title);
 						}
+						gameTitle.setText(getTitle());
 					}
 				}
 
@@ -195,16 +193,8 @@ public class SelectedGamePanel extends JPanel {
 				public void run() {
 					joinButton.setVisible(false);
 					startButton.setVisible(false);
-					String title = getName();
-					if (game.isStarted()) {
-						title += " - ALREADY STARTED";
-					} else if (game.getPlayerNumber() > game.getPlayersIds().size()) {
-						title += " - WAITING PLAYERS";
-					} else {
-						title += " - READY TO START";
-					}
 
-					gameTitle.setText(title);
+					gameTitle.setText(getTitle());
 				}
 			});
 		}

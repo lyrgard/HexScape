@@ -11,7 +11,6 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.LoadMapMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
-import fr.lyrgard.hexScape.model.Scene;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.service.MapManager;
@@ -59,9 +58,7 @@ public class MapMessageListener extends AbstractMessageListener {
 				public Void call() throws Exception {
 					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
 
-					Scene scene = new Scene();
-					scene.setMapManager(mapManager);
-					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(scene);
+					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(mapManager);
 
 					HexScapeCore.getInstance().setMapManager(mapManager);
 

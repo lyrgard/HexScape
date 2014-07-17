@@ -18,7 +18,7 @@ public class ConnectToServerAction extends AbstractAction {
 
 	private String url = "localhost";
 	
-	private int port = ServerConstant.SERVER_PORT;
+	private int port = 4242;
 	
 	public ConnectToServerAction() {
 		super("Connect to server", icon);

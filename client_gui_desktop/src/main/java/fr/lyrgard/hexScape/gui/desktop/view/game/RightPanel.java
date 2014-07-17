@@ -69,9 +69,13 @@ public class RightPanel extends JPanel {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		if (player != null) {
-			PieceInstance piece = player.getPiecesById().get(pieceId);
-			if (piece != null) {
-				chatPanel.addPlayerAction(player, player.getName() + " moved " + piece.getModelId());
+			for (Player owner : Universe.getInstance().getPlayersByIds().values()) {
+				if (owner.getPiecesById().containsKey(pieceId)) {
+					PieceInstance piece = owner.getPiecesById().get(pieceId);
+					if (piece != null) {
+						chatPanel.addPlayerAction(player, player.getName() + " moved " + piece.getModelId());
+					}
+				}
 			}
 		}
 	}
@@ -82,9 +86,13 @@ public class RightPanel extends JPanel {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		if (player != null) {
-			PieceInstance piece = player.getPiecesById().get(pieceId);
-			if (piece != null) {
-				chatPanel.addPlayerAction(player, player.getName() + " removed " + piece.getModelId() + " from the map");
+			for (Player owner : Universe.getInstance().getPlayersByIds().values()) {
+				if (owner.getPiecesById().containsKey(pieceId)) {
+					PieceInstance piece = owner.getPiecesById().get(pieceId);
+					if (piece != null) {
+						chatPanel.addPlayerAction(player, player.getName() + " removed " + piece.getModelId() + " from the map");
+					}
+				}
 			}
 		}
 

@@ -62,12 +62,12 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING);
 	}
 	
-	public void addPiece(PieceManager piece) {
+	public void beginAddingPiece(PieceManager piece) {
 		placePieceByMouseAppState.setPieceToPlace(piece);
 		changeStateTo(State.ADDING_PIECE);
 	}
 	
-	public void moveSelectedPiece() {
+	public void beginMovingSelectedPiece() {
 		if (currentState == State.SELECTING_PIECE) {
 			changeStateTo(State.MOVING_PIECE);
 		}
@@ -264,6 +264,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				if (selectPieceByMouseAppState.selectPiece()) {
 					piece = selectPieceByMouseAppState.getSelectedPiece();
 					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId()));
+				} else {
+					return;
 				}
 				break;
 			case ADDING_PIECE:
@@ -272,6 +274,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 					CoreMessageBus.post(new PiecePlacedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getCard().getId(), piece.getPiece().getId(), piece.getPiece().getModelId(), piece.getPiece().getX(), piece.getPiece().getY(),piece.getPiece().getZ(), piece.getPiece().getDirection()));
 					selectPieceByMouseAppState.selectPiece(piece);
 					CoreMessageBus.post(new PieceSelectedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId()));
+				} else {
+					return;
 				}
 				break;
 			case MOVING_PIECE:
@@ -279,6 +283,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				if (placePieceByMouseAppState.placePiece()) {
 					CoreMessageBus.post(new PieceMovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId(), piece.getPiece().getX(), piece.getPiece().getY(),piece.getPiece().getZ(), piece.getPiece().getDirection()));
 					selectPieceByMouseAppState.selectPiece(piece);
+				} else {
+					return;
 				}
 				break;
 			default:

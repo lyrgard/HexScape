@@ -15,11 +15,11 @@ import com.jme3.shadow.DirectionalLightShadowRenderer;
 
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
-import fr.lyrgard.hexScape.model.Scene;
+import fr.lyrgard.hexScape.service.MapManager;
 
 public class HexScapeJme3Application extends SimpleApplication {
 	
-	private Scene scene;
+	private MapManager scene;
 	
 	private RotatingAroundCameraAppState rotatingAroundCameraAppState = new RotatingAroundCameraAppState();
 	
@@ -66,13 +66,13 @@ public class HexScapeJme3Application extends SimpleApplication {
         ready = true;
 	}
 
-	public Scene getScene() {
+	public MapManager getScene() {
 		return scene;
 	}
 	
 	
 
-	public void setScene(Scene scene) {
+	public void setScene(MapManager scene) {
 		if (this.scene != null) {
 			rootNode.detachChild(this.scene.getSpatial());
 		}

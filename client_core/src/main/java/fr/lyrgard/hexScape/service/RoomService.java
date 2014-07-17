@@ -4,7 +4,6 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
-import fr.lyrgard.hexScape.model.room.Room;
 
 public class RoomService {
 
@@ -26,7 +25,7 @@ public class RoomService {
 		game.setId(gameId);
 		game.setName(name);
 		game.setPlayerNumber(playerNumber);
-		game.setMap(HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMapManager().getMap());
+		game.setMap(HexScapeCore.getInstance().getHexScapeJme3Application().getScene().getMap());
 		game.getPlayersIds().add(playerId);
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);

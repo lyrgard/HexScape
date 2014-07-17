@@ -5,20 +5,16 @@ import java.util.Collection;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
-import com.jme3.light.AmbientLight;
 import com.jme3.math.FastMath;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.Camera;
-import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.service.PieceManager;
@@ -38,7 +34,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	
 	//private AmbientLight selectedLigth;
 	
-	private float selectMarkerY;
+	//private float selectMarkerY;
 	private float selectMarkerYOffset = 0.3f;
 	private float selectMarkerYVariation = 0.2f;
 	private float time = 0;

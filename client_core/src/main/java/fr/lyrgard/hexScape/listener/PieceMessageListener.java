@@ -46,7 +46,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 				public Void call() throws Exception {
 					String pieceId = playerId + "-" + player.getPiecesById().size();
 					PieceInstance piece = new PieceInstance(pieceId, pieceModelId, card);
-					HexScapeCore.getInstance().getMapManager().placePiece(new PieceManager(piece));
+					HexScapeCore.getInstance().getMapManager().beginPlacingPiece(new PieceManager(piece));
 					player.getPiecesById().put(piece.getId(), piece);
 					return null;
 				}
@@ -79,11 +79,12 @@ public class PieceMessageListener extends AbstractMessageListener {
 				piece.setDirection(direction);
 				final PieceManager pieceManager = new PieceManager(piece);
 				pieceManager.rotate(direction);
+				player.getPiecesById().put(piece.getId(), piece);
 				HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
 
 					@Override
 					public Void call() throws Exception {
-						HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z);
+						HexScapeCore.getInstance().getMapManager().placePiece(pieceManager, x, y, z, direction);
 						pieceManager.select(playerId);
 						return null;
 					}
@@ -110,7 +111,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 			}
 		} else {
 			// coming from another player, place the piece
-			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+			final MapManager mapManager = HexScapeCore.getInstance().getMapManager();
 			
 			if (mapManager != null) {
 				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
@@ -119,7 +120,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 
 						@Override
 						public Void call() throws Exception {
-							pieceManager.moveTo(x, y, z, direction);
+							mapManager.placePiece(pieceManager, x, y, z, direction);
 							return null;
 						}
 						
@@ -130,18 +131,19 @@ public class PieceMessageListener extends AbstractMessageListener {
 		GuiMessageBus.post(message);
 	}
 	
-	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {
+	@Subscribe public void onPieceRemoved(final PieceRemovedMessage message) {
 		final String playerId = message.getPlayerId();
 		final String pieceId = message.getPieceId();
 		
 		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
-			// coming from ourself, advertise the placement
+			// coming from ourself, advertise the removing
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);
 			}
+			GuiMessageBus.post(message);
 		} else {
 			// coming from another player, delete the piece
-			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+			final MapManager mapManager = HexScapeCore.getInstance().getMapManager();
 
 			if (mapManager != null) {
 				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
@@ -150,14 +152,15 @@ public class PieceMessageListener extends AbstractMessageListener {
 
 						@Override
 						public Void call() throws Exception {
-							pieceManager.remove();
+							mapManager.removePiece(pieceManager);
+							GuiMessageBus.post(message);
 							return null;
 						}
 					});
 				}
 			}			
 		}
-		GuiMessageBus.post(message);
+		
 	}
 	
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {

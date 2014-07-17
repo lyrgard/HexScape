@@ -145,22 +145,22 @@ public class ArmyCardPanel extends JPanel {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				String playerId = message.getPlayerId();
 				String pieceId = message.getPieceId();
 				
-				Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-				if (player != null) {
-					PieceInstance piece = player.getPiecesById().get(pieceId);
-					if (piece != null && piece.getCard() != null) {
-						String cardId = piece.getCard().getId();
-						if (card.getId().equals(cardId)) {
-							pieceLeftToPlace.add(piece.getModelId());
-							if (pieceLeftToPlace.size() == 1) {
-								addFigureButton.setEnabled(true);
+				for (Player player : Universe.getInstance().getPlayersByIds().values()) {
+					if (player.getPiecesById().containsKey(pieceId)) {
+						PieceInstance piece = player.getPiecesById().get(pieceId);
+						if (piece != null && piece.getCard() != null) {
+							String cardId = piece.getCard().getId();
+							if (card.getId().equals(cardId)) {
+								pieceLeftToPlace.add(piece.getModelId());
+								if (pieceLeftToPlace.size() == 1) {
+									addFigureButton.setEnabled(true);
+								}
+								selectNextPiece();
 							}
-							selectNextPiece();
+							
 						}
-						
 					}
 				}
 			}

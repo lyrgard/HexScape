@@ -56,14 +56,13 @@ public class PieceManager {
 				spacePos.y += TileMesh.HEX_SIZE_Y;
 			}
 			getSpatial().setLocalTranslation(spacePos);
+			piece.setX(x);
+			piece.setY(y);
+			piece.setZ(z);
 		}
 		if (direction != piece.getDirection()) {
 			rotate(direction);
 		}
-	}
-	
-	public void remove() {
-		HexScapeCore.getInstance().getMapManager().removePiece(this);
 	}
 	
 	public void select(String playerId) {

@@ -4,3 +4,5 @@
 **/.project
 lwjgl.dll
 OpenAL32.dll
+OpenAL64.dll
+lwjgl64.dll

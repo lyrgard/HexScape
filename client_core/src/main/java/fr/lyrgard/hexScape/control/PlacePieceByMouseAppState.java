@@ -52,7 +52,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		if (this.pieceToPlace != null) {
 			rootNode.detachChild(this.pieceToPlace.getSpatial());
 			if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene().contains(pieceToPlace)) {
-				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getPiece().getX(), pieceToPlace.getPiece().getY(), pieceToPlace.getPiece().getZ());
+				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getPiece().getX(), pieceToPlace.getPiece().getY(), pieceToPlace.getPiece().getZ(), pieceToPlace.getPiece().getDirection());
 			}
 		}
 		
@@ -89,8 +89,10 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		if (collision != null) {
 			Vector3i mapPos = CoordinateUtils.toMapCoordinate(collision.x, collision.y, collision.z);
 			
-			success = HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, mapPos.x, mapPos.y, mapPos.z);
-			setPieceToPlace(null);
+			success = HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, mapPos.x, mapPos.y, mapPos.z, pieceToPlace.getPiece().getDirection());
+			if (success) {
+				pieceToPlace = null;//setPieceToPlace(null);
+			}
 		}
 		return success;
 	}
