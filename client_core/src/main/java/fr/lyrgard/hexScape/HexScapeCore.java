@@ -14,6 +14,7 @@ import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.ConfigurationService;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class HexScapeCore {
@@ -36,7 +37,8 @@ public class HexScapeCore {
 
 	private HexScapeCore() {
 		instance = this;
-		Universe.getInstance().getPlayersByIds().put(playerId, new Player("Player2", ColorEnum.RED));
+		String username = ConfigurationService.getInstance().getUserName();
+		Universe.getInstance().getPlayersByIds().put(playerId, new Player(username, ColorEnum.RED));
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();
 		ChatMessageListener.start();

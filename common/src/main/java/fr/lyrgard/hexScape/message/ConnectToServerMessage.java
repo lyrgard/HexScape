@@ -7,21 +7,14 @@ public class ConnectToServerMessage extends AbstractUserMessage {
 	
 	private String host;
 	
-	private int port;
-	
 	@JsonCreator
-	public ConnectToServerMessage(@JsonProperty("playerId") String playerId, @JsonProperty("host") String host, @JsonProperty("port") int port) {
+	public ConnectToServerMessage(@JsonProperty("playerId") String playerId, @JsonProperty("host") String host) {
 		super(playerId);
 		this.host = host;
-		this.port = port;
 	}
 
 	public String getHost() {
 		return host;
-	}
-
-	public int getPort() {
-		return port;
 	}
 
 }

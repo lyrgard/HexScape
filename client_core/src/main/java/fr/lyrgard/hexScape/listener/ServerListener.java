@@ -31,13 +31,12 @@ public class ServerListener {
 	
 	@Subscribe public void onConnectToServerMessage(ConnectToServerMessage message) {
 		String host = message.getHost();
-		int port = message.getPort();
 		String playerId = HexScapeCore.getInstance().getPlayerId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
 		if (player != null) {
-			ClientNetwork.getInstance().connect(player, host, port);
+			ClientNetwork.getInstance().connect(player, host);
 		}
 	}
 	

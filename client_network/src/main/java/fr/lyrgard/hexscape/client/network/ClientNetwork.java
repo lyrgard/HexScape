@@ -29,12 +29,12 @@ public class ClientNetwork {
 
 	public static void main(String[] args) {
 		Player player = new Player("Player1", ColorEnum.BLUE);
-		getInstance().connect(player, "localhost", 4242);
+		getInstance().connect(player, "localhost:4242");
 	}
 	
-	public void connect(Player player, String host, int port) {
+	public void connect(Player player, String url) {
 		if (socket == null) {
-			String destUri = "ws://" + host + ":" + port;
+			String destUri = "ws://" + url;
 			client = new WebSocketClient();
 			socket = new ClientWebSocket(player);
 			try {

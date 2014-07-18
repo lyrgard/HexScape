@@ -10,6 +10,7 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.ConnectToServerAction;
+import fr.lyrgard.hexScape.gui.desktop.action.OpenConfigDialogAction;
 import fr.lyrgard.hexScape.gui.desktop.action.OpenNewGameDialogAction;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
@@ -42,6 +43,11 @@ public class HomeView extends AbstractView {
 //			}
 //		});
 		add(multiplayer);
+		
+		
+		JButton configButton = new JButton(new OpenConfigDialogAction(getTopLevelAncestor()));
+		add(configButton);
+		
 		//multiplayer.setEnabled(false);
 		GuiMessageBus.register(this);
 	}
