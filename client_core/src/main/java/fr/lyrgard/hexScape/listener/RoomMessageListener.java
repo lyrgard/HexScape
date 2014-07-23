@@ -1,5 +1,7 @@
 package fr.lyrgard.hexScape.listener;
 
+import java.util.Iterator;
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
@@ -36,14 +38,22 @@ public class RoomMessageListener {
 			player.setRoom(room);
 		}
 		
-		for (Player otherPlayers : room.getPlayers()) {
+		Iterator<Player> it = room.getPlayers().iterator();
+		while (it.hasNext()) {
+			Player otherPlayers = it.next();
 			if (!otherPlayers.getId().equals(HexScapeCore.getInstance().getPlayerId())) {
 				if (otherPlayers.getColor() == player.getColor()) {
 					otherPlayers.setColor(ColorService.getInstance().getNextColorThatIsNot(player.getColor()));
 				}
 				Universe.getInstance().getPlayersByIds().put(otherPlayers.getId(), otherPlayers);
+			} else {
+				// We need to replace ourself in the list by our own Player object (already created)
+				// so remove the player to is ourself
+				it.remove();
 			}
 		}
+		// add our own Player object
+		room.getPlayers().add(player);
 		for (Game game : room.getGames()) {
 			Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
 		}

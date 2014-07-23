@@ -2,8 +2,10 @@ package fr.lyrgard.hexScape.gui.desktop.view.game;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 
 import javax.swing.BoxLayout;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.Subscribe;
@@ -12,6 +14,7 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
+import fr.lyrgard.hexScape.gui.desktop.action.LeaveGameAction;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.ArmiesTabbedPane;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedCardPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedPiecePanel;
@@ -19,6 +22,7 @@ import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -26,6 +30,8 @@ import fr.lyrgard.hexScape.model.player.Player;
 public class GameView extends AbstractView {
 
 	private static final long serialVersionUID = 2076159331208010791L;
+	
+	private JButton leaveGameButton;
 
 	public GameView(final View3d view3d) {
 		setLayout(new BorderLayout());
@@ -37,12 +43,12 @@ public class GameView extends AbstractView {
 
 		ArmiesTabbedPane armiesTabbedPane = new ArmiesTabbedPane();
 		
+		leaveGameButton = new JButton();
+		
 		leftPanel.add(armiesTabbedPane);
 		leftPanel.add(new SelectedCardPanel());
 		leftPanel.add(new SelectedPiecePanel());
-		
-		add(view3d, BorderLayout.CENTER);
-		
+		leftPanel.add(leaveGameButton);
 
 		add(new RightPanel(), BorderLayout.LINE_END);
 		
@@ -51,17 +57,41 @@ public class GameView extends AbstractView {
 	}
 	
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
-		String gameId = message.getGameId();
+		final String gameId = message.getGameId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
 		
-		if (player != null && player.getGame() != null && gameId.equals(player.getGame().getId())) {
+		if (player != null && player.getGameId() != null && gameId.equals(player.getGameId())) {
 		
 			DisplayMapMessage displayMap = new DisplayMapMessage(gameId);
 			CoreMessageBus.post(displayMap);
-			HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					leaveGameButton.setAction(new LeaveGameAction(gameId));
+					HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+				}
+			});
 		}
 	}
+	
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String playerId = message.getPlayerId();
+		
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					if (HexScapeCore.getInstance().isOnline()) {
+						HexScapeFrame.getInstance().showView(ViewEnum.ROOM);
+					} else {
+						HexScapeFrame.getInstance().showView(ViewEnum.HOME);
+					}
+				}
+			});
+		}
+	}
+	
 
 	@Override
 	public void refresh() {

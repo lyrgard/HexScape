@@ -10,6 +10,7 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -47,6 +48,8 @@ public class SelectedGamePanel extends JPanel {
 
 		setLayout(new BorderLayout());
 
+		gameTitle.setFont(gameTitle.getFont().deriveFont(25f));
+		gameTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		add(gameTitle, BorderLayout.PAGE_START);
 
 		playerListModel = new PlayerListModel();
@@ -106,7 +109,7 @@ public class SelectedGamePanel extends JPanel {
 				if (canJoin) {
 					Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
 					if (player != null) {
-						if (player.getGame() != null) {
+						if (player.getGameId() != null) {
 							canJoin = false;
 						}
 					}
@@ -126,7 +129,7 @@ public class SelectedGamePanel extends JPanel {
 			}
 		});
 	}
-	
+
 	private String getTitle() {
 		String title = game.getName();
 		if (game.isStarted()) {
@@ -187,16 +190,18 @@ public class SelectedGamePanel extends JPanel {
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
 		final String gameId = message.getGameId();
 
-		if (gameId != null && gameId.equals(game.getId())) {
-			EventQueue.invokeLater(new Runnable() {
+		if (HexScapeCore.getInstance().isOnline()) {
+			if (gameId != null && game != null && gameId.equals(game.getId())) {
+				EventQueue.invokeLater(new Runnable() {
 
-				public void run() {
-					joinButton.setVisible(false);
-					startButton.setVisible(false);
+					public void run() {
+						joinButton.setVisible(false);
+						startButton.setVisible(false);
 
-					gameTitle.setText(getTitle());
-				}
-			});
+						gameTitle.setText(getTitle());
+					}
+				});
+			}
 		}
 	}
 }

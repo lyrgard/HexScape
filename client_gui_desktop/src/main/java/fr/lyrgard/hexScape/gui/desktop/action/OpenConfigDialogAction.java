@@ -22,6 +22,7 @@ public class OpenConfigDialogAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ConfigDialog configDialog = new ConfigDialog(parent);
+		configDialog.setModal(true);
 		configDialog.setVisible(true);
 	}
 }

@@ -1,6 +1,8 @@
 package fr.lyrgard.hexScape.service;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -8,6 +10,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.common.io.ByteStreams;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -65,6 +68,17 @@ public class MapManager {
 
 	public static MapManager fromFile(File file) {		
 		return mapReader.readMap(file);
+	}
+	
+	public static MapManager fromInputStream(InputStream stream) {
+		byte[] bytes;
+		try {
+			bytes = ByteStreams.toByteArray(stream);
+			return mapReader.readMap(bytes, "");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	public void beginPlacingPiece(PieceManager piece) {

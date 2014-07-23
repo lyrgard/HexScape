@@ -18,13 +18,14 @@ public class OpenNewGameDialogAction extends AbstractAction {
 	private Component parent;
 	
 	public OpenNewGameDialogAction(boolean muliplayer, Component parent) {
-		super("Start new game", icon);
+		super("Create new game", icon);
 		this.muliplayer = muliplayer;
 		this.parent = parent;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		NewGameDialog newGameDialog = new NewGameDialog(muliplayer, parent);
+		newGameDialog.setModal(true);
 		newGameDialog.setVisible(true);
 	}
 

@@ -9,7 +9,10 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
+import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -23,6 +26,12 @@ public class ArmiesTabbedPane extends JTabbedPane {
 	public ArmiesTabbedPane() {
 		addTab("Your army", yourArmyPanel);
 		GuiMessageBus.register(this);
+	}
+	
+	public void empty() {
+		removeAll();
+		yourArmyPanel.setArmy(null, null);
+		addTab("Your army", yourArmyPanel);
 	}
 
 	@Subscribe public void onArmyLoaded(final ArmyLoadedMessage message) {
@@ -44,6 +53,19 @@ public class ArmiesTabbedPane extends JTabbedPane {
 				}
 			}
 		});
+	}
+	
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String playerId = message.getPlayerId();
+		
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					empty();
+				}
+			});
+		}
 	}
 
 }

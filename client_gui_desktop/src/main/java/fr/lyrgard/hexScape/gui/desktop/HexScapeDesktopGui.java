@@ -26,6 +26,7 @@ public class HexScapeDesktopGui {
 		settings.setWidth(1024);
 		settings.setWidth(768);
 		
+		
 		app.getHexScapeJme3Application().setShowSettings(false);
 		app.getHexScapeJme3Application().setSettings(settings);
 		

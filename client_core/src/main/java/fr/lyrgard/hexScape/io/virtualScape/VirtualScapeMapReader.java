@@ -26,17 +26,10 @@ import fr.lyrgard.hexScape.service.MapManager;
 
 public class VirtualScapeMapReader {
 	
-	
-
-	public MapManager readMap(File mapFile) {
+	public MapManager readMap(byte[] bytes, String name) {
 		ByteBuffer bB = null;
-		try {
-			byte[] bytes = Files.readAllBytes(mapFile.toPath());
-			bB = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN );
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		bB = ByteBuffer.wrap(bytes).order(ByteOrder.LITTLE_ENDIAN );
 		
 		VirtualScapeMap virtualScapeMap = new VirtualScapeMap();
 		
@@ -83,7 +76,18 @@ public class VirtualScapeMapReader {
 			virtualScapeMap.getTiles().add(tile);
 		}
 
-		return toMap(virtualScapeMap, mapFile.getName());
+		return toMap(virtualScapeMap,name);
+	}
+
+	public MapManager readMap(File mapFile) {
+		try {
+			byte[] bytes = Files.readAllBytes(mapFile.toPath());
+			return readMap(bytes, mapFile.getName());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 

@@ -74,8 +74,8 @@ public class HexScapeCore {
 
 	public String getGameId() {
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getGame() != null) {
-			return player.getGame().getId();
+		if (player != null && player.getGameId() != null) {
+			return player.getGameId();
 		} else {
 			return "";
 		}

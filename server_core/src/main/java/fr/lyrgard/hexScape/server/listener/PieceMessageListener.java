@@ -36,8 +36,8 @@ public class PieceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
 		}
 				
 	}
@@ -51,8 +51,8 @@ public class PieceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
 		}
 	}
 	
@@ -61,8 +61,8 @@ public class PieceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
 		}
 	}
 	
@@ -71,8 +71,8 @@ public class PieceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
 		}
 	}
 	
@@ -81,8 +81,8 @@ public class PieceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGame().getId(), playerId);
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
 		}
 	}
 }

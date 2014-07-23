@@ -38,11 +38,15 @@ public class ArmyPanel extends JScrollPane {
 	public void setArmy(Army army, String playerId) {
 		this.playerId = playerId;
 		armyPanel.removeAll();
-		for (CardInstance card : army.getCardsById().values()) {
-			armyPanel.add(new ArmyCardPanel(card, playerId));
+		if (army != null) {
+			for (CardInstance card : army.getCardsById().values()) {
+				armyPanel.add(new ArmyCardPanel(card, playerId));
 
+			}
+			armyPanel.validate();
+			armyPanel.repaint();
+		} else {
+			armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor())));
 		}
-		armyPanel.validate();
-		armyPanel.repaint();
 	}
 }

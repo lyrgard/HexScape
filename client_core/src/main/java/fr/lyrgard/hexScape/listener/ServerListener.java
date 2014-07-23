@@ -13,6 +13,7 @@ import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexscape.client.network.ClientNetwork;
 
 public class ServerListener {
@@ -86,7 +87,7 @@ public class ServerListener {
 		HexScapeCore.getInstance().setOnline(true);
 		GuiMessageBus.post(message);
 		
-		JoinRoomMessage resultMessage = new JoinRoomMessage(playerId, "hexscape"); 
+		JoinRoomMessage resultMessage = new JoinRoomMessage(playerId, Room.DEFAULT_ROOM_ID); 
 		ClientNetwork.getInstance().send(resultMessage);
 	}
 	

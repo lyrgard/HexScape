@@ -44,8 +44,6 @@ public class HexScapeFrame extends JFrame {
 	}
 
 	private View3d view3d;
-
-	private BackgroundPanel bgPanel;
 	
 	private final CardLayout layout = new CardLayout();
 
@@ -70,20 +68,15 @@ public class HexScapeFrame extends JFrame {
 		}
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-		ImageIcon image = new ImageIcon(HexScapeFrame.class.getResource("/gui/images/background.jpg"));
-		bgPanel = new BackgroundPanel(image.getImage());
-		bgPanel.setTransparentAdd(true);
-		add(bgPanel);
 		
-		bgPanel.setLayout(layout);
+		setLayout(layout);
 
 		viewsMap.put(ViewEnum.HOME, new HomeView());
 		viewsMap.put(ViewEnum.ROOM, new RoomView());
 		viewsMap.put(ViewEnum.GAME, new GameView(view3d));
 
 		for (Entry<ViewEnum, AbstractView> entry : viewsMap.entrySet()) {
-			bgPanel.add(entry.getValue(), entry.getKey().name());
+			add(entry.getValue(), entry.getKey().name());
 		}
 		showView(ViewEnum.HOME);
 
@@ -101,7 +94,7 @@ public class HexScapeFrame extends JFrame {
 	}
 
 	public void showView(ViewEnum view) {
-		layout.show(bgPanel, view.name());
+		layout.show(getContentPane(), view.name());
 		viewsMap.get(view).refresh();
 	}
 

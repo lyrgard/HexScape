@@ -13,11 +13,13 @@ import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
+import fr.lyrgard.hexScape.message.LeaveGameMessage;
 import fr.lyrgard.hexScape.message.LeaveRoomMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
@@ -55,11 +57,13 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 		@Type(value = GameCreatedMessage.class, name = "GameCreatedMessage"),
 		@Type(value = GameEndedMessage.class, name = "GameEndedMessage"),
 		@Type(value = GameJoinedMessage.class, name = "GameJoinedMessage"),
+		@Type(value = GameLeftMessage.class, name = "GameLeftMessage"),
 		@Type(value = GameStartedMessage.class, name = "GameStartedMessage"),
 		@Type(value = HeartBeatMessage.class, name = "HeartBeatMessage"),
 		@Type(value = InfoMessage.class, name = "InfoMessage"),
 		@Type(value = JoinGameMessage.class, name = "JoinGameMessage"),
 		@Type(value = JoinRoomMessage.class, name = "JoinRoomMessage"),
+		@Type(value = LeaveGameMessage.class, name = "LeaveGameMessage"),
 		@Type(value = LeaveRoomMessage.class, name = "LeaveRoomMessage"),
 		@Type(value = MarkerPlacedMessage.class, name = "MarkerPlacedMessage"),
 		@Type(value = MarkerRemovedMessage.class, name = "MarkerRemovedMessage"),

@@ -7,9 +7,12 @@ import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
+import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
+import fr.lyrgard.hexScape.message.LeaveGameMessage;
 import fr.lyrgard.hexScape.message.MessagePostedMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.Universe;
@@ -51,7 +54,7 @@ public class GameMessageListener {
 			game.setMap(map);
 			game.setPlayerNumber(playerNumber);
 			game.getPlayersIds().add(player.getId());
-			player.setGame(game);
+			player.setGameId(gameId);
 			Universe.getInstance().getGamesByGameIds().put(gameId, game);
 			player.getRoom().getGames().add(game);
 			
@@ -88,9 +91,9 @@ public class GameMessageListener {
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (player != null && game != null) {
-			if (player.getGame() == null && !game.getPlayersIds().contains(playerId) && game.getPlayerNumber() > game.getPlayersIds().size()) {
+			if (player.getGameId() == null && !game.getPlayersIds().contains(playerId) && game.getPlayerNumber() > game.getPlayersIds().size()) {
 				if (!game.isStarted()) {
-					player.setGame(game);
+					player.setGameId(game.getId());
 					game.getPlayersIds().add(playerId);
 					GameJoinedMessage resultMessage = new GameJoinedMessage(playerId, gameId); 
 					
@@ -99,6 +102,29 @@ public class GameMessageListener {
 					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game : the game has already started");
 					ServerNetwork.getInstance().sendMessageToPlayer(resultMessage, playerId);
 				}
+			}
+		}
+	}
+	
+	@Subscribe public void onLeaveGame(LeaveGameMessage message) {
+		String gameId = message.getGameId();
+		String playerId = message.getPlayerId();
+		
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		
+		if (player != null && game != null) {
+			player.setGameId(null);
+			game.getPlayersIds().remove(player.getId());
+			
+			GameLeftMessage resultMessage = new GameLeftMessage(playerId, gameId);
+			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+			
+			if (game.getPlayersIds().isEmpty()) {
+				player.getRoom().getGames().remove(game);
+				Universe.getInstance().getGamesByGameIds().remove(game.getId());
+				GameEndedMessage returnMessage3 = new GameEndedMessage(game.getId());
+				ServerNetwork.getInstance().sendMessageToRoom(returnMessage3, player.getRoom().getId());
 			}
 		}
 	}
@@ -116,8 +142,9 @@ public class GameMessageListener {
 		//Army army = message.getArmy();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getGame() != null) {
-			ServerNetwork.getInstance().sendMessageToGame(message, player.getGame().getId());
+		if (player != null && player.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGame(message, player.getGameId());
 		}
 	}
+	
 }

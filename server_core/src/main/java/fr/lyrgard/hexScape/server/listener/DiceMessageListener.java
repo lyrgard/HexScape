@@ -34,12 +34,12 @@ public class DiceMessageListener {
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 
-		if (player != null && player.getGame() != null) {
+		if (player != null && player.getGameId() != null) {
 			List<Integer> results = new ArrayList<>();
 			for (int i = 0; i < number; i++) {
 				results.add(roll(numberOfFaces));
 			}
-			ServerNetwork.getInstance().sendMessageToGame(new DiceThrownMessage(playerId, diceTypeId, results), player.getGame().getId());
+			ServerNetwork.getInstance().sendMessageToGame(new DiceThrownMessage(playerId, diceTypeId, results), player.getGameId());
 		}
 	}
 

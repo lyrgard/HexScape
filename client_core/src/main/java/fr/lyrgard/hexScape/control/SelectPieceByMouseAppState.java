@@ -145,7 +145,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	public void update(float tpf) {
 		super.update(tpf);
 		
-		time = time + 2 * tpf;
+		time = (time + 2 * tpf) % (Float.MAX_VALUE);
 		Collection<SelectMarker> selectMarkers = SelectMarkerService.getInstance().getSelectMarkers();
 		int i = 0;
 		int number = selectMarkers.size();

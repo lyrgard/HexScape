@@ -56,12 +56,27 @@ public class GameListModel extends AbstractListModel<Game> {
 		games.add(game);
 		setGames(games);
 	}
+	
+	public void redraw() {
+		fireContentsChanged(this, 0, games.size());
+	}
 
 	private static class GameNameComparator implements Comparator<Game> {
 
 		public int compare(Game g1, Game g2) {
-			return g1.getName().compareTo(g2.getName());
+			if (g1.isStarted()) {
+				if (g2.isStarted()) {
+					return g1.getName().compareTo(g2.getName());
+				} else {
+					return 1;
+				}
+			} else {
+				if (g2.isStarted()) {
+					return -1;
+				} else {
+					return g1.getName().compareTo(g2.getName());
+				}
+			}
 		}
-		
 	}
 }

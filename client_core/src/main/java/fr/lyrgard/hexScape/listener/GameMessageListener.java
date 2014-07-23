@@ -11,8 +11,10 @@ import fr.lyrgard.hexScape.message.CreateGameMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
+import fr.lyrgard.hexScape.message.LeaveGameMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
@@ -64,7 +66,7 @@ private static GameMessageListener instance;
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 		if (player != null) {
 			Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
-			player.setGame(game);
+			player.setGameId(game.getId());
 			GuiMessageBus.post(message);
 		}
 		
@@ -101,7 +103,7 @@ private static GameMessageListener instance;
 			for (String playerId : game.getPlayersIds()) {
 				Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 				if (player != null) {
-					player.setGame(null);
+					player.setGameId(null);
 				}
 			}
 			String roomId = HexScapeCore.getInstance().getRoomId();
@@ -132,8 +134,35 @@ private static GameMessageListener instance;
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (player != null && game != null) {
-			player.setGame(game);
+			player.setGameId(game.getId());
 			game.getPlayersIds().add(playerId);
+			
+			GuiMessageBus.post(message);
+		}
+	}
+	
+	@Subscribe public void onLeaveGame(LeaveGameMessage message) {
+		if (HexScapeCore.getInstance().isOnline()) {
+			ClientNetwork.getInstance().send(message);
+		} else {
+			String playerId = message.getPlayerId();
+			String gameId = message.getGameId();
+			GameLeftMessage resultMessage = new GameLeftMessage(playerId, gameId);
+			CoreMessageBus.post(resultMessage);
+		}
+	}
+	
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String gameId = message.getGameId();
+		String playerId = message.getPlayerId();
+		
+		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		
+		if (player != null && game != null) {
+			player.setGameId(null);
+			player.setArmy(null);
+			game.getPlayersIds().remove(playerId);
 			
 			GuiMessageBus.post(message);
 		}

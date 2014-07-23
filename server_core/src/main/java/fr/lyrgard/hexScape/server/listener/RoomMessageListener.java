@@ -50,38 +50,6 @@ public class RoomMessageListener  {
 		}
 	}
 	
-	@Subscribe public void onRoomLeft(DisconnectedFromServerMessage message) {
-		String playerId = message.getPlayerId();
-		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null) {
-			Room room = player.getRoom();
-			Game game = player.getGame();
-
-			if (room != null) {
-				room.getPlayers().remove(player);
-				player.setRoom(null);
-
-				DisconnectedFromServerMessage returnMessage = new DisconnectedFromServerMessage(playerId);
-				ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage, room.getId(), playerId);
-				
-				if (game != null) {
-					game.getPlayersIds().remove(playerId);
-					player.setGame(null);
-					if (game.getPlayersIds().isEmpty()) {
-						room.getGames().remove(game);
-						Universe.getInstance().getGamesByGameIds().remove(game.getId());
-						GameEndedMessage returnMessage2 = new GameEndedMessage(game.getId());
-						ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage2, room.getId(), playerId);
-					}
-				}
-			}
-			
-			Universe.getInstance().getPlayersByIds().remove(playerId);
-		}
-	}
-	
 	@Subscribe public void onMessagePosted(MessagePostedMessage message) {
 		String roomId = message.getRoomId();
 		

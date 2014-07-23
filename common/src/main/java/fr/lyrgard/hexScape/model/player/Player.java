@@ -6,7 +6,6 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import fr.lyrgard.hexScape.model.card.Army;
-import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -23,9 +22,8 @@ public class Player {
 	
 	@JsonIgnore
 	private Room room;
-	
-	@JsonIgnore
-	private Game game;
+
+	private String gameId;
 	
 	@JsonIgnore
 	private Map<String, PieceInstance> piecesById = new HashMap<>(); 
@@ -84,12 +82,12 @@ public class Player {
 		this.room = room;
 	}
 
-	public Game getGame() {
-		return game;
+	public String getGameId() {
+		return gameId;
 	}
 
-	public void setGame(Game game) {
-		this.game = game;
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
 	}
 
 	@Override

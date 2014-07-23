@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game;
 
+import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.diceComponent.DiceTabbedPane;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
@@ -211,5 +213,18 @@ public class RightPanel extends JPanel {
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
 		String gameId = message.getGameId();
 		chatPanel.setGameId(gameId);
+	}
+	
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String playerId = message.getPlayerId();
+		
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					chatPanel.clearText();
+				}
+			});
+		}
 	}
 }
