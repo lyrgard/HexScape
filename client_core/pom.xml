@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.lyrgard.hexscape</groupId>
 	<artifactId>hexscape_client_core</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>1.0.0-alpha1</version>
 
 	<properties>
 		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>

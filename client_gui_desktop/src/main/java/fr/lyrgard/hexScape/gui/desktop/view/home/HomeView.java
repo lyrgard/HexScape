@@ -125,14 +125,9 @@ public class HomeView extends AbstractView {
 				return null;
 			}
 		});
-		EventQueue.invokeLater(new Runnable() {
-
-			public void run() {
-				View3d view3d = HexScapeFrame.getInstance().getView3d();
-				view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
-				add(view3d, BorderLayout.CENTER);
-			}
-		});
+		View3d view3d = HexScapeFrame.getInstance().getView3d();
+		view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
+		add(view3d, BorderLayout.CENTER);
 	}
 
 	@Subscribe public void onGameCreated(GameCreatedMessage message) {

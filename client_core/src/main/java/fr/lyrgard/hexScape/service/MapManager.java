@@ -12,6 +12,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.io.ByteStreams;
 import com.jme3.asset.AssetManager;
+import com.jme3.light.AmbientLight;
+import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
@@ -62,6 +64,8 @@ public class MapManager {
 		this.map = map;
 		sceneNode = new Node("sceneNode");
 		selectablePieceNode = new Node("selectablePiece");
+		Light light = new AmbientLight();
+		selectablePieceNode.addLight(light);
 
 		sceneNode.attachChild(selectablePieceNode);
 	}

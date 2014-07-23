@@ -33,6 +33,7 @@ import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.CardService;
@@ -56,30 +57,30 @@ public class RightPanel extends JPanel {
 	}
 	
 	@Subscribe public void onPiecePlaced(PiecePlacedMessage message) {
-		String playerId = message.getPlayerId();
-		String modelId = message.getModelId();
-		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null) {
-			chatPanel.addPlayerAction(player, player.getName() + " added " + modelId + " to the map");
-		}
+//		String playerId = message.getPlayerId();
+//		String modelId = message.getModelId();
+//		
+//		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+//		if (player != null) {
+//			chatPanel.addPlayerAction(player, player.getName() + " added " + modelId + " to the map");
+//		}
 	}
 	
 	@Subscribe public void onPieceMoved(PieceMovedMessage message) {
-		String playerId = message.getPlayerId();
-		String pieceId = message.getPieceId();
-		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null) {
-			for (Player owner : Universe.getInstance().getPlayersByIds().values()) {
-				if (owner.getPiecesById().containsKey(pieceId)) {
-					PieceInstance piece = owner.getPiecesById().get(pieceId);
-					if (piece != null) {
-						chatPanel.addPlayerAction(player, player.getName() + " moved " + piece.getModelId());
-					}
-				}
-			}
-		}
+//		String playerId = message.getPlayerId();
+//		String pieceId = message.getPieceId();
+//		
+//		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+//		if (player != null) {
+//			for (Player owner : Universe.getInstance().getPlayersByIds().values()) {
+//				if (owner.getPiecesById().containsKey(pieceId)) {
+//					PieceInstance piece = owner.getPiecesById().get(pieceId);
+//					if (piece != null) {
+//						chatPanel.addPlayerAction(player, player.getName() + " moved " + piece.getModelId());
+//					}
+//				}
+//			}
+//		}
 	}
 	
 	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {
@@ -141,11 +142,11 @@ public class RightPanel extends JPanel {
 	@Subscribe public void onMarkerPlaced(MarkerPlacedMessage message) {
 		String playerId = message.getPlayerId();
 		String cardId = message.getCardId();
-		String markerId = message.getMarkerId();
+		String markerTypeId = message.getMarkerTypeId();
 		int number = message.getNumber();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
+		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
 		
 		if (player != null && markerDefinition != null) {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
@@ -169,11 +170,17 @@ public class RightPanel extends JPanel {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
 			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			if (card != null) {
-				MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
+				for (MarkerInstance marker : card.getMarkers()) {
+					if (marker.getId().equals(markerId)) {
+						MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
 
-				if (markerDefinition != null) {
-					chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
+						if (markerDefinition != null) {
+							chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
+						}
+						break;
+					}
 				}
+				
 			}
 		}
 	}
@@ -185,14 +192,22 @@ public class RightPanel extends JPanel {
 		String markerId = message.getMarkerId();
 		
 		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerId);
 		
-		if (player != null && markerDefinition != null) {
+		if (player != null) {
 			CardInstance card = player.getArmy().getCardsById().get(cardId);
 			CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 			
 			if (card != null) {
-				chatPanel.addPlayerAction(player, "player " + player.getName() + " revealed " + markerDefinition.getName() + " on " + cardType.getName());
+				for (MarkerInstance marker : card.getMarkers()) {
+					if (marker.getId().equals(markerId)) {
+						MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
+
+						if (markerDefinition != null) {
+							chatPanel.addPlayerAction(player, "player " + player.getName() + " revealed " + markerDefinition.getName() + " on " + cardType.getName());
+						}
+						break;
+					}
+				}
 			}
 		}
 	}

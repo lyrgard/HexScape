@@ -13,7 +13,7 @@ public class ConfigurationService {
 	private static final String CONFIG_FILENAME = "config.properties";
 	
 	private static final String USER_NAME_KEY = "user.name";
-	private static final String USER_COLOR_KEY = "user.color";
+	//private static final String USER_COLOR_KEY = "user.color";
 	private static final String SERVER_HOST_KEY = "server.host";
 
 	
@@ -40,7 +40,7 @@ public class ConfigurationService {
 		properties = new Properties();
 		// set the properties value
 		properties.setProperty(USER_NAME_KEY, "Player");
-		properties.setProperty(SERVER_HOST_KEY, "localhost:4242");
+		properties.setProperty(SERVER_HOST_KEY, "hexscape.lyrgard.fr:4242");
 			 
 		save();
 	}
