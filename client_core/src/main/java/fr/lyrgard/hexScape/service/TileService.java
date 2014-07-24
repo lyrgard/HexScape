@@ -68,6 +68,7 @@ public class TileService {
 		halfSizes.put(TileType.SHADOW,Boolean.TRUE);
 		halfSizes.put(TileType.CONCRETE,Boolean.FALSE);
 		halfSizes.put(TileType.ASPHALT,Boolean.FALSE);
+		halfSizes.put(TileType.INVISIBLE,Boolean.FALSE);
 	}
 	
 	public TileTexture getTopTexture(TileType tileType) {

@@ -15,5 +15,6 @@ public enum TileType {
 	DUNGEON, 
 	SHADOW,
 	CONCRETE, 
-	ASPHALT;
+	ASPHALT,
+	INVISIBLE;
 }

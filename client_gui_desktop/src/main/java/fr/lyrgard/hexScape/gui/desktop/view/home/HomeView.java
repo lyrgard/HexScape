@@ -142,13 +142,23 @@ public class HomeView extends AbstractView {
 		Type type = message.getType();
 		switch (type) {
 		case SOLO:
-			new OpenNewGameDialogAction(false, getTopLevelAncestor()).actionPerformed(null);
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					new OpenNewGameDialogAction(false, getTopLevelAncestor()).actionPerformed(null);
+				}
+			});
 			break;
 		case MULTIPLAYER:
 			new ConnectToServerAction().actionPerformed(null);
 			break;
 		case CONFIG:
-			new OpenConfigDialogAction(getTopLevelAncestor()).actionPerformed(null);
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					new OpenConfigDialogAction(getTopLevelAncestor()).actionPerformed(null);
+				}
+			});
 			break;
 		}
 	}

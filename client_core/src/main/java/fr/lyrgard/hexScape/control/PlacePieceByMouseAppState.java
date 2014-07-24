@@ -113,7 +113,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
         // Aim the ray from the clicked spot forwards.
         Ray ray = new Ray(click3d, dir);
         // Collect intersections between ray and all nodes in results list.
-        Spatial mapSpatial = HexScapeCore.getInstance().getMapManager().getMapWithoutDecorsSpatial();
+        Spatial mapSpatial = HexScapeCore.getInstance().getMapManager().getMapWithoutDecorsNode();
         if (mapSpatial != null) {
         	mapSpatial.collideWith(ray, results);
         }

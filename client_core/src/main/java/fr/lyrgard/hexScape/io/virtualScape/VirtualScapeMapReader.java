@@ -202,6 +202,8 @@ public class VirtualScapeMapReader {
 				addSingleTilesToMap(mapManager, 3, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
 			} else if (type == VirtualScapeDecorType.OUTCROP_1) {
 				addSingleTilesToMap(mapManager, 1, decor.getRotation(), TileType.SHADOW, x, y, decor.getPosZ());
+			} else if (type == VirtualScapeDecorType.CASTLE_LADDER) {
+				addSingleTilesToMap(mapManager, 1, decor.getRotation(), TileType.INVISIBLE, x, y, decor.getPosZ());
 			}
 			
 		}

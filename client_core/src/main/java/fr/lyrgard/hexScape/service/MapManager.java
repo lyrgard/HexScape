@@ -15,10 +15,13 @@ import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.Light;
 import com.jme3.material.Material;
+import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -55,7 +58,7 @@ public class MapManager {
 
 	private Node mapNode;
 
-	private Spatial mapWithoutDecorsSpatial;
+	private Node mapWithoutDecorsNode;
 
 	private java.util.Map<String, PieceManager> pieceManagersByPieceIds = new ConcurrentHashMap<String, PieceManager>();
 
@@ -73,7 +76,7 @@ public class MapManager {
 	public static MapManager fromFile(File file) {		
 		return mapReader.readMap(file);
 	}
-	
+
 	public static MapManager fromInputStream(InputStream stream) {
 		byte[] bytes;
 		try {
@@ -143,7 +146,7 @@ public class MapManager {
 		List<Tile> tiles = getTiles(x, y);
 		int minDistanceZ = Integer.MAX_VALUE;
 		for (Tile tile : tiles) {
-			int distanceZ = Math.abs(tile.getZ() - z);
+			int distanceZ = Math.abs(tile.getZ() - z + 1);
 			if (distanceZ < minDistanceZ) {
 				minDistanceZ = distanceZ;
 				nearestTile = tile;
@@ -159,9 +162,12 @@ public class MapManager {
 			java.util.Map<Integer, Tile> byY = byZ.get(y);
 			if (byY != null) {
 				Tile tile = byY.get(x);
-				if (tile != null && tile.getNeighbours().get(Direction.TOP) == null) {
-					// if the tile doesn't have a tile on top of it, we add it
-					results.add(tile);
+				if (tile != null) {
+					Tile topNeighbours = tile.getNeighbours().get(Direction.TOP);
+					if (topNeighbours == null || topNeighbours.getType() == TileType.INVISIBLE) {
+						// if the tile doesn't have a tile on top of it, we add it
+						results.add(tile);
+					}
 				}
 			}
 		}
@@ -206,10 +212,15 @@ public class MapManager {
 
 		if (mapNode == null) {
 			mapNode = new Node("mapNode");
-			mapWithoutDecorsSpatial = getMapSpatial();
+			mapWithoutDecorsNode = new Node("mapWithoutDecorsNode");
+			Spatial visibleMap = getMapSpatial();
+			Spatial invisibleMap = getInvisibleTilesSpatial();
 			Collection<Spatial> decorNodes = getDecorsSpatials();
 
-			mapNode.attachChild(mapWithoutDecorsSpatial);
+			mapNode.attachChild(mapWithoutDecorsNode);
+			mapWithoutDecorsNode.attachChild(visibleMap);
+			mapWithoutDecorsNode.attachChild(invisibleMap);
+
 			for (Spatial decorNode : decorNodes) {
 				mapNode.attachChild(decorNode);
 			}
@@ -252,7 +263,9 @@ public class MapManager {
 		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
-					notAddedYetTiles.add(tile);
+					if (tile.getType() != TileType.INVISIBLE) {
+						notAddedYetTiles.add(tile);
+					}
 				}
 			}
 		}
@@ -298,18 +311,77 @@ public class MapManager {
 		return geo;
 	}
 
+	private Spatial getInvisibleTilesSpatial() {
+		Mesh invisibleTilesMesh = new Mesh();
+
+		List<Vector3f> vertices = new ArrayList<Vector3f>();
+		List<Integer> indexes = new ArrayList<Integer>();
+		List<Vector3f> normals = new ArrayList<Vector3f>();
+		Queue<Tile> notAddedYetTiles = new LinkedList<>();
+
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
+				for (Tile tile : byY.values()) {
+					if (tile.getType() == TileType.INVISIBLE) {
+						notAddedYetTiles.add(tile);
+					}
+				}
+			}
+		}
+
+		while (notAddedYetTiles.size() != 0) {
+			Tile tile = notAddedYetTiles.poll();
+
+			float x3d = (2 * tile.getX() + tile.getY()) * TileMesh.TRANSLATION_X;
+			float y3d = tile.getZ() * TileMesh.HEX_SIZE_Y;
+			float z3d = (tile.getY()) * TileMesh.TRANSLATION_Z;
+
+			addTileDirectionToMesh(tile, vertices, null, indexes, normals, x3d, y3d, z3d, Direction.TOP);
+		}
+
+		invisibleTilesMesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices.toArray(new Vector3f[vertices.size()])));
+		invisibleTilesMesh.setBuffer(Type.Index,    3, BufferUtils.createIntBuffer(toIntArray(indexes)));
+		invisibleTilesMesh.setBuffer(Type.Normal,   3, BufferUtils.createFloatBuffer(normals.toArray(new Vector3f[normals.size()])));
+
+		invisibleTilesMesh.updateBound();
+
+		Geometry geo = new Geometry("invisibleTilesMesh", invisibleTilesMesh);
+
+		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
+
+
+		Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		mat.setColor("Color", new ColorRGBA(1, 1, 1, 0));
+		mat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
+
+
+
+		geo.setMaterial(mat);
+		geo.setQueueBucket(Bucket.Translucent);
+		geo.setShadowMode(ShadowMode.Off);
+
+
+		return geo;
+	}
+
 
 	private void addTileToMesh(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, float currentX, float currentY, float currentZ) {
 		for (Direction dir : Direction.values()) {
 			Tile neighboor = tile.getNeighbours().get(dir);
-			if (neighboor == null || TileService.getInstance().isHalfTile(neighboor.getType())) {
-				int firstIndex = vertices.size();
-				vertices.addAll(TileMesh.getVertices(dir, tile.getType(), currentX, currentY, currentZ));
-				texCoord.addAll(TileMesh.getTexCoord(dir, tile.getType()));
-				indexes.addAll(TileMesh.getIndex(dir, firstIndex));
-				normals.addAll(TileMesh.getNormals(dir));
+			if (neighboor == null || neighboor.getType() == TileType.INVISIBLE || TileService.getInstance().isHalfTile(neighboor.getType())) {
+				addTileDirectionToMesh(tile, vertices, texCoord, indexes, normals, currentX, currentY, currentZ, dir);
 			}
 		}
+	}
+
+	private void addTileDirectionToMesh(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, float currentX, float currentY, float currentZ, Direction dir) {
+		int firstIndex = vertices.size();
+		vertices.addAll(TileMesh.getVertices(dir, tile.getType(), currentX, currentY, currentZ));
+		if (texCoord != null) {
+			texCoord.addAll(TileMesh.getTexCoord(dir, tile.getType()));
+		}
+		indexes.addAll(TileMesh.getIndex(dir, firstIndex));
+		normals.addAll(TileMesh.getNormals(dir));
 	}
 
 
@@ -320,8 +392,8 @@ public class MapManager {
 		return ret;
 	}
 
-	public Spatial getMapWithoutDecorsSpatial() {
-		return mapWithoutDecorsSpatial;
+	public Spatial getMapWithoutDecorsNode() {
+		return mapWithoutDecorsNode;
 	}
 
 	public java.util.Map<String, PieceManager> getPieceManagersByPieceIds() {
