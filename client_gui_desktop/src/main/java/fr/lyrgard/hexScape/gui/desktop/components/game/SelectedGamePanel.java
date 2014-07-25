@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.border.EmptyBorder;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -69,6 +70,8 @@ public class SelectedGamePanel extends JPanel {
 
 		startButton = new JButton("Start");
 		buttonPanel.add(startButton);
+		
+		setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		GuiMessageBus.register(this);
 	}

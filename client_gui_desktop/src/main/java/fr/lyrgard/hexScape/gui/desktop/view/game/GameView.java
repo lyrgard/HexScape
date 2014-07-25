@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import com.google.common.eventbus.Subscribe;
@@ -14,10 +12,6 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
-import fr.lyrgard.hexScape.gui.desktop.action.LeaveGameAction;
-import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.ArmiesTabbedPane;
-import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedCardPanel;
-import fr.lyrgard.hexScape.gui.desktop.components.cardComponent.SelectedPiecePanel;
 import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
@@ -31,24 +25,26 @@ public class GameView extends AbstractView {
 
 	private static final long serialVersionUID = 2076159331208010791L;
 	
-	private JButton leaveGameButton;
+	//private JButton leaveGameButton;
 
 	public GameView(final View3d view3d) {
 		setLayout(new BorderLayout());
-		final JPanel leftPanel = new JPanel();
-		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+		final JPanel leftPanel = new LeftPanel();
+		//leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setMaximumSize(new Dimension(180, Integer.MAX_VALUE));
 		
 		add(leftPanel, BorderLayout.LINE_START);
 
-		ArmiesTabbedPane armiesTabbedPane = new ArmiesTabbedPane();
+//		ArmiesTabbedPane armiesTabbedPane = new ArmiesTabbedPane();
 		
-		leaveGameButton = new JButton();
-		
-		leftPanel.add(armiesTabbedPane);
-		leftPanel.add(new SelectedCardPanel());
-		leftPanel.add(new SelectedPiecePanel());
-		leftPanel.add(leaveGameButton);
+//		leaveGameButton = new JButton();
+//		//SelectedCardPanel selectedCardPanel = new SelectedCardPanel();
+//		
+//		
+//		leftPanel.add(armiesTabbedPane);
+//		leftPanel.add(new SelectedCardPanel());
+//		//leftPanel.add(new SelectedPiecePanel());
+//		leftPanel.add(leaveGameButton);
 
 		add(new RightPanel(), BorderLayout.LINE_END);
 		
@@ -68,7 +64,7 @@ public class GameView extends AbstractView {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
-					leaveGameButton.setAction(new LeaveGameAction(gameId));
+					//leaveGameButton.setAction(new LeaveGameAction(gameId));
 					HexScapeFrame.getInstance().showView(ViewEnum.GAME);
 				}
 			});

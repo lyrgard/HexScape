@@ -22,15 +22,21 @@ import fr.lyrgard.hexScape.service.TileService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class PlacePieceByMouseAppState extends AbstractAppState {
-	
+
+	private static final float MINIMAL_MOUSE_MOVE_TO_MOVE_PIECE = 0.1f;
+
 	private PieceManager pieceToPlace;
-	
+
 	private InputManager inputManager;
-	
+
 	private Camera cam;
-	
+
 	private Node rootNode;
-	
+
+	private boolean movedEnoughToInitMove;
+
+	private Vector2f initialMousePosition;
+
 	@Override
 	public void initialize(AppStateManager stateManager, Application app) {
 		super.initialize(stateManager, app);
@@ -55,16 +61,27 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getPiece().getX(), pieceToPlace.getPiece().getY(), pieceToPlace.getPiece().getZ(), pieceToPlace.getPiece().getDirection());
 			}
 		}
-		
+
 		this.pieceToPlace = newPieceToPlace;
 	}
-	
+
 	@Override
 	public void update(float tpf) {
 		super.update(tpf);
-		
-		Vector3f collision = getMapCollisionPoint();
-			
+
+		Vector2f mousePosition = inputManager.getCursorPosition();
+
+		if (!movedEnoughToInitMove) {
+			float move = initialMousePosition.distance(mousePosition);
+			if (move > MINIMAL_MOUSE_MOVE_TO_MOVE_PIECE) {
+				movedEnoughToInitMove = true;
+			} else {
+				return;
+			}
+		}
+
+		Vector3f collision = getMapCollisionPoint(mousePosition);
+
 		if (collision != null) {
 			if (HexScapeCore.getInstance().getMapManager() != null) {
 				Vector3i mapPos = CoordinateUtils.toMapCoordinate(collision.x, collision.y, collision.z);
@@ -82,13 +99,13 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 			}
 		}
 	}
-	
+
 	public boolean placePiece() {
 		boolean success = false;
-		Vector3f collision = getMapCollisionPoint();
+		Vector3f collision = getMapCollisionPoint(inputManager.getCursorPosition());
 		if (collision != null) {
 			Vector3i mapPos = CoordinateUtils.toMapCoordinate(collision.x, collision.y, collision.z);
-			
+
 			success = HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, mapPos.x, mapPos.y, mapPos.z, pieceToPlace.getPiece().getDirection());
 			if (success) {
 				pieceToPlace = null;//setPieceToPlace(null);
@@ -96,45 +113,50 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		}
 		return success;
 	}
-	
+
+	public boolean hasMovedEnoughToInitMove() {
+		return movedEnoughToInitMove;
+	}
+
 	public void cancelPlacement() {
 		setPieceToPlace(null);
 	}
 
-	private Vector3f getMapCollisionPoint() {
+	private Vector3f getMapCollisionPoint(Vector2f click2d) {
 		Vector3f collision = null;
-		
+
 		// Reset results list.
-        CollisionResults results = new CollisionResults();
-        // Convert screen click to 3d position
-        Vector2f click2d = inputManager.getCursorPosition();
-        Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
-        Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
-        // Aim the ray from the clicked spot forwards.
-        Ray ray = new Ray(click3d, dir);
-        // Collect intersections between ray and all nodes in results list.
-        Spatial mapSpatial = HexScapeCore.getInstance().getMapManager().getMapWithoutDecorsNode();
-        if (mapSpatial != null) {
-        	mapSpatial.collideWith(ray, results);
-        }
+		CollisionResults results = new CollisionResults();
+		// Convert screen click to 3d position
+		Vector3f click3d = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 0f).clone();
+		Vector3f dir = cam.getWorldCoordinates(new Vector2f(click2d.x, click2d.y), 1f).subtractLocal(click3d).normalizeLocal();
+		// Aim the ray from the clicked spot forwards.
+		Ray ray = new Ray(click3d, dir);
+		// Collect intersections between ray and all nodes in results list.
+		Spatial mapSpatial = HexScapeCore.getInstance().getMapManager().getMapWithoutDecorsNode();
+		if (mapSpatial != null) {
+			mapSpatial.collideWith(ray, results);
+		}
 		// 5. Use the results 
 		if (results.size() > 0) {
 			// The closest result is the target that the player picked:
 			//Geometry target = results.getClosestCollision().getGeometry();
 			collision = results.getClosestCollision().getContactPoint();
-			
+
 			CoordinateUtils.centerPosOnHex(collision);
-			
+
 		} 
-		
+
 		return collision;
 	}
 
 	@Override
 	public void setEnabled(boolean enabled) {
 		super.setEnabled(enabled);
-		
+
 		if (enabled) {
+			initialMousePosition = new Vector2f(inputManager.getCursorPosition());
+			movedEnoughToInitMove = false;
 			if (pieceToPlace != null) {
 				rootNode.attachChild(pieceToPlace.getSpatial());
 			}

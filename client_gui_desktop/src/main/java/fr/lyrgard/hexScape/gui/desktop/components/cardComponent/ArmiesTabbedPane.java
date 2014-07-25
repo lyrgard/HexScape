@@ -9,8 +9,6 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
-import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.model.Universe;
@@ -25,6 +23,7 @@ public class ArmiesTabbedPane extends JTabbedPane {
 	
 	public ArmiesTabbedPane() {
 		addTab("Your army", yourArmyPanel);
+		//setBorder(new LineBorder(Color.red, 2));
 		GuiMessageBus.register(this);
 	}
 	

@@ -280,11 +280,13 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				break;
 			case MOVING_PIECE:
 				piece = placePieceByMouseAppState.getPieceToPlace();
-				if (placePieceByMouseAppState.placePiece()) {
-					CoreMessageBus.post(new PieceMovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId(), piece.getPiece().getX(), piece.getPiece().getY(),piece.getPiece().getZ(), piece.getPiece().getDirection()));
-					selectPieceByMouseAppState.selectPiece(piece);
-				} else {
-					return;
+				if (placePieceByMouseAppState.hasMovedEnoughToInitMove()) {
+					if (placePieceByMouseAppState.placePiece()) {
+						CoreMessageBus.post(new PieceMovedMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId(), piece.getPiece().getX(), piece.getPiece().getY(),piece.getPiece().getZ(), piece.getPiece().getDirection()));
+						selectPieceByMouseAppState.selectPiece(piece);
+					} else {
+						return;
+					}
 				}
 				break;
 			default:

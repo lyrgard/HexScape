@@ -51,8 +51,9 @@ public class ChatPanel extends JPanel{
 		
 		setLayout(new BorderLayout());
 		
-		textPane = new JTextPane();
+		textPane = new WrapTextPane();
 		textPane.setEditable(false);
+		
 		JScrollPane scrollPane = new JScrollPane(textPane);
 		
 		Style defaultStyle = textPane.getStyle("default");

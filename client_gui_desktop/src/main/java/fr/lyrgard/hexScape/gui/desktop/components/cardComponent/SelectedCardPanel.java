@@ -1,7 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.components.cardComponent;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
@@ -18,6 +17,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.ShowCardAction;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.model.Universe;
@@ -38,8 +38,8 @@ public class SelectedCardPanel extends JPanel {
 	public SelectedCardPanel() {
 
 
-		setPreferredSize(new Dimension(150, 200));
-		setMaximumSize(new Dimension(150, 200));
+		//setPreferredSize(new Dimension(200, 200));
+		//setMaximumSize(new Dimension(-1, 200));
 
 		setLayout(new BorderLayout(0, 0));
 		buttonPanel = new JPanel();
@@ -47,6 +47,8 @@ public class SelectedCardPanel extends JPanel {
 		buttonPanel.setOpaque(false);
 		this.add(buttonPanel,BorderLayout.PAGE_END);
 
+		//setBorder(new LineBorder(Color.RED, 2));
+		
 		GuiMessageBus.register(this);
 	}
 
@@ -90,6 +92,22 @@ public class SelectedCardPanel extends JPanel {
 
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
 		final String playerId = message.getPlayerId();
+
+		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					buttonPanel.removeAll();
+					image = null;
+					validate();
+					repaint();
+				}
+			});
+		}
+	}
+
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String playerId = message.getPlayerId();
 
 		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
 			EventQueue.invokeLater(new Runnable() {

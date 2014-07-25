@@ -1,7 +1,5 @@
 package fr.lyrgard.hexScape.gui.desktop.components.cardComponent;
 
-import java.awt.Dimension;
-
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -23,8 +21,8 @@ public class ArmyPanel extends JScrollPane {
 		armyPanel = new JPanel();
 		armyPanel.setLayout(new BoxLayout(armyPanel, BoxLayout.Y_AXIS));
 		setViewportView(armyPanel);
-		setPreferredSize(new Dimension(180, 500));
-		setMaximumSize(new Dimension(180, 500));
+		//setPreferredSize(new Dimension(180, 500));
+		//setMaximumSize(new Dimension(180, 500));
 		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 		
 		armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor())));

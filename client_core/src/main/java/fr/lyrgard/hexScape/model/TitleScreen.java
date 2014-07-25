@@ -68,16 +68,16 @@ public class TitleScreen implements Displayable {
 			
 			
 			
-			float x = 39;
+			float x = 45;
 			float y = 30;
 			buttons.attachChild(new TitleScreenButton(Type.CONFIG, "title/config.png", x, y));
 			
-			x = 20.1f;
+			x = 27f;
 			y = -19.5f;
 			buttons.attachChild(new TitleScreenButton(Type.MULTIPLAYER, "title/multiplayer.png", x, y));
 			
 			
-			x = -15.8f;
+			x = -9f;
 			y = 23.6f;
 			buttons.attachChild(new TitleScreenButton(Type.SOLO, "title/solo.png", x, y));
 			
