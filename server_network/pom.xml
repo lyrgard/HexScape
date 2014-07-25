@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>fr.lyrgard.hexscape</groupId>
 	<artifactId>hexscape_server_network</artifactId>
-	<version>1.0.0-alpha1</version>
+	<version>1.0.0-alpha2</version>
 
 	<build>
 		<plugins>
