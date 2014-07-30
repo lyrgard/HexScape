@@ -9,27 +9,36 @@ import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 
-public class TitleScreenButton extends Geometry {
+public class TitleScreenSprite extends Geometry {
 	
-	private static final float SIZE = 12.12435f;
+	private static final Quaternion ROTATION = new Quaternion().fromAngleAxis(90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X).mult(new Quaternion().fromAngleAxis(180 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
 	
 	private float x;
 	private float y;
+	private float sizeX;
+	private float sizeY;
 	private Type type;
+	private TitleScreenSprite label;
+	private Node labelNode;
 	
 	public enum Type {
-		SOLO, MULTIPLAYER, CONFIG;
+		SOLO, MULTIPLAYER, CONFIG, SPRITE;
 	}
 
-	public TitleScreenButton(Type type, String image, float x, float y) {
+	public TitleScreenSprite(Type type, String image, float x, float y, float sizeX, float sizeY, TitleScreenSprite label, Node labelNode) {
 		this.x = x;
 		this.y = y;
 		this.type = type;
+		this.sizeX = sizeX;
+		this.sizeY = sizeY;
+		this.label = label;
+		this.labelNode = labelNode;
 		
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		
@@ -37,13 +46,13 @@ public class TitleScreenButton extends Geometry {
 		Texture configTex = assetManager.loadTexture(image);
 		configMat.setTexture("ColorMap", configTex);
 		configMat.getAdditionalRenderState().setBlendMode(BlendMode.Alpha);
-		Quad config = new Quad(SIZE, SIZE, true);
-		setMesh(config);
+		Quad quad = new Quad(sizeX, sizeY, false);
+		setMesh(quad);
 		setMaterial(configMat);
 		setQueueBucket(Bucket.Translucent);  
 		setShadowMode(ShadowMode.Off);
-		setLocalRotation(new Quaternion().fromAngleAxis(-90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
-		setLocalTranslation(-SIZE/2 - x, 1, +SIZE/2 - y);
+		setLocalRotation(ROTATION);
+		setLocalTranslation(-x + sizeX/2, 1, y - sizeY/2);
 	}
 	
 	public Type getType() {
@@ -53,12 +62,20 @@ public class TitleScreenButton extends Geometry {
 	public void selected() {
 		float scale = 1.1f;
 		setLocalScale(scale);
-		float newSize = SIZE * scale;
-		setLocalTranslation(-newSize/2 - x, 1, +newSize/2 - y);
+		float newSize = sizeX * scale;
+		setLocalTranslation(-x + newSize/2, 1, y - newSize/2);
+		if (labelNode != null && label != null) {
+			labelNode.attachChild(label);
+		}
 	}
 	
 	public void notSelected() {
 		setLocalScale(1f);
-		setLocalTranslation(-SIZE/2 - x, 1, +SIZE/2 - y);
+		setLocalTranslation(-x + sizeX/2, 1, y - sizeY/2);
+		if (labelNode != null && label != null) {
+			labelNode.detachChild(label);
+		}
 	}
+	
+	
 }

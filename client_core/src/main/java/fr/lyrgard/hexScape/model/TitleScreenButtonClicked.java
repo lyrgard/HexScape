@@ -1,7 +1,7 @@
 package fr.lyrgard.hexScape.model;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
-import fr.lyrgard.hexScape.model.TitleScreenButton.Type;
+import fr.lyrgard.hexScape.model.TitleScreenSprite.Type;
 
 public class TitleScreenButtonClicked extends AbstractMessage {
 

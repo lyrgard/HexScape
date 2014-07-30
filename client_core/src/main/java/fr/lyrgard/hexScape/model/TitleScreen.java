@@ -17,10 +17,12 @@ import com.jme3.scene.shape.Quad;
 import com.jme3.texture.Texture;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.TitleScreenButton.Type;
+import fr.lyrgard.hexScape.model.TitleScreenSprite.Type;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class TitleScreen implements Displayable {
+	
+	private static final float BUTTON_SIZE = 12.12435f;
 	
 	private static final TitleScreen INSTANCE = new TitleScreen();
 	
@@ -48,9 +50,10 @@ public class TitleScreen implements Displayable {
 			MapManager map = MapManager.fromInputStream(stream);
 			Spatial mapSpatial = map.getSpatial();
 			
+			
 			mapSpatial.setLocalRotation(new Quaternion().fromAngleAxis(210 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
 			BoundingVolume bv = mapSpatial.getWorldBound();
-			mapSpatial.setLocalTranslation(-bv.getCenter().x, 0, -bv.getCenter().z);
+			mapSpatial.setLocalTranslation(-bv.getCenter().x + 10, 0, -bv.getCenter().z);
 			
 			node.attachChild(mapSpatial);
 			//node.attachChild(SkyFactory.createSky(HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(), "title/background.jpg", true));
@@ -66,22 +69,36 @@ public class TitleScreen implements Displayable {
 //	        bgMaterial.setFloat("Shininess", 50f);
 			AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 			
+			float sizeX = 13.15f;
+			float sizeY = 12;
+			float x = 35 + BUTTON_SIZE/2 + sizeX/2 + 1;
+			float y = -28f;
+			TitleScreenSprite configLabel = new TitleScreenSprite(Type.SPRITE, "title/configLabel.png", x, y, sizeX, sizeY, null, null);
+			x = 35;
+			y = -28;
+			buttons.attachChild(new TitleScreenSprite(Type.CONFIG, "title/config.png", x, y, BUTTON_SIZE, BUTTON_SIZE, configLabel, node));
 			
+			sizeX = 30;
+			sizeY = 8;
+			x = 17f - BUTTON_SIZE/2 - sizeX/2;
+			y = 21f;
+			TitleScreenSprite multiplayerLabel = new TitleScreenSprite(Type.SPRITE, "title/multiplayerLabel.png", x, y, sizeX, sizeY, null, null);
+			x = 17f;
+			y = 19.4f;
+			buttons.attachChild(new TitleScreenSprite(Type.MULTIPLAYER, "title/multiplayer.png", x, y, BUTTON_SIZE, BUTTON_SIZE, multiplayerLabel, node));
 			
-			float x = 45;
-			float y = 30;
-			buttons.attachChild(new TitleScreenButton(Type.CONFIG, "title/config.png", x, y));
+			sizeX = 30;
+			sizeY = 8;
+			x = -18.5f + BUTTON_SIZE/2 + sizeX/2;
+			y = -26.5f;
+			TitleScreenSprite soloLabel = new TitleScreenSprite(Type.SPRITE, "title/soloLabel.png", x, y, sizeX, sizeY, null, null);
+			x = -18.5f;
+			y = -23.6f;
+			buttons.attachChild(new TitleScreenSprite(Type.SOLO, "title/solo.png", x, y, BUTTON_SIZE, BUTTON_SIZE, soloLabel, node));
 			
-			x = 27f;
-			y = -19.5f;
-			buttons.attachChild(new TitleScreenButton(Type.MULTIPLAYER, "title/multiplayer.png", x, y));
-			
-			
-			x = -9f;
-			y = 23.6f;
-			buttons.attachChild(new TitleScreenButton(Type.SOLO, "title/solo.png", x, y));
-			
-			
+			x=14;
+			y=-14;
+			node.attachChild(new TitleScreenSprite(Type.SPRITE, "title/subtitle.png", x, y, 16, 9, null, null));
 		
 			
 			Material backgroundMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");

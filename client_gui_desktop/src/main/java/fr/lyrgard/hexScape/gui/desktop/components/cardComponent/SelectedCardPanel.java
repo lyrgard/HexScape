@@ -17,6 +17,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.ShowCardAction;
+import fr.lyrgard.hexScape.gui.desktop.message.CardSelectedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
@@ -51,6 +52,30 @@ public class SelectedCardPanel extends JPanel {
 		
 		GuiMessageBus.register(this);
 	}
+	
+	private void displayCard(CardType cardType) {
+		buttonPanel.removeAll();
+		image = null;
+		if (cardType != null) {
+			try {
+				image = ImageIO.read(new File(cardType.getFolder(), "card.jpg"));
+				image = image.getScaledInstance(-1, 200, Image.SCALE_SMOOTH);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			buttonPanel.add(new JButton(new ShowCardAction(cardType)));
+
+		}
+		validate();
+		repaint();
+	}
+	
+	@Subscribe public void onCardSelected(CardSelectedMessage message) {
+		String cardTypeId = message.getCardTypeId();
+		
+		CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardTypeId);
+		displayCard(card);
+	}
 
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
 		final String playerId = message.getPlayerId();
@@ -68,20 +93,7 @@ public class SelectedCardPanel extends JPanel {
 							CardInstance cardInstance = player.getArmy().getCardsById().get(cardId);
 							if (cardInstance != null) {
 								CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardInstance.getCardTypeId());
-								buttonPanel.removeAll();
-								image = null;
-								if (card != null) {
-									try {
-										image = ImageIO.read(new File(card.getFolder(), "card.jpg"));
-										image = image.getScaledInstance(-1, 200, Image.SCALE_SMOOTH);
-									} catch (IOException e) {
-										e.printStackTrace();
-									}
-									buttonPanel.add(new JButton(new ShowCardAction(card)));
-
-								}
-								validate();
-								repaint();
+								displayCard(card);
 							}
 						}
 					}
@@ -89,6 +101,7 @@ public class SelectedCardPanel extends JPanel {
 			});
 		}
 	}
+
 
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
 		final String playerId = message.getPlayerId();

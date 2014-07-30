@@ -52,8 +52,6 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		assetManager.registerLocator("", FileLocator.class);
 		
-		cam.setLocation(new Vector3f(0, 100, 0));
-		cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
 	
 		rotatingAroundCameraAppState.setRotateAroundNode(null);
 		

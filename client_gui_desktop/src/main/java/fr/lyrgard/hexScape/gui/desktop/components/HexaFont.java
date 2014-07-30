@@ -17,7 +17,7 @@ public class HexaFont {
 	public static Font getFont() {
 		if (font == null) {
 			try {
-				font = Font.createFont(Font.TRUETYPE_FONT, HexaFont.class.getResourceAsStream("/gui/font/Hexamatter.ttf"));
+				font = Font.createFont(Font.TRUETYPE_FONT, HexaFont.class.getResourceAsStream("/gui/font/Hexa.ttf"));
 			} catch (FontFormatException | IOException e) {
 				GuiMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Error while loading font Hexamatter"));
 				font = UIManager.getDefaults().getFont("TextField.font");

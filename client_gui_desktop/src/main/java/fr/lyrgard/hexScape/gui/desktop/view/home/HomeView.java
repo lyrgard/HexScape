@@ -33,7 +33,7 @@ import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
-import fr.lyrgard.hexScape.model.TitleScreenButton.Type;
+import fr.lyrgard.hexScape.model.TitleScreenSprite.Type;
 import fr.lyrgard.hexScape.model.TitleScreenButtonClicked;
 
 public class HomeView extends AbstractView {

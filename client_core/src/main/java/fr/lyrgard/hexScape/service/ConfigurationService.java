@@ -8,6 +8,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.player.Player;
+
 public class ConfigurationService {
 	
 	private static final String CONFIG_FILENAME = "config.properties";
@@ -95,6 +99,9 @@ public class ConfigurationService {
 	 
 			// save properties to project root folder
 			properties.store(output, null);
+			
+			Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
+			player.setName(getUserName());
 	 
 		} catch (IOException io) {
 			io.printStackTrace();

@@ -17,7 +17,7 @@ import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.model.TitleScreen;
-import fr.lyrgard.hexScape.model.TitleScreenButton;
+import fr.lyrgard.hexScape.model.TitleScreenSprite;
 import fr.lyrgard.hexScape.model.TitleScreenButtonClicked;
 
 public class TitleMenuButtonsAppState extends AbstractAppState implements ActionListener {
@@ -51,8 +51,8 @@ public class TitleMenuButtonsAppState extends AbstractAppState implements Action
 		
 		if (name.equals(CLICK_MAPPING) && !keyPressed) {
 			Geometry geometry = getButtonCollisionPoint();
-			if (geometry != null && geometry instanceof TitleScreenButton) {
-				GuiMessageBus.post(new TitleScreenButtonClicked(((TitleScreenButton)geometry).getType()));
+			if (geometry != null && geometry instanceof TitleScreenSprite) {
+				GuiMessageBus.post(new TitleScreenButtonClicked(((TitleScreenSprite)geometry).getType()));
 			}
 		}
 	}
@@ -64,8 +64,8 @@ public class TitleMenuButtonsAppState extends AbstractAppState implements Action
 		Geometry geometry = getButtonCollisionPoint();
 			
 		for (Spatial spatial : TitleScreen.getInstance().getButtons().getChildren()) {
-			if (spatial instanceof TitleScreenButton) {
-				TitleScreenButton button = (TitleScreenButton)spatial;
+			if (spatial instanceof TitleScreenSprite) {
+				TitleScreenSprite button = (TitleScreenSprite)spatial;
 				if (button == geometry) {
 					button.selected();
 				} else {

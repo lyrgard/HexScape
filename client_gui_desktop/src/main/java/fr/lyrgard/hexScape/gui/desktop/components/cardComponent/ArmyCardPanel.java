@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -28,6 +29,7 @@ import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ArmyCardMenu;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.PopMenuClickListener;
 import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.RevealableMarkerMenu;
+import fr.lyrgard.hexScape.gui.desktop.message.CardSelectedMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
 import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
@@ -63,7 +65,7 @@ public class ArmyCardPanel extends JPanel {
 
 	private JPanel markerPanel;
 
-	public ArmyCardPanel(CardInstance card, String playerId) {
+	public ArmyCardPanel(final CardInstance card, String playerId) {
 		this.card = card;
 
 		setLayout(new BorderLayout());
@@ -98,6 +100,16 @@ public class ArmyCardPanel extends JPanel {
 		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
 			imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
 		}
+		imageLabel.addMouseListener(new MouseAdapter() {
+
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getButton() == MouseEvent.BUTTON1) {
+					GuiMessageBus.post(new CardSelectedMessage(card.getCardTypeId()));
+				}
+			}
+			
+		});
 
 		Border border = BorderFactory.createLineBorder(Color.BLACK, 2, true);
 		
