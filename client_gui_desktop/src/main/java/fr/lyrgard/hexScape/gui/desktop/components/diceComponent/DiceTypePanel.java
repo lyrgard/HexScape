@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.components.diceComponent;
 
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,11 +20,18 @@ public class DiceTypePanel extends JPanel {
 	public DiceTypePanel(final DiceType diceType) {
 		super();
 		
-		setLayout(new GridLayout(0, 5, 2, 2));
+		setLayout(new GridLayout(0, 5, 3, 3));
 		
 		for (int i = 1; i <= diceType.getMaxNumberThrown(); i++) {
 			final int number = i;
 			JButton rollDiceButton = new JButton(Integer.toString(number));
+			if (diceType.getBackgroundColor() != null) {
+				rollDiceButton.setBackground(diceType.getBackgroundColor());
+			}
+			if (diceType.getForegroundColor() != null) {
+				rollDiceButton.setForeground(diceType.getForegroundColor());
+			}
+			rollDiceButton.setFont(rollDiceButton.getFont().deriveFont(Font.BOLD));
 			rollDiceButton.addActionListener(new ActionListener() {
 				
 				public void actionPerformed(ActionEvent e) {

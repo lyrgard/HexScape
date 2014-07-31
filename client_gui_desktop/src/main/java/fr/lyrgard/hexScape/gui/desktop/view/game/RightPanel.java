@@ -231,15 +231,18 @@ public class RightPanel extends JPanel {
 	}
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {
-		String playerId = message.getPlayerId();
-		
-		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
-			EventQueue.invokeLater(new Runnable() {
+		final String playerId = message.getPlayerId();
 
-				public void run() {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
 					chatPanel.clearText();
+				} else {
+					Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+					chatPanel.addPlayerAction(player, "player " + player.getName() + " left the game");
 				}
-			});
-		}
+			}
+		});
 	}
 }

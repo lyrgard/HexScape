@@ -3,7 +3,6 @@ package fr.lyrgard.hexScape.model.player;
 import java.awt.Color;
 
 public enum ColorEnum {
-	BLACK(Color.BLACK),
 	BLUE(Color.BLUE),
 	RED(Color.RED),
 	GREEN(Color.GREEN);

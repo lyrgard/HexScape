@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -40,6 +42,7 @@ import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.map.TileType;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
+import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class MapManager {
@@ -136,8 +139,8 @@ public class MapManager {
 		}
 	}
 
-	public void addTile(TileType type, int x, int y, int z) {
-		map.addTile(type, x, y, z);
+	public void addTile(TileType type, int x, int y, int z, boolean startZone, int startZoneNumber) {
+		map.addTile(type, x, y, z, startZone, startZoneNumber);
 	}
 
 	public Tile getNearestTile(int x, int y, int z) {
@@ -216,6 +219,7 @@ public class MapManager {
 			Spatial visibleMap = getMapSpatial();
 			Spatial invisibleMap = getInvisibleTilesSpatial();
 			Collection<Spatial> decorNodes = getDecorsSpatials();
+			Node startZones = getStartZones();
 
 			mapNode.attachChild(mapWithoutDecorsNode);
 			mapWithoutDecorsNode.attachChild(visibleMap);
@@ -224,10 +228,83 @@ public class MapManager {
 			for (Spatial decorNode : decorNodes) {
 				mapNode.attachChild(decorNode);
 			}
+			mapNode.attachChild(startZones);
 			sceneNode.attachChild(mapNode);
 		}
 
 		return sceneNode;
+	}
+
+	private Node getStartZones() {
+		Node node = new Node();
+		node.setShadowMode(ShadowMode.Off);
+		
+		
+		
+		java.util.Map<Integer, List<Tile>> startZones = new HashMap<Integer, List<Tile>>();
+		
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
+				for (Tile tile : byY.values()) {
+					if (tile.isStartZone()) {
+						List<Tile> list = startZones.get(tile.getStartZoneNumber());
+						if (list == null) {
+							list = new ArrayList<>();
+							startZones.put(tile.getStartZoneNumber(), list);
+						}
+						list.add(tile);
+						
+						
+					}
+				}
+			}
+		}
+		
+		
+		for (Entry<Integer, List<Tile>> startZone : startZones.entrySet()) {
+			Mesh lineMesh = new Mesh();
+			lineMesh.setMode(Mesh.Mode.Lines);
+			
+			List<Vector3f> vertices = new ArrayList<Vector3f>();
+			List<Integer> indexes = new ArrayList<Integer>();
+			
+			for (Tile tile : startZone.getValue()) {
+				float x3d = (2 * tile.getX() + tile.getY()) * TileMesh.TRANSLATION_X;
+				float y3d = tile.getZ() * TileMesh.HEX_SIZE_Y;
+				float z3d = (tile.getY()) * TileMesh.TRANSLATION_Z;
+				
+				for (Direction dir : Direction.values()) {
+					if (dir != Direction.BOTTOM && dir != Direction.TOP) {
+						Tile neighbours = tile.getNeighbours().get(dir);
+						if (neighbours == null || !neighbours.isStartZone()) {
+							int firstIndex = vertices.size();
+							vertices.addAll(TileMesh.getEdgeVertices(dir, tile.getType(), x3d, y3d, z3d));
+							indexes.addAll(TileMesh.getEdgeIndex(firstIndex));
+						}
+					}
+				}
+			}
+			
+			lineMesh.setBuffer(Type.Position, 3, BufferUtils.createFloatBuffer(vertices.toArray(new Vector3f[vertices.size()])));
+			lineMesh.setBuffer(Type.Index,    2, BufferUtils.createIntBuffer(toIntArray(indexes)));
+			lineMesh.setLineWidth(50f);
+			lineMesh.updateBound();
+			lineMesh.updateCounts();
+			
+			Geometry lineGeometry = new Geometry("line", lineMesh);
+			AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
+			Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+			ColorEnum color = ColorEnum.values()[startZone.getKey() % ColorEnum.values().length];
+			;
+			mat.setColor("Color", new ColorRGBA(color.getColor().getRed()/255f, color.getColor().getGreen()/255f, color.getColor().getBlue()/255f, 0));
+			lineGeometry.setMaterial(mat);
+			
+			node.attachChild(lineGeometry);
+		}
+		
+		
+		
+		return node;
 	}
 
 	private Collection<Spatial> getDecorsSpatials() {
@@ -278,6 +355,7 @@ public class MapManager {
 			float z3d = (tile.getY()) * TileMesh.TRANSLATION_Z;
 
 			addTileToMesh(tile, vertices, texCoord, indexes, normals, x3d, y3d, z3d);
+			
 			//addTileAndNeighbours(tile, vertices, texCoord, indexes, normals, notAddedYetTiles, x3d, y3d, z3d);
 		}
 

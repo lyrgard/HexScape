@@ -12,42 +12,42 @@ import fr.lyrgard.hexScape.service.DirectionService;
 import fr.lyrgard.hexScape.service.TileService;
 
 public class TileMesh {
-	
-//	public static final float HEX_SIZE_X = 1.73205f; 
-//	public static final float HEX_SIZE_Y = 0.4f;
-//	public static final float HEX_SIZE_Z = 2;
-//	
-//	public static final float TRANSLATION_X = HEX_SIZE_X / 2f;
-//	public static final float TRANSLATION_Z = 3 * HEX_SIZE_Z / 4f;
-//	
-//	static final float v1x = 0;
-//	static final float v1z = HEX_SIZE_Z/2;
-//
-//	static final float v2x = HEX_SIZE_Y/2;
-//	static final float v2z = v1z/2;
-//
-//	static final float v3x = v2x;
-//	static final float v3z = -v2z;
-//
-//	static final float v4x = v1x;
-//	static final float v4z = -v1z;
-//
-//	static final float v5x = -v2x;
-//	static final float v5z = -v2z;
-//
-//	static final float v6x = -v2x;
-//	static final float v6z = v2z;
-//
-//	static final float bottom = 0;
-//	static final float top = HEX_SIZE_Y;
+
+	//	public static final float HEX_SIZE_X = 1.73205f; 
+	//	public static final float HEX_SIZE_Y = 0.4f;
+	//	public static final float HEX_SIZE_Z = 2;
+	//	
+	//	public static final float TRANSLATION_X = HEX_SIZE_X / 2f;
+	//	public static final float TRANSLATION_Z = 3 * HEX_SIZE_Z / 4f;
+	//	
+	//	static final float v1x = 0;
+	//	static final float v1z = HEX_SIZE_Z/2;
+	//
+	//	static final float v2x = HEX_SIZE_Y/2;
+	//	static final float v2z = v1z/2;
+	//
+	//	static final float v3x = v2x;
+	//	static final float v3z = -v2z;
+	//
+	//	static final float v4x = v1x;
+	//	static final float v4z = -v1z;
+	//
+	//	static final float v5x = -v2x;
+	//	static final float v5z = -v2z;
+	//
+	//	static final float v6x = -v2x;
+	//	static final float v6z = v2z;
+	//
+	//	static final float bottom = 0;
+	//	static final float top = HEX_SIZE_Y;
 
 	public static final float HEX_SIZE_X = 1.73205f; 
 	public static final float HEX_SIZE_Y = 0.4f;
 	public static final float HEX_SIZE_Z = 2;
-	
+
 	public static final float TRANSLATION_X = HEX_SIZE_X / 2f;
 	public static final float TRANSLATION_Z = -3 * HEX_SIZE_Z / 4f;
-	
+
 	static final float v1x = 0;
 	static final float v1z = HEX_SIZE_Z/2;
 
@@ -70,12 +70,12 @@ public class TileMesh {
 	static final float top = HEX_SIZE_Y;
 
 	public static List<Vector3f> getVertices(Direction direction, TileType tileType, float currentX, float currentY, float currentZ) {
-		
+
 		float tileTop = top;
 		if (TileService.getInstance().isHalfTile(tileType)) {
 			tileTop /= 2;
 		}
-		
+
 		List<Vector3f> vertices = new ArrayList<Vector3f>();
 		switch (direction) {
 		case TOP:
@@ -128,9 +128,9 @@ public class TileMesh {
 		}
 		return vertices;
 	}
-	
+
 	public static List<Vector2f> getTexCoord(Direction direction, TileType type) {
-		
+
 		List<Vector2f> texCoord = new ArrayList<Vector2f>();
 		switch (direction) {
 		case TOP:			
@@ -158,24 +158,24 @@ public class TileMesh {
 		}
 		return texCoord;
 	}
-	
+
 	public static List<Integer> getIndex(Direction direction, int firstIndex) {
-		
+
 		List<Integer> indexes = new ArrayList<Integer>();
 		switch (direction) {
 		case TOP:
 			indexes.add(firstIndex + 1);
 			indexes.add(firstIndex + 5);
 			indexes.add(firstIndex);
-			
+
 			indexes.add(firstIndex + 3);
 			indexes.add(firstIndex + 4);
 			indexes.add(firstIndex + 5);
-			
+
 			indexes.add(firstIndex + 1);
 			indexes.add(firstIndex + 2);
 			indexes.add(firstIndex + 3);
-			
+
 			indexes.add(firstIndex + 3);
 			indexes.add(firstIndex + 5);
 			indexes.add(firstIndex + 1);
@@ -192,7 +192,7 @@ public class TileMesh {
 			indexes.add(firstIndex + 2);
 			indexes.add(firstIndex + 1);
 			indexes.add(firstIndex);
-			
+
 			indexes.add(firstIndex + 2);
 			indexes.add(firstIndex + 3);
 			indexes.add(firstIndex + 1);
@@ -200,9 +200,9 @@ public class TileMesh {
 		}
 		return indexes;
 	}
-	
-public static List<Vector3f> getNormals(Direction direction) {
-				
+
+	public static List<Vector3f> getNormals(Direction direction) {
+
 		List<Vector3f> normals = new ArrayList<Vector3f>();
 		Vector3f normal;
 		switch (direction) {
@@ -262,5 +262,60 @@ public static List<Vector3f> getNormals(Direction direction) {
 			break;
 		}
 		return normals;
+	}
+
+
+	public static List<Vector3f> getEdgeVertices(Direction direction, TileType tileType, float currentX, float currentY, float currentZ) {
+
+		
+		float tileTop = top;
+		if (TileService.getInstance().isHalfTile(tileType)) {
+			tileTop /= 2;
+		}
+		tileTop += 0.01f;
+
+		List<Vector3f> vertices = new ArrayList<Vector3f>();
+		switch (direction) {
+		case TOP:
+			// nothing to do here
+			break;
+		case BOTTOM:
+			// nothing to do here
+			break;
+		case NORTH_EAST:
+			vertices.add(new Vector3f(v3x + currentX,tileTop + currentY, v3z + currentZ));
+			vertices.add(new Vector3f(v4x + currentX,tileTop + currentY, v4z + currentZ));
+			break;
+		case EAST:
+			vertices.add(new Vector3f(v2x + currentX,tileTop + currentY, v2z + currentZ));
+			vertices.add(new Vector3f(v3x + currentX,tileTop + currentY, v3z + currentZ));
+			break;
+		case SOUTH_EAST:
+			vertices.add(new Vector3f(v1x + currentX,tileTop + currentY, v1z + currentZ));
+			vertices.add(new Vector3f(v2x + currentX,tileTop + currentY, v2z + currentZ));
+			break;
+		case SOUTH_WEST:
+			vertices.add(new Vector3f(v6x + currentX,tileTop + currentY, v6z + currentZ));
+			vertices.add(new Vector3f(v1x + currentX,tileTop + currentY, v1z + currentZ));
+			break;
+		case WEST:
+			vertices.add(new Vector3f(v5x + currentX,tileTop + currentY, v5z + currentZ));
+			vertices.add(new Vector3f(v6x + currentX,tileTop + currentY, v6z + currentZ));
+			break;
+		case NORTH_WEST:
+			vertices.add(new Vector3f(v4x + currentX,tileTop + currentY, v4z + currentZ));
+			vertices.add(new Vector3f(v5x + currentX,tileTop + currentY, v5z + currentZ));
+			break;
+		}
+		return vertices;
+	}
+	
+	public static List<Integer> getEdgeIndex(int firstIndex) {
+
+		List<Integer> indexes = new ArrayList<Integer>();			
+		indexes.add(firstIndex);
+		indexes.add(firstIndex + 1);
+
+		return indexes;
 	}
 }

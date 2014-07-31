@@ -13,16 +13,24 @@ public class Tile {
 	
 	private int x,y,z;
 	
+	private boolean startZone;
+	
+	private int startZoneNumber;
+	
 	@JsonCreator
 	public Tile(
 			@JsonProperty("type") TileType type, 
 			@JsonProperty("x") int x, 
 			@JsonProperty("y") int y , 
-			@JsonProperty("z") int z) {
+			@JsonProperty("z") int z,
+			@JsonProperty("startZone") boolean startZone , 
+			@JsonProperty("startZoneNumber") int startZoneNumber) {
 		this.type = type;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.startZone = startZone;
+		this.startZoneNumber = startZoneNumber;
 	}
 	
 	@JsonIgnore
@@ -94,6 +102,22 @@ public class Tile {
 		if (z != other.z)
 			return false;
 		return true;
+	}
+
+	public boolean isStartZone() {
+		return startZone;
+	}
+
+	public void setStartZone(boolean startZone) {
+		this.startZone = startZone;
+	}
+
+	public int getStartZoneNumber() {
+		return startZoneNumber;
+	}
+
+	public void setStartZoneNumber(int startZoneNumber) {
+		this.startZoneNumber = startZoneNumber;
 	}
 	
 	

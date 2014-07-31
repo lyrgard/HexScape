@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.HashMap;
@@ -15,6 +16,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
 import com.google.common.eventbus.Subscribe;
+
 
 
 import fr.lyrgard.hexScape.HexScapeCore;

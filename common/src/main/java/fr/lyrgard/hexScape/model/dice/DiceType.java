@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.model.dice;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,10 @@ public class DiceType {
 	private int maxNumberThrown = -1;
 	
 	private List<DiceFace> faces;
+	
+	private Color backgroundColor;
+	
+	private Color foregroundColor;
 
 	public String getName() {
 		return name;
@@ -53,5 +58,21 @@ public class DiceType {
 
 	public void setId(String id) {
 		this.id = id;
+	}
+
+	public Color getBackgroundColor() {
+		return backgroundColor;
+	}
+
+	public void setBackgroundColor(Color backgroundColor) {
+		this.backgroundColor = backgroundColor;
+	}
+
+	public Color getForegroundColor() {
+		return foregroundColor;
+	}
+
+	public void setForegroundColor(Color foregroundColor) {
+		this.foregroundColor = foregroundColor;
 	}	
 }

@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.service;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,6 +35,8 @@ public class DiceService {
 	private static final String NAME = "name";
 	private static final String VALUES = "values";
 	private static final String MAX_NUMBER_THROWN = "maxNumberThrown";
+	private static final String BACKGROUND_COLOR = "backgroundColor";
+	private static final String FOREGROUND_COLOR = "foregroundColor";
 	
 	private static final DiceService INSTANCE = new DiceService();
 	
@@ -65,6 +68,22 @@ public class DiceService {
 								try {
 									type.setMaxNumberThrown(Integer.parseInt(maxNumberThrownString));
 								} catch (IllegalArgumentException e) {
+								}
+							}
+							
+							String backgroundColor = diceProperties.getProperty(BACKGROUND_COLOR);
+							if (StringUtils.isNotEmpty(backgroundColor)) {
+								try {
+									type.setBackgroundColor(Color.decode(backgroundColor));
+								} catch (NumberFormatException e) {
+								}
+							}
+							
+							String foregroundcolor = diceProperties.getProperty(FOREGROUND_COLOR);
+							if (StringUtils.isNotEmpty(foregroundcolor)) {
+								try {
+									type.setForegroundColor(Color.decode(foregroundcolor));
+								} catch (NumberFormatException e) {
 								}
 							}
 							

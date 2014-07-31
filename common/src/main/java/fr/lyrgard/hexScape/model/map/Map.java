@@ -24,7 +24,7 @@ public class Map {
 		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : tiles.values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
-					addTile(tile.getType(), tile.getX(), tile.getY(), tile.getZ());
+					addTile(tile.getType(), tile.getX(), tile.getY(), tile.getZ(), tile.isStartZone(), tile.getStartZoneNumber());
 				}
 			}
 		}
@@ -65,9 +65,9 @@ public class Map {
 		return tile;
 	}
 	
-	public void addTile(TileType type, int x, int y, int z) {
+	public void addTile(TileType type, int x, int y, int z, boolean startZone, int startZoneNumber) {
 
-		Tile tile = new Tile(type, x, y, z);
+		Tile tile = new Tile(type, x, y, z, startZone, startZoneNumber);
 
 		setTile(tile);
 
