@@ -1,8 +1,11 @@
 package fr.lyrgard.hexScape.model.card;
 
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.TreeSet;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
@@ -16,6 +19,9 @@ public class CardInstance {
 	private int number;
 	
 	private TreeSet<MarkerInstance> markers;
+	
+	@JsonIgnore
+	private Queue<String> pieceLeftToPlace = new LinkedList<String>();
 
 	@JsonCreator
 	public CardInstance(
@@ -58,6 +64,10 @@ public class CardInstance {
 
 	public void setCardTypeId(String cardTypeId) {
 		this.cardTypeId = cardTypeId;
+	}
+
+	public Queue<String> getPieceLeftToPlace() {
+		return pieceLeftToPlace;
 	}
 
 }

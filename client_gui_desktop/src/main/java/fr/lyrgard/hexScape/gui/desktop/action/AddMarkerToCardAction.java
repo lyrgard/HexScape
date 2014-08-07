@@ -12,7 +12,6 @@ import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
-import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
 
 public class AddMarkerToCardAction extends AbstractAction {
 

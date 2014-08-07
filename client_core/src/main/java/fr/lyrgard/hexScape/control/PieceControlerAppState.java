@@ -28,6 +28,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 	private static final String CLICK_MAPPING = "ControlerAppState_click";
 	private static final String CANCEL_MAPPING = "ControlerAppState_cancel";
 	private static final String DELETE_MAPPING = "ControlerAppState_delete";
+	private static final String POV_MAPPING = "ControlerAppState_pov";
 	private static final String MOUSE_WHEEL_UP_MAPPING = "ControlerAppState_mouseWheelUp";
 	private static final String MOUSE_WHEEL_DOWN_MAPPING = "ControlerAppState_mouseWheelDown";
 	
@@ -56,10 +57,11 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 		inputManager.addMapping(CLICK_MAPPING, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addMapping(CANCEL_MAPPING, new KeyTrigger(KeyInput.KEY_ESCAPE));
 		inputManager.addMapping(DELETE_MAPPING, new KeyTrigger(KeyInput.KEY_DELETE));
+		inputManager.addMapping(POV_MAPPING, new KeyTrigger(KeyInput.KEY_P));
 		inputManager.addMapping(MOUSE_WHEEL_UP_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
 		inputManager.addMapping(MOUSE_WHEEL_DOWN_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 	
-		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING);
+		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, POV_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING);
 	}
 	
 	public void beginAddingPiece(PieceManager piece) {
@@ -187,6 +189,10 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				}
 				changeStateTo(State.WAITING);
 				break;
+			}
+		} else if (name.equals(POV_MAPPING) && !keyPressed) {
+			if (currentState == State.SELECTING_PIECE) {
+				HexScapeCore.getInstance().getHexScapeJme3Application().lookThroughEyesOf(selectPieceByMouseAppState.getSelectedPiece());
 			}
 		}
 	}

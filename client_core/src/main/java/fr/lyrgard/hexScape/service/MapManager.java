@@ -14,8 +14,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.google.common.io.ByteStreams;
 import com.jme3.asset.AssetManager;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.Light;
 import com.jme3.material.Material;
 import com.jme3.material.RenderState.BlendMode;
 import com.jme3.math.ColorRGBA;
@@ -70,8 +68,6 @@ public class MapManager {
 		this.map = map;
 		sceneNode = new Node("sceneNode");
 		selectablePieceNode = new Node("selectablePiece");
-		Light light = new AmbientLight();
-		selectablePieceNode.addLight(light);
 
 		sceneNode.attachChild(selectablePieceNode);
 	}
@@ -215,24 +211,33 @@ public class MapManager {
 
 		if (mapNode == null) {
 			mapNode = new Node("mapNode");
-			mapWithoutDecorsNode = new Node("mapWithoutDecorsNode");
-			Spatial visibleMap = getMapSpatial();
-			Spatial invisibleMap = getInvisibleTilesSpatial();
-			Collection<Spatial> decorNodes = getDecorsSpatials();
-			Node startZones = getStartZones();
-
-			mapNode.attachChild(mapWithoutDecorsNode);
-			mapWithoutDecorsNode.attachChild(visibleMap);
-			mapWithoutDecorsNode.attachChild(invisibleMap);
-
-			for (Spatial decorNode : decorNodes) {
-				mapNode.attachChild(decorNode);
-			}
-			mapNode.attachChild(startZones);
+			populateMapNode();
 			sceneNode.attachChild(mapNode);
 		}
 
 		return sceneNode;
+	}
+	
+	public void redraw() {
+		populateMapNode();
+	}
+	
+	private void populateMapNode() {
+		mapNode.detachAllChildren();
+		mapWithoutDecorsNode = new Node("mapWithoutDecorsNode");
+		Spatial visibleMap = getMapSpatial();
+		Spatial invisibleMap = getInvisibleTilesSpatial();
+		Collection<Spatial> decorNodes = getDecorsSpatials();
+		Node startZones = getStartZones();
+
+		mapNode.attachChild(mapWithoutDecorsNode);
+		mapWithoutDecorsNode.attachChild(visibleMap);
+		mapWithoutDecorsNode.attachChild(invisibleMap);
+
+		for (Spatial decorNode : decorNodes) {
+			mapNode.attachChild(decorNode);
+		}
+		mapNode.attachChild(startZones);
 	}
 
 	private Node getStartZones() {
@@ -370,8 +375,7 @@ public class MapManager {
 
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 
-		Texture tileTexture = assetManager.loadTexture(
-				"asset/tiles/TileTexture.bmp");
+		Texture tileTexture = TextureService.getInstance().getTileTexture();
 		tileTexture.setMinFilter(MinFilter.BilinearNoMipMaps);
 
 		Material mat = new Material(assetManager, 

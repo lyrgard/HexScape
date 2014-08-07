@@ -71,7 +71,7 @@ public class SelectedCardPanel extends JPanel {
 	}
 	
 	@Subscribe public void onCardSelected(CardSelectedMessage message) {
-		String cardTypeId = message.getCardTypeId();
+		String cardTypeId = message.getCard().getCardTypeId();
 		
 		CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardTypeId);
 		displayCard(card);

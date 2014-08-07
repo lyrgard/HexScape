@@ -7,7 +7,6 @@ import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 
 public class StartGameAction extends AbstractAction {

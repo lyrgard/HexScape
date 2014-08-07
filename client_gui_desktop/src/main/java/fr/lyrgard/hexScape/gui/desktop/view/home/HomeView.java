@@ -2,20 +2,10 @@ package fr.lyrgard.hexScape.gui.desktop.view.home;
 
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.Image;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.concurrent.Callable;
 
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.border.LineBorder;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -160,6 +150,7 @@ public class HomeView extends AbstractView {
 				}
 			});
 			break;
+		default:
 		}
 	}
 }

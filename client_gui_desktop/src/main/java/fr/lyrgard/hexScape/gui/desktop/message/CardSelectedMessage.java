@@ -1,19 +1,22 @@
 package fr.lyrgard.hexScape.gui.desktop.message;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 
 public class CardSelectedMessage extends AbstractMessage {
 
-	private String cardTypeId;
+	private CardInstance card;
 
-	public CardSelectedMessage(String cardTypeId) {
+	public CardSelectedMessage(CardInstance card) {
 		super();
-		this.cardTypeId = cardTypeId;
+		this.card = card;
+	}
+
+	public CardInstance getCard() {
+		return card;
 	}
 	
-	public String getCardTypeId() {
-		return cardTypeId;
-	}
+	
 
 	
 	

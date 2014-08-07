@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.jme3.light.AmbientLight;
-import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.model.model3d.ExternalModel;
@@ -45,10 +43,10 @@ public class ExternalModelService {
 		}
 		Spatial result = model.getNewInstance();
 		
-		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(1f));
-		result.addLight(al);
-		
 		return result;
+	}
+	
+	public void clear() {
+		models.clear();
 	}
 }

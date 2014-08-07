@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape;
 
 import fr.lyrgard.hexScape.listener.ArmyMessageListener;
+import fr.lyrgard.hexScape.listener.CameraMessageListener;
 import fr.lyrgard.hexScape.listener.ChatMessageListener;
 import fr.lyrgard.hexScape.listener.DiceMessageListener;
 import fr.lyrgard.hexScape.listener.ErrorMessageListener;
@@ -37,10 +38,15 @@ public class HexScapeCore {
 
 	private HexScapeCore() {
 		instance = this;
+		Player player = new Player("", ColorEnum.RED);
+		Universe.getInstance().getPlayersByIds().put(playerId, player);
+		
 		String username = ConfigurationService.getInstance().getUserName();
-		Universe.getInstance().getPlayersByIds().put(playerId, new Player(username, ColorEnum.RED));
+		player.setName(username);
+		
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();
+		CameraMessageListener.start();
 		ChatMessageListener.start();
 		DiceMessageListener.start();
 		ErrorMessageListener.start();
@@ -50,6 +56,7 @@ public class HexScapeCore {
 		PieceMessageListener.start();
 		RoomMessageListener.start();
 		ServerListener.start();
+		
 	}
 
 	public HexScapeJme3Application getHexScapeJme3Application() {

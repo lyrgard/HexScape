@@ -26,8 +26,6 @@ public class TitleMenuButtonsAppState extends AbstractAppState implements Action
 	private InputManager inputManager;
 	
 	private Camera cam;
-	
-	private Vector3f selectedScale = new Vector3f(1.1f, 1.1f, 1);
 
 	@Override
 	public void initialize(AppStateManager stateManager, Application app) {

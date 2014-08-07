@@ -46,7 +46,7 @@ public class DiceService {
 		loadDiceTypes();
 	}
 	
-	private void loadDiceTypes() {
+	public void loadDiceTypes() {
 		diceTypes = new HashMap<>();
 		if (baseFolder.exists()) {
 			diceDefinition: for (File folder : baseFolder.listFiles()) {
@@ -122,10 +122,7 @@ public class DiceService {
 					}
 				}
 			}
-		} else {
-			CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The dice definition folder \"" + baseFolder + "\" was not found"));
-		}
-		
+		} 		
 	}
 
 	public Collection<DiceType> getDiceTypes() {

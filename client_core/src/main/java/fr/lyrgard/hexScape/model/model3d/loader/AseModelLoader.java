@@ -816,7 +816,8 @@ public class AseModelLoader implements ModelLoader {
 			Texture TileTexture = assetManager.loadTexture(ModelLoader.BASE_FOLDER + mainObjectName + "/Textures/" + name + ".bmp");
 			TileTexture.setWrap(WrapMode.Repeat);
 			mat.setTexture("DiffuseMap", TileTexture);
-			mat.setColor("Ambient", ColorRGBA.White);
+			mat.setBoolean("UseMaterialColors",true);    
+			mat.setColor("Ambient", ColorRGBA.White.mult(0.5f));
 			mat.setColor("Diffuse",ColorRGBA.White);  // minimum material color
 	        mat.setColor("Specular",ColorRGBA.White); // for shininess
 	        mat.setFloat("Shininess", 50f);

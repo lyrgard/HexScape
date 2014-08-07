@@ -15,8 +15,6 @@ public class ArmyPanel extends JScrollPane {
 	
 	private JPanel armyPanel;
 	
-	private String playerId;
-	
 	public ArmyPanel() {
 		armyPanel = new JPanel();
 		armyPanel.setLayout(new BoxLayout(armyPanel, BoxLayout.Y_AXIS));
@@ -24,6 +22,7 @@ public class ArmyPanel extends JScrollPane {
 		//setPreferredSize(new Dimension(180, 500));
 		//setMaximumSize(new Dimension(180, 500));
 		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+		setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
 		
 		armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor())));
 	}
@@ -34,7 +33,6 @@ public class ArmyPanel extends JScrollPane {
 	}
 	
 	public void setArmy(Army army, String playerId) {
-		this.playerId = playerId;
 		armyPanel.removeAll();
 		if (army != null) {
 			for (CardInstance card : army.getCardsById().values()) {
@@ -43,6 +41,7 @@ public class ArmyPanel extends JScrollPane {
 			}
 			armyPanel.validate();
 			armyPanel.repaint();
+			revalidate();
 		} else {
 			armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor())));
 		}

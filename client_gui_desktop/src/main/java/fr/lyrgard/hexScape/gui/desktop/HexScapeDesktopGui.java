@@ -23,8 +23,8 @@ public class HexScapeDesktopGui {
 		AppSettings settings = new AppSettings(true);
 		settings.setCustomRenderer(SwingContext.class);
 		settings.setFrameRate(60);
-		settings.setWidth(1024);
-		settings.setWidth(768);
+		settings.setWidth(102);
+		settings.setWidth(77);
 		
 		
 		app.getHexScapeJme3Application().setShowSettings(false);
@@ -42,7 +42,7 @@ public class HexScapeDesktopGui {
 				
 				final Canvas panel3d = ctx.getCanvas();
 				
-				Dimension dim = new Dimension(1024, 768);
+				Dimension dim = new Dimension(102, 77);
 				panel3d.setMinimumSize(dim);
 				panel3d.setEnabled(false);
 				

@@ -1,10 +1,9 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game;
 
-import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
-import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -13,6 +12,7 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
+import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ActionMenu;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
@@ -28,25 +28,22 @@ public class GameView extends AbstractView {
 	//private JButton leaveGameButton;
 
 	public GameView(final View3d view3d) {
-		setLayout(new BorderLayout());
-		final JPanel leftPanel = new LeftPanel();
-		//leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
-		leftPanel.setMaximumSize(new Dimension(180, Integer.MAX_VALUE));
+//		setLayout(new BorderLayout());
+//		final JPanel leftPanel = new LeftPanel();
+//		//leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
+//		leftPanel.setMaximumSize(new Dimension(180, Integer.MAX_VALUE));
 		
-		add(leftPanel, BorderLayout.LINE_START);
-
-//		ArmiesTabbedPane armiesTabbedPane = new ArmiesTabbedPane();
+		this.setLayout(new MigLayout(
+				"wrap", // Layout Constraints
+				"[210:210:][][250:250:]", // Column constraints
+				"[40:40:][]" // Row constraints
+				));
 		
-//		leaveGameButton = new JButton();
-//		//SelectedCardPanel selectedCardPanel = new SelectedCardPanel();
-//		
-//		
-//		leftPanel.add(armiesTabbedPane);
-//		leftPanel.add(new SelectedCardPanel());
-//		//leftPanel.add(new SelectedPiecePanel());
-//		leftPanel.add(leaveGameButton);
-
-		add(new RightPanel(), BorderLayout.LINE_END);
+		add(new LeftPanel(), "span 1 2, grow");
+		add(new ActionMenu());
+		add(new RightPanel(), "span 1 2, grow");
+		
+		
 		
 		
 		GuiMessageBus.register(this);
@@ -93,7 +90,7 @@ public class GameView extends AbstractView {
 	public void refresh() {
 		View3d view3d = HexScapeFrame.getInstance().getView3d();
 		view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
-		add(view3d, BorderLayout.CENTER);
+		add(view3d, "cell 1 1, grow, push");
 	}
 
 }

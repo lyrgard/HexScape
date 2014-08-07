@@ -3,6 +3,9 @@ package fr.lyrgard.hexScape.model.model3d.loader;
 import java.io.File;
 
 import com.jme3.asset.AssetManager;
+import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
@@ -21,6 +24,16 @@ public class ObjModelLoader implements ModelLoader {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		
 		Spatial model = assetManager.loadModel(ModelLoader.BASE_FOLDER + name + "/" + name + ".obj");
+		
+		if (model instanceof Geometry) {
+			((Geometry)model).getMaterial().setColor("Ambient", ColorRGBA.White);
+		} else {
+			for (Spatial child : ((Node)model).getChildren()) {
+				if (child instanceof Geometry) {
+					((Geometry)child).getMaterial().setColor("Ambient", ColorRGBA.White.mult(0.2f));
+				}
+			}
+		}
 		
 		ObjExternalModel externalModel = new ObjExternalModel();
 		externalModel.setName(name);

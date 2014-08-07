@@ -34,9 +34,6 @@ private static final File baseFolder = new File("asset/cards");
 	}
 
 	public CardCollection loadCardInventory(File baseFolder) {
-		if (cardInventory != null) {
-			return cardInventory;
-		}
 		if (baseFolder == null) {
 			baseFolder = CardService.baseFolder;
 		}

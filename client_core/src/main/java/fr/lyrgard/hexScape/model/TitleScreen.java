@@ -43,80 +43,74 @@ public class TitleScreen implements Displayable {
 	public Spatial getSpatial() {
 		if (node == null) {
 			node = new Node();
-			buttons = new Node();
-			node.attachChild(buttons);
-			
-			InputStream stream = TitleScreen.class.getResourceAsStream("/title/Logo.hsc");
-			MapManager map = MapManager.fromInputStream(stream);
-			Spatial mapSpatial = map.getSpatial();
-			
-			
-			mapSpatial.setLocalRotation(new Quaternion().fromAngleAxis(210 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
-			BoundingVolume bv = mapSpatial.getWorldBound();
-			mapSpatial.setLocalTranslation(-bv.getCenter().x + 10, 0, -bv.getCenter().z);
-			
-			node.attachChild(mapSpatial);
-			//node.attachChild(SkyFactory.createSky(HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(), "title/background.jpg", true));
-			
-			//Texture tileTexture = assetManager.loadTexture("model/texture/select_cross_white.png");
-//	        Material bgMaterial = new Material(assetManager, 
-//					"Common/MatDefs/Light/Lighting.j3md");
-//	        bgMaterial.setBoolean("UseMaterialColors",true);
-//	        bgMaterial.setTexture("DiffuseMap", tileTexture);
-//	        bgMaterial.setColor("Ambient", ColorRGBA.Red);
-//	        bgMaterial.setColor("Diffuse",ColorRGBA.White);  // minimum material color
-//	        bgMaterial.setColor("Specular",ColorRGBA.White); // for shininess
-//	        bgMaterial.setFloat("Shininess", 50f);
-			AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
-			
-			float sizeX = 13.15f;
-			float sizeY = 12;
-			float x = 35 + BUTTON_SIZE/2 + sizeX/2 + 1;
-			float y = -28f;
-			TitleScreenSprite configLabel = new TitleScreenSprite(Type.SPRITE, "title/configLabel.png", x, y, sizeX, sizeY, null, null);
-			x = 35;
-			y = -28;
-			buttons.attachChild(new TitleScreenSprite(Type.CONFIG, "title/config.png", x, y, BUTTON_SIZE, BUTTON_SIZE, configLabel, node));
-			
-			sizeX = 30;
-			sizeY = 8;
-			x = 17f - BUTTON_SIZE/2 - sizeX/2;
-			y = 21f;
-			TitleScreenSprite multiplayerLabel = new TitleScreenSprite(Type.SPRITE, "title/multiplayerLabel.png", x, y, sizeX, sizeY, null, null);
-			x = 17f;
-			y = 19.4f;
-			buttons.attachChild(new TitleScreenSprite(Type.MULTIPLAYER, "title/multiplayer.png", x, y, BUTTON_SIZE, BUTTON_SIZE, multiplayerLabel, node));
-			
-			sizeX = 30;
-			sizeY = 8;
-			x = -18.5f + BUTTON_SIZE/2 + sizeX/2;
-			y = -26.5f;
-			TitleScreenSprite soloLabel = new TitleScreenSprite(Type.SPRITE, "title/soloLabel.png", x, y, sizeX, sizeY, null, null);
-			x = -18.5f;
-			y = -23.6f;
-			buttons.attachChild(new TitleScreenSprite(Type.SOLO, "title/solo.png", x, y, BUTTON_SIZE, BUTTON_SIZE, soloLabel, node));
-			
-			x=14;
-			y=-14;
-			node.attachChild(new TitleScreenSprite(Type.SPRITE, "title/subtitle.png", x, y, 16, 9, null, null));
-		
-			
-			Material backgroundMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
-			Texture backgroundTex = assetManager.loadTexture("title/background.jpg");
-			backgroundMat.setTexture("ColorMap", backgroundTex);
-			Quad fsq = new Quad(200, 125, false);
-			Geometry backgroundGeom = new Geometry("Background", fsq);
-			backgroundGeom.setQueueBucket(Bucket.Sky);
-			backgroundGeom.setCullHint(CullHint.Never);
-			backgroundGeom.setMaterial(backgroundMat);
-			backgroundGeom.setLocalRotation(new Quaternion().fromAngleAxis(-90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
-			backgroundGeom.setLocalTranslation(-100,-2, +75);  //Need to Divide by two because the quad origin is bottom left
-			//backgroundGeom.setLocalTranslation(0, -200, 0);
-			
-			
-			node.attachChild(backgroundGeom);
+			populateNode();
 		}
 		return node;
+	}
+	
+	public void populateNode() {
+		node.detachAllChildren();
+		buttons = new Node();
+		node.attachChild(buttons);
+		
+		InputStream stream = TitleScreen.class.getResourceAsStream("/title/Logo.hsc");
+		MapManager map = MapManager.fromInputStream(stream);
+		Spatial mapSpatial = map.getSpatial();
+		
+		
+		mapSpatial.setLocalRotation(new Quaternion().fromAngleAxis(210 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
+		BoundingVolume bv = mapSpatial.getWorldBound();
+		mapSpatial.setLocalTranslation(-bv.getCenter().x + 10, 0, -bv.getCenter().z);
+		
+		node.attachChild(mapSpatial);
+		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
+		
+		float sizeX = 13.15f;
+		float sizeY = 12;
+		float x = 35 + BUTTON_SIZE/2 + sizeX/2 + 1;
+		float y = -28f;
+		TitleScreenSprite configLabel = new TitleScreenSprite(Type.SPRITE, "title/configLabel.png", x, y, sizeX, sizeY, null, null);
+		x = 35;
+		y = -28;
+		buttons.attachChild(new TitleScreenSprite(Type.CONFIG, "title/config.png", x, y, BUTTON_SIZE, BUTTON_SIZE, configLabel, node));
+		
+		sizeX = 30;
+		sizeY = 8;
+		x = 17f - BUTTON_SIZE/2 - sizeX/2;
+		y = 21f;
+		TitleScreenSprite multiplayerLabel = new TitleScreenSprite(Type.SPRITE, "title/multiplayerLabel.png", x, y, sizeX, sizeY, null, null);
+		x = 17f;
+		y = 19.4f;
+		buttons.attachChild(new TitleScreenSprite(Type.MULTIPLAYER, "title/multiplayer.png", x, y, BUTTON_SIZE, BUTTON_SIZE, multiplayerLabel, node));
+		
+		sizeX = 30;
+		sizeY = 8;
+		x = -18.5f + BUTTON_SIZE/2 + sizeX/2;
+		y = -26.5f;
+		TitleScreenSprite soloLabel = new TitleScreenSprite(Type.SPRITE, "title/soloLabel.png", x, y, sizeX, sizeY, null, null);
+		x = -18.5f;
+		y = -23.6f;
+		buttons.attachChild(new TitleScreenSprite(Type.SOLO, "title/solo.png", x, y, BUTTON_SIZE, BUTTON_SIZE, soloLabel, node));
+		
+		x=14;
+		y=-14;
+		node.attachChild(new TitleScreenSprite(Type.SPRITE, "title/subtitle.png", x, y, 16, 9, null, null));
+	
+		
+		Material backgroundMat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+		Texture backgroundTex = assetManager.loadTexture("title/background.jpg");
+		backgroundMat.setTexture("ColorMap", backgroundTex);
+		Quad fsq = new Quad(200, 125, false);
+		Geometry backgroundGeom = new Geometry("Background", fsq);
+		backgroundGeom.setQueueBucket(Bucket.Sky);
+		backgroundGeom.setCullHint(CullHint.Never);
+		backgroundGeom.setMaterial(backgroundMat);
+		backgroundGeom.setLocalRotation(new Quaternion().fromAngleAxis(-90 * FastMath.DEG_TO_RAD, Vector3f.UNIT_X));
+		backgroundGeom.setLocalTranslation(-100,-2, +75);  //Need to Divide by two because the quad origin is bottom left
+		//backgroundGeom.setLocalTranslation(0, -200, 0);
+		
+		
+		node.attachChild(backgroundGeom);
 	}
 
 	public Node getButtons() {

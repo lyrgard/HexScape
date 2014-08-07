@@ -1,15 +1,12 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
 import java.awt.CardLayout;
-import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
@@ -21,10 +18,7 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
-import fr.lyrgard.hexScape.gui.desktop.components.BackgroundPanel;
 import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
-import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.MenuBar;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;

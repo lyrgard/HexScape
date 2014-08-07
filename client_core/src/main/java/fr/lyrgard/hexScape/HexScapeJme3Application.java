@@ -1,34 +1,37 @@
 package fr.lyrgard.hexScape;
 
 
-import java.awt.Color;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
-import com.jme3.ui.Picture;
 
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
+import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
+import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
 import fr.lyrgard.hexScape.model.TitleScreen;
 import fr.lyrgard.hexScape.service.MapManager;
+import fr.lyrgard.hexScape.service.PieceManager;
 
 public class HexScapeJme3Application extends SimpleApplication {
 	
 	private MapManager scene;
 	
 	private RotatingAroundCameraAppState rotatingAroundCameraAppState = new RotatingAroundCameraAppState();
+	
+	private PointOfViewCameraAppState pointOfViewCameraAppState = new PointOfViewCameraAppState();
 	
 	private PieceControlerAppState pieceControlerAppState = new PieceControlerAppState();
 	
@@ -43,8 +46,10 @@ public class HexScapeJme3Application extends SimpleApplication {
 		stateManager.attach(rotatingAroundCameraAppState);
 		stateManager.attach(pieceControlerAppState);
 		stateManager.attach(titleMenuButtonsAppState);
+		stateManager.attach(pointOfViewCameraAppState);
 		pieceControlerAppState.setEnabled(false);
 		rotatingAroundCameraAppState.setEnabled(false);
+		pointOfViewCameraAppState.setEnabled(false);
 	}
 
 	@Override
@@ -52,7 +57,9 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		assetManager.registerLocator("", FileLocator.class);
 		
-	
+		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
+		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );
+		
 		rotatingAroundCameraAppState.setRotateAroundNode(null);
 		
 		DirectionalLight sun = new DirectionalLight();
@@ -61,7 +68,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		rootNode.addLight(sun);
 		
 		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(0.8f));
+		al.setColor(ColorRGBA.White.mult(1f));
 		rootNode.addLight(al);
 		
 		final int SHADOWMAP_SIZE=1024;
@@ -134,6 +141,26 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
 		} else {
 			rotatingAroundCameraAppState.setRotateAroundNode(null);
+		}
+	}
+	
+	public void lookThroughEyesOf(PieceManager piece) {
+		if (piece != null) {
+			pieceControlerAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(false);
+			pointOfViewCameraAppState.setEnabled(true);
+			pointOfViewCameraAppState.setPiece(piece);
+			GuiMessageBus.post(new LookingFromPieceMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId()));
+		}
+	}
+	
+	public void lookAtTheMap() {
+		if (scene != null) {
+			pieceControlerAppState.setEnabled(true);
+			pointOfViewCameraAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(true);
+			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			GuiMessageBus.post(new LookingFromAboveMessage(HexScapeCore.getInstance().getPlayerId()));
 		}
 	}
 

@@ -8,8 +8,6 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.LinkedList;
-import java.util.Queue;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -59,9 +57,6 @@ public class ArmyCardPanel extends JPanel {
 
 	private JLabel figureNumbersLabel;
 	private JButton addFigureButton;
-	
-
-	private Queue<String> pieceLeftToPlace = new LinkedList<String>();
 
 	private JPanel markerPanel;
 
@@ -77,9 +72,10 @@ public class ArmyCardPanel extends JPanel {
 		imageIcon = new ImageIcon(new File(cardType.getFolder(), "icon.jpg").getAbsolutePath());
 
 		piecesNumber = card.getNumber() * cardType.getFigureNames().size();
+		card.getPieceLeftToPlace().clear();
 		for (int i = 0; i < card.getNumber(); i++ ) {
 			for (String figureName : cardType.getFigureNames()) {
-				pieceLeftToPlace.add(figureName);
+				card.getPieceLeftToPlace().add(figureName);
 			}
 		}
 		
@@ -105,7 +101,7 @@ public class ArmyCardPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON1) {
-					GuiMessageBus.post(new CardSelectedMessage(card.getCardTypeId()));
+					GuiMessageBus.post(new CardSelectedMessage(card));
 				}
 			}
 			
@@ -126,9 +122,11 @@ public class ArmyCardPanel extends JPanel {
 
 
 	private void selectNextPiece() {
-		figureNumbersLabel.setText(pieceLeftToPlace.size() + "/" + piecesNumber);
-		addFigureButton.setAction(new AddPieceAction(pieceLeftToPlace.peek(), card));
+		figureNumbersLabel.setText(card.getPieceLeftToPlace().size() + "/" + piecesNumber);
+		addFigureButton.setAction(new AddPieceAction(card.getPieceLeftToPlace().peek(), card));
+		addFigureButton.setText("");
 	}
+
 
 	@Subscribe public void onPiecePlaced(final PiecePlacedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
@@ -141,12 +139,13 @@ public class ArmyCardPanel extends JPanel {
 				if (player != null) {
 
 					if (card.getId().equals(cardId)) {
-						pieceLeftToPlace.poll();
+						card.getPieceLeftToPlace().poll();
 						selectNextPiece();
-						if (pieceLeftToPlace.size() == 0) {
+						if (card.getPieceLeftToPlace().size() == 0) {
 							addFigureButton.setEnabled(false);
-						} 
-
+						} else {
+							addFigureButton.getAction().actionPerformed(null);
+						}
 					}
 				}
 			}
@@ -165,8 +164,8 @@ public class ArmyCardPanel extends JPanel {
 						if (piece != null && piece.getCard() != null) {
 							String cardId = piece.getCard().getId();
 							if (card.getId().equals(cardId)) {
-								pieceLeftToPlace.add(piece.getModelId());
-								if (pieceLeftToPlace.size() == 1) {
+								card.getPieceLeftToPlace().add(piece.getModelId());
+								if (card.getPieceLeftToPlace().size() == 1) {
 									addFigureButton.setEnabled(true);
 								}
 								selectNextPiece();
