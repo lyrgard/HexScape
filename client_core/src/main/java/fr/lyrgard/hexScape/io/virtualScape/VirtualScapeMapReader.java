@@ -67,7 +67,7 @@ public class VirtualScapeMapReader {
 			tile.setStartName(readCString(bB));
 			tile.setColorf(bB.getInt());
 			if (tile.getType() / 1000 == 17) {
-				// Tuiles particulières
+				// Particular tiles
 				bB.getInt(); // m_NbTile
 				readCString(bB); // m_PersonalTexture
 				readCString(bB); // m_PersonalTextureSide

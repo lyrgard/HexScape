@@ -16,7 +16,6 @@ public class CardService {
 
 	private static final String CARDS_FOLDER_NAME = "cards";
 
-	private static final String ID = "id";
 	private static final String NAME = "name";
 	private static final String FIGURES_3D = "3dFigures";
 	
@@ -59,7 +58,7 @@ public class CardService {
 								input = new FileInputStream(cardPropertiesFile);
 								cardProperties.load(input);
 
-								String id =  cardProperties.getProperty(ID);
+								String id =  folder.getName();
 								card.setId(id);
 								card.setName(cardProperties.getProperty(NAME));
 								card.setFolder(folder);
