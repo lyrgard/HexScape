@@ -115,6 +115,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rootNode.detachChild(this.scene.getSpatial());
 			scene = null;
 		}
+		//rootNode.detachChild(Sky.getInstance().getSpatial());
 		
 		titleMenuButtonsAppState.setEnabled(true);
 		pieceControlerAppState.setEnabled(false);
@@ -135,6 +136,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		if (scene != null) {
 			rootNode.attachChild(scene.getSpatial());
+			//rootNode.attachChild(Sky.getInstance().getSpatial());
 			titleMenuButtonsAppState.setEnabled(false);
 			pieceControlerAppState.setEnabled(true);
 			rotatingAroundCameraAppState.setEnabled(true);

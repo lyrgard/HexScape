@@ -859,7 +859,11 @@ public class VirtualScapeMapReader {
 			decorType = VirtualScapeDecorType.OUTCROP_3;
 			break;
 		default:
-			decorType = null;
+			if (tile.getType() > 14000 && tile.getType() < 14256) {
+				decorType = VirtualScapeDecorType.HIDDEN_GLYPH;
+			} else {
+				decorType = null;
+			}
 		}
 		
 		return decorType;

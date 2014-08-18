@@ -127,7 +127,8 @@ public enum VirtualScapeDecorType {
 		put(Direction.WEST, new Vector3i(4,-1,0));
 		put(Direction.NORTH_WEST, new Vector3i(3,-4,0));
 		put(Direction.NORTH_EAST, new Vector3i(-1,-3,0));
-	}})
+	}}),
+	HIDDEN_GLYPH("Glyph")
 	;
 	
 	private String externalModelName;
