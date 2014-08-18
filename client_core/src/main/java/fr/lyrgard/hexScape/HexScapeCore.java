@@ -35,6 +35,8 @@ public class HexScapeCore {
 	private String playerId = "1";
 	
 	private MapManager mapManager;
+	
+	private String gameName = "heroscape";
 
 	private HexScapeCore() {
 		instance = this;
@@ -109,6 +111,14 @@ public class HexScapeCore {
 
 	public void setOnline(boolean online) {
 		this.online = online;
+	}
+
+	public String getGameName() {
+		return gameName;
+	}
+
+	public void setGameName(String gameName) {
+		this.gameName = gameName;
 	}
 	
 }

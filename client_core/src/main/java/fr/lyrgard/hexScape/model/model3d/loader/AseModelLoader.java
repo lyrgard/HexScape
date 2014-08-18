@@ -67,7 +67,7 @@ import fr.lyrgard.hexScape.model.model3d.ExternalModel;
  * @author Mark Powell
  * @version $Id: ASEModel.java,v 1.5 2004-02-15 20:22:39 mojomonkey Exp $
  */
-public class AseModelLoader implements ModelLoader {
+public class AseModelLoader extends AbstractModelLoader {
 	
 	private static final Logger LOGGER = Logger.getLogger(AseModelLoader.class.getCanonicalName());
 
@@ -115,12 +115,19 @@ public class AseModelLoader implements ModelLoader {
 	}
 	
 	public boolean canLoad(String name) {
-		return getAseFile(name).exists();
+		File file = getAseFile(name);
+		return file != null && file.exists();
 	}
 	
 	private File getAseFile(String name) {
-		File folder = new File(ModelLoader.BASE_FOLDER, name);
-		return new File(folder, name + ".ase");
+		File file = null;
+		for (File folder : getModelsFolders()) {
+			File potentialFile = new File(new File(folder, name), name + ".ase");
+			if (potentialFile.exists()) {
+				file = potentialFile;
+			}
+		}
+		return file;
 	}
 	
 	public ExternalModel load(String name) {
@@ -808,12 +815,24 @@ public class AseModelLoader implements ModelLoader {
 			return mesh;
 		}
 		
+		
+		private File getTextureFile(String modelName, String textureName) {
+			File file = null;
+			for (File folder : getModelsFolders()) {
+				File potentialFile = new File(new File(new File(folder, modelName), "Textures"),textureName + ".bmp");
+				if (potentialFile.exists()) {
+					file = potentialFile;
+				}
+			}
+			return file;
+		}
+		
 		public Material getMaterial() {
 			AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 			Material mat = new Material(assetManager, 
 					"Common/MatDefs/Light/Lighting.j3md");
 			
-			Texture TileTexture = assetManager.loadTexture(ModelLoader.BASE_FOLDER + mainObjectName + "/Textures/" + name + ".bmp");
+			Texture TileTexture = assetManager.loadTexture(getTextureFile(mainObjectName, name).getPath());
 			TileTexture.setWrap(WrapMode.Repeat);
 			mat.setTexture("DiffuseMap", TileTexture);
 			mat.setBoolean("UseMaterialColors",true);    

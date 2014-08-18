@@ -12,6 +12,10 @@ import fr.lyrgard.hexScape.model.TitleScreen;
 
 public class AssetService {
 
+	public static final File ASSET_FOLDER = new File("asset");
+	
+	public static final File COMMON_ASSET_FOLDER = new File(ASSET_FOLDER, "common");  
+	
 	private static final AssetService INSTANCE = new AssetService();
 
 	public static AssetService getInstance() {
@@ -26,13 +30,12 @@ public class AssetService {
 
 		try {
 			//create output directory is not exists
-			File assetFolder = new File("asset");
-			if(!assetFolder.exists()){
-				assetFolder.mkdir();
+			if(!ASSET_FOLDER.exists()){
+				ASSET_FOLDER.mkdir();
 			}
 
 			ZipFile zipFile = new ZipFile(file);
-			zipFile.extractAll(assetFolder.getAbsolutePath());
+			zipFile.extractAll(ASSET_FOLDER.getAbsolutePath());
 
 			TextureService.getInstance().loadTileTexture();
 			ExternalModelService.getInstance().clear();

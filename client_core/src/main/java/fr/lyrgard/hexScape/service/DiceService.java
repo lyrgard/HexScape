@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -28,7 +30,7 @@ public class DiceService {
 	}
 	
 	
-	private static final File baseFolder = new File("asset/dice");
+	private static final String DICE_FOLDER_NAME = "dice";
 	private static final String diePropertiesFilename = "dice.properties";
 	private static final String dieIconFilename = "icon.png";
 	
@@ -46,83 +48,94 @@ public class DiceService {
 		loadDiceTypes();
 	}
 	
+	private List<File> getDiceFolders() {
+		List<File> folders = new ArrayList<File>();
+		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, DICE_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), DICE_FOLDER_NAME);
+		folders.add(commonFolder);
+		folders.add(gameFolder);
+		return folders;
+	}
+	
 	public void loadDiceTypes() {
 		diceTypes = new HashMap<>();
-		if (baseFolder.exists()) {
-			diceDefinition: for (File folder : baseFolder.listFiles()) {
-				if (folder.exists() && folder.isDirectory()) {
-					File dicePropertiesFile = new File(folder, diePropertiesFilename);
-					if (dicePropertiesFile.exists() && dicePropertiesFile.isFile() && dicePropertiesFile.canRead()) {
-						DiceType type = new DiceType();
-						Properties diceProperties = new Properties();
-						InputStream input;
-						try {
-							input = new FileInputStream(dicePropertiesFile);
-							diceProperties.load(input);
-							
-							type.setId(folder.getName());
-							type.setName(diceProperties.getProperty(NAME));
-							
-							String maxNumberThrownString = diceProperties.getProperty(MAX_NUMBER_THROWN);
-							if (StringUtils.isNotEmpty(maxNumberThrownString)) {
-								try {
-									type.setMaxNumberThrown(Integer.parseInt(maxNumberThrownString));
-								} catch (IllegalArgumentException e) {
+		for (File baseFolder : getDiceFolders()) {
+			if (baseFolder.exists()) {
+				diceDefinition: for (File folder : baseFolder.listFiles()) {
+					if (folder.exists() && folder.isDirectory()) {
+						File dicePropertiesFile = new File(folder, diePropertiesFilename);
+						if (dicePropertiesFile.exists() && dicePropertiesFile.isFile() && dicePropertiesFile.canRead()) {
+							DiceType type = new DiceType();
+							Properties diceProperties = new Properties();
+							InputStream input;
+							try {
+								input = new FileInputStream(dicePropertiesFile);
+								diceProperties.load(input);
+
+								type.setId(folder.getName());
+								type.setName(diceProperties.getProperty(NAME));
+
+								String maxNumberThrownString = diceProperties.getProperty(MAX_NUMBER_THROWN);
+								if (StringUtils.isNotEmpty(maxNumberThrownString)) {
+									try {
+										type.setMaxNumberThrown(Integer.parseInt(maxNumberThrownString));
+									} catch (IllegalArgumentException e) {
+									}
 								}
-							}
-							
-							String backgroundColor = diceProperties.getProperty(BACKGROUND_COLOR);
-							if (StringUtils.isNotEmpty(backgroundColor)) {
-								try {
-									type.setBackgroundColor(Color.decode(backgroundColor));
-								} catch (NumberFormatException e) {
+
+								String backgroundColor = diceProperties.getProperty(BACKGROUND_COLOR);
+								if (StringUtils.isNotEmpty(backgroundColor)) {
+									try {
+										type.setBackgroundColor(Color.decode(backgroundColor));
+									} catch (NumberFormatException e) {
+									}
 								}
-							}
-							
-							String foregroundcolor = diceProperties.getProperty(FOREGROUND_COLOR);
-							if (StringUtils.isNotEmpty(foregroundcolor)) {
-								try {
-									type.setForegroundColor(Color.decode(foregroundcolor));
-								} catch (NumberFormatException e) {
+
+								String foregroundcolor = diceProperties.getProperty(FOREGROUND_COLOR);
+								if (StringUtils.isNotEmpty(foregroundcolor)) {
+									try {
+										type.setForegroundColor(Color.decode(foregroundcolor));
+									} catch (NumberFormatException e) {
+									}
 								}
-							}
-							
-							String[] faces = diceProperties.getProperty(VALUES).split(",");
-							for (String face : faces) {
-								face = face.trim();
-								File faceFile = new File(folder, face);
-								if (!faceFile.exists()) {
-									for (ImageExtensionEnum extension : ImageExtensionEnum.values()) {
-										faceFile = new File(folder, face + "." + extension.name().toLowerCase());
-										if (faceFile.exists()) {
-											break;
+
+								String[] faces = diceProperties.getProperty(VALUES).split(",");
+								for (String face : faces) {
+									face = face.trim();
+									File faceFile = new File(folder, face);
+									if (!faceFile.exists()) {
+										for (ImageExtensionEnum extension : ImageExtensionEnum.values()) {
+											faceFile = new File(folder, face + "." + extension.name().toLowerCase());
+											if (faceFile.exists()) {
+												break;
+											}
+											faceFile = null;
 										}
-										faceFile = null;
+										if (faceFile == null) {
+											CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
+											break diceDefinition;
+										}
 									}
-									if (faceFile == null) {
-										CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
-										break diceDefinition;
-									}
+									DiceFace diceFace = new DiceFace();
+									diceFace.setImage(faceFile);
+									diceFace.setName(face);
+									diceFace.setId(face);
+									type.getFaces().add(diceFace);
 								}
-								DiceFace diceFace = new DiceFace();
-								diceFace.setImage(faceFile);
-								diceFace.setName(face);
-								diceFace.setId(face);
-								type.getFaces().add(diceFace);
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
-						} catch (IOException e) {
-							e.printStackTrace();
+							File diceIconFile = new File(folder, dieIconFilename);
+							if (diceIconFile.exists() && diceIconFile.isFile() && diceIconFile.canRead()) {
+								type.setIconFile(diceIconFile);
+							}
+
+							diceTypes.put(type.getId(), type);
 						}
-						File diceIconFile = new File(folder, dieIconFilename);
-						if (diceIconFile.exists() && diceIconFile.isFile() && diceIconFile.canRead()) {
-							type.setIconFile(diceIconFile);
-						}
-						
-						diceTypes.put(type.getId(), type);
 					}
 				}
-			}
-		} 		
+			} 		
+		}
 	}
 
 	public Collection<DiceType> getDiceTypes() {

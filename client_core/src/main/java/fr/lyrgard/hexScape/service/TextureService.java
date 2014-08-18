@@ -9,6 +9,8 @@ import fr.lyrgard.hexScape.HexScapeCore;
 
 public class TextureService  {
 	
+	private static final String TILES_FOLDER_NAME = "tiles";
+	private static final String TEXTURES_FILE_NAME = "TileTexture.bmp";
 	private static final TextureService INSTANCE = new TextureService();
 	
 	public static TextureService getInstance() {
@@ -30,9 +32,14 @@ public class TextureService  {
 	public void loadTileTexture() {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 
-		File file = new File("asset/tiles/TileTexture.bmp");
-		if (file.exists() && file.isFile() && file.canRead()) {
-			tileTexture = assetManager.loadTexture("asset/tiles/TileTexture.bmp");
+		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, TILES_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), TILES_FOLDER_NAME);
+		File commonFile = new File(commonFolder, TEXTURES_FILE_NAME);
+		File gameFile = new File(gameFolder, TEXTURES_FILE_NAME);
+		if (gameFile.exists() && gameFile.isFile() && gameFile.canRead()) {
+			tileTexture = assetManager.loadTexture(gameFile.getPath());
+		} else if (commonFile.exists() && commonFile.isFile() && commonFile.canRead()) {
+			tileTexture = assetManager.loadTexture(commonFile.getPath());
 		} else {
 			tileTexture = assetManager.loadTexture("model/texture/defaultTileTexture.bmp");
 		}

@@ -4,16 +4,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
 public class CardService {
 
-private static final File baseFolder = new File("asset/cards");
-	
-	
+	private static final String CARDS_FOLDER_NAME = "cards";
 
 	private static final String ID = "id";
 	private static final String NAME = "name";
@@ -29,42 +30,51 @@ private static final File baseFolder = new File("asset/cards");
 	
 	private CardCollection cardInventory;
 	
+	private List<File> getCardFolders() {
+		List<File> folders = new ArrayList<File>();
+		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, CARDS_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), CARDS_FOLDER_NAME);
+		folders.add(commonFolder);
+		folders.add(gameFolder);
+		return folders;
+	}
+	
 	private CardService() {
-		loadCardInventory(baseFolder);
+		loadCardInventory(getCardFolders());
 	}
 
-	public CardCollection loadCardInventory(File baseFolder) {
-		if (baseFolder == null) {
-			baseFolder = CardService.baseFolder;
-		}
+	public CardCollection loadCardInventory(List<File> baseFolders) {
 		cardInventory = new CardCollection();
-		if (baseFolder.exists()) {
-			for (File folder : baseFolder.listFiles()) {
-				if (folder.exists() && folder.isDirectory()) {
-					File cardPropertiesFile = new File(folder, cardPropertiesFilename);
-					if (cardPropertiesFile.exists() && cardPropertiesFile.isFile() && cardPropertiesFile.canRead()) {
-						CardType card = new CardType();
-						Properties cardProperties = new Properties();
-						InputStream input;
-						try {
-							input = new FileInputStream(cardPropertiesFile);
-							cardProperties.load(input);
-							
-							String id =  cardProperties.getProperty(ID);
-							card.setId(id);
-							card.setName(cardProperties.getProperty(NAME));
-							card.setFolder(folder);
-							String figures3d = cardProperties.getProperty(FIGURES_3D);
-							String[] figures = figures3d.split(",");
-							for (String figureName : figures) {
-								figureName = figureName.trim();
-								card.getFigureNames().add(figureName);
+		
+		for (File baseFolder : baseFolders) {	
+			if (baseFolder.exists()) {
+				for (File folder : baseFolder.listFiles()) {
+					if (folder.exists() && folder.isDirectory()) {
+						File cardPropertiesFile = new File(folder, cardPropertiesFilename);
+						if (cardPropertiesFile.exists() && cardPropertiesFile.isFile() && cardPropertiesFile.canRead()) {
+							CardType card = new CardType();
+							Properties cardProperties = new Properties();
+							InputStream input;
+							try {
+								input = new FileInputStream(cardPropertiesFile);
+								cardProperties.load(input);
+
+								String id =  cardProperties.getProperty(ID);
+								card.setId(id);
+								card.setName(cardProperties.getProperty(NAME));
+								card.setFolder(folder);
+								String figures3d = cardProperties.getProperty(FIGURES_3D);
+								String[] figures = figures3d.split(",");
+								for (String figureName : figures) {
+									figureName = figureName.trim();
+									card.getFigureNames().add(figureName);
+								}
+								cardInventory.addCard(id, card, null);
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
-							cardInventory.addCard(id, card, null);
-						} catch (IOException e) {
-							e.printStackTrace();
+
 						}
-						
 					}
 				}
 			}
