@@ -39,11 +39,13 @@ public class CardService {
 	}
 	
 	private CardService() {
-		loadCardInventory(getCardFolders());
+		loadCardInventory();
 	}
 
-	public CardCollection loadCardInventory(List<File> baseFolders) {
+	public CardCollection loadCardInventory() {
 		cardInventory = new CardCollection();
+		
+		List<File> baseFolders = getCardFolders();
 		
 		for (File baseFolder : baseFolders) {	
 			if (baseFolder.exists()) {

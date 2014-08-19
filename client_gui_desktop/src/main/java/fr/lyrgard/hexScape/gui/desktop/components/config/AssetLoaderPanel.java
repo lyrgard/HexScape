@@ -23,7 +23,7 @@ public class AssetLoaderPanel extends JPanel {
 	
 	private JTextField zipFileLabel;
 	
-	private JProgressBar progressBar;
+	//private JProgressBar progressBar;
 	
 	private File assetFile;
 	
@@ -31,7 +31,7 @@ public class AssetLoaderPanel extends JPanel {
 		this.setLayout(new MigLayout(
 				"wrap", // Layout Constraints
 				"[right][left]", // Column constraints
-				"[][]20[]" // Row constraints
+				"[]20[]" // Row constraints
 				));
 		
 		final JButton importButton = new JButton("Import assets");
@@ -40,9 +40,9 @@ public class AssetLoaderPanel extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (assetFile != null) {
-					progressBar.setVisible(true);
+					//progressBar.setVisible(true);
 					AssetService.getInstance().importAssets(assetFile);
-					progressBar.setVisible(false);
+					//progressBar.setVisible(false);
 					GuiMessageBus.post(new InfoMessage(HexScapeCore.getInstance().getPlayerId(), "Assets imported"));
 				}
 			}
@@ -58,7 +58,7 @@ public class AssetLoaderPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser chooser = new JFileChooser();
 				FileNameExtensionFilter filter = new FileNameExtensionFilter(
-						"asset zip files", "zip");
+						"HexScape Data files", "hsd");
 				chooser.setFileFilter(filter);
 
 				int returnVal = chooser.showOpenDialog(AssetLoaderPanel.this);
@@ -75,14 +75,14 @@ public class AssetLoaderPanel extends JPanel {
 		zipFileLabel = new JTextField(50);
 		zipFileLabel.setEditable(false);
 		
-		progressBar = new JProgressBar();
-		progressBar.setVisible(false);
-		progressBar.setIndeterminate(true);
+//		progressBar = new JProgressBar();
+//		progressBar.setVisible(false);
+//		progressBar.setIndeterminate(true);
 		
 		
 		add(chooseFile);
 		add(zipFileLabel);
-		add(progressBar, "span 2, align center");
+		//add(progressBar, "span 2, align center");
 		add(importButton, "span 2, align center");
 	}
 	

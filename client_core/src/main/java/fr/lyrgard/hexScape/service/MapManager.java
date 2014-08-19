@@ -230,14 +230,20 @@ public class MapManager {
 		Collection<Spatial> decorNodes = getDecorsSpatials();
 		Node startZones = getStartZones();
 
-		mapNode.attachChild(mapWithoutDecorsNode);
+		
 		mapWithoutDecorsNode.attachChild(visibleMap);
-		mapWithoutDecorsNode.attachChild(invisibleMap);
+		if (invisibleMap != null) {
+			mapWithoutDecorsNode.attachChild(invisibleMap);
+		}
 
+		mapNode.attachChild(mapWithoutDecorsNode);
+		
 		for (Spatial decorNode : decorNodes) {
 			mapNode.attachChild(decorNode);
 		}
-		mapNode.attachChild(startZones);
+		if (startZones != null) {
+			mapNode.attachChild(startZones);
+		}
 	}
 
 	private Node getStartZones() {
@@ -263,6 +269,10 @@ public class MapManager {
 					}
 				}
 			}
+		}
+		
+		if (startZones.isEmpty()) {
+			return null;
 		}
 		
 		
@@ -322,12 +332,14 @@ public class MapManager {
 			if (decor != null) {
 				Spatial decorSpatial = externalModelService.getModel(decor.getName());
 
-				CoordinateUtils.toSpaceCoordinate(decor.getX(), decor.getY(), decor.getZ(), spacePos);
+				if (decorSpatial != null) {
+					CoordinateUtils.toSpaceCoordinate(decor.getX(), decor.getY(), decor.getZ(), spacePos);
 
-				decorSpatial.setLocalRotation(new Quaternion().fromAngleAxis(DirectionService.getInstance().getAngle(decor.getDirection()), Vector3f.UNIT_Y));
-				decorSpatial.setLocalTranslation(spacePos.x, spacePos.y, spacePos.z);
+					decorSpatial.setLocalRotation(new Quaternion().fromAngleAxis(DirectionService.getInstance().getAngle(decor.getDirection()), Vector3f.UNIT_Y));
+					decorSpatial.setLocalTranslation(spacePos.x, spacePos.y, spacePos.z);
 
-				results.add(decorSpatial);
+					results.add(decorSpatial);
+				}
 			}
 		}
 		return results;
@@ -411,6 +423,10 @@ public class MapManager {
 			}
 		}
 
+		if (notAddedYetTiles.isEmpty()) {
+			return null;
+		}
+		
 		while (notAddedYetTiles.size() != 0) {
 			Tile tile = notAddedYetTiles.poll();
 

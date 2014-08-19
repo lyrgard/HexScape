@@ -39,7 +39,7 @@ public class AssetService {
 
 			TextureService.getInstance().loadTileTexture();
 			ExternalModelService.getInstance().clear();
-			CardService.getInstance().loadCardInventory(null);
+			CardService.getInstance().loadCardInventory();
 			DiceService.getInstance().loadDiceTypes();
 
 			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {

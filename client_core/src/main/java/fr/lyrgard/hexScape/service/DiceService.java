@@ -16,6 +16,8 @@ import org.apache.commons.lang.StringUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.message.DiceDefinitionReloadedMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.ImageExtensionEnum;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
@@ -136,6 +138,7 @@ public class DiceService {
 				}
 			} 		
 		}
+		GuiMessageBus.post(new DiceDefinitionReloadedMessage());
 	}
 
 	public Collection<DiceType> getDiceTypes() {

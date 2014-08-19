@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>fr.lyrgard.hexscape</groupId>
   <artifactId>hexscape_client_network</artifactId>
-  <version>1.0.0-alpha3</version>
+  <version>1.0.0-beta</version>
   
   
   <build>
