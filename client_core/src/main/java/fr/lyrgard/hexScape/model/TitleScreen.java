@@ -60,39 +60,39 @@ public class TitleScreen implements Displayable {
 		
 		mapSpatial.setLocalRotation(new Quaternion().fromAngleAxis(210 * FastMath.DEG_TO_RAD, Vector3f.UNIT_Y));
 		BoundingVolume bv = mapSpatial.getWorldBound();
-		mapSpatial.setLocalTranslation(-bv.getCenter().x + 10, 0, -bv.getCenter().z);
+		mapSpatial.setLocalTranslation(-bv.getCenter().x, 0, -bv.getCenter().z);
 		
 		node.attachChild(mapSpatial);
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		
 		float sizeX = 13.15f;
 		float sizeY = 12;
-		float x = 35 + BUTTON_SIZE/2 + sizeX/2 + 1;
+		float x = 38 + BUTTON_SIZE/2 + sizeX/2 + 1;
 		float y = -28f;
 		TitleScreenSprite configLabel = new TitleScreenSprite(Type.SPRITE, "title/configLabel.png", x, y, sizeX, sizeY, null, null);
-		x = 35;
-		y = -28;
+		x = 38;
+		y = y;
 		buttons.attachChild(new TitleScreenSprite(Type.CONFIG, "title/config.png", x, y, BUTTON_SIZE, BUTTON_SIZE, configLabel, node));
 		
 		sizeX = 30;
 		sizeY = 8;
-		x = 17f - BUTTON_SIZE/2 - sizeX/2;
+		x = 20f - BUTTON_SIZE/2 - sizeX/2;
 		y = 21f;
 		TitleScreenSprite multiplayerLabel = new TitleScreenSprite(Type.SPRITE, "title/multiplayerLabel.png", x, y, sizeX, sizeY, null, null);
-		x = 17f;
+		x = 20f;
 		y = 19.4f;
 		buttons.attachChild(new TitleScreenSprite(Type.MULTIPLAYER, "title/multiplayer.png", x, y, BUTTON_SIZE, BUTTON_SIZE, multiplayerLabel, node));
 		
 		sizeX = 30;
 		sizeY = 8;
-		x = -18.5f + BUTTON_SIZE/2 + sizeX/2;
+		x = -15.5f + BUTTON_SIZE/2 + sizeX/2;
 		y = -26.5f;
 		TitleScreenSprite soloLabel = new TitleScreenSprite(Type.SPRITE, "title/soloLabel.png", x, y, sizeX, sizeY, null, null);
-		x = -18.5f;
+		x = -15.5f;
 		y = -23.6f;
 		buttons.attachChild(new TitleScreenSprite(Type.SOLO, "title/solo.png", x, y, BUTTON_SIZE, BUTTON_SIZE, soloLabel, node));
 		
-		x=14;
+		x=17;
 		y=-14;
 		node.attachChild(new TitleScreenSprite(Type.SPRITE, "title/subtitle.png", x, y, 16, 9, null, null));
 	
