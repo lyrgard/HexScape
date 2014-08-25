@@ -74,7 +74,7 @@ public class ServerWebSocket extends WebSocketHandler {
 				send(new UserIdAllocatedMessage(playerId));
 				ServerNetwork.getInstance().registerSocket(playerId, this);
 			} else {
-				System.out.println("Received message " + message.getClass() + " from player " + playerId);
+				//System.out.println("Received message " + message.getClass() + " from player " + playerId);
 				if (message instanceof AbstractUserMessage) {
 					((AbstractUserMessage)message).setPlayerId(playerId);
 				}
@@ -91,7 +91,9 @@ public class ServerWebSocket extends WebSocketHandler {
 
 	@Override
 	public void configure(WebSocketServletFactory factory) {
+		factory.getPolicy().setMaxTextMessageSize(1000000);
 		factory.register(ServerWebSocket.class);
+		
 	}
 
 	public void send(AbstractMessage message) {

@@ -36,6 +36,7 @@ public class ClientNetwork {
 		if (socket == null) {
 			String destUri = "ws://" + url;
 			client = new WebSocketClient();
+			client.getPolicy().setMaxTextMessageSize(1000000);
 			socket = new ClientWebSocket(player);
 			try {
 				client.start();

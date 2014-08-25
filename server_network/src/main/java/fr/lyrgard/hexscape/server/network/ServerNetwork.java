@@ -55,7 +55,7 @@ public class ServerNetwork {
 		ServerWebSocket socket = socketsById.get(playerId);
 		if (socket != null) {
 			socket.send(message);
-			System.out.println("Sent message " + message.getClass() + " to player " + playerId);
+			//System.out.println("Sent message " + message.getClass() + " to player " + playerId);
 		} else {
 			System.out.println("Wanted to send message " + message.getClass() + " to player " + playerId + " but no socket found");
 		}

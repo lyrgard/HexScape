@@ -71,7 +71,7 @@ public class TitleScreen implements Displayable {
 		float y = -28f;
 		TitleScreenSprite configLabel = new TitleScreenSprite(Type.SPRITE, "title/configLabel.png", x, y, sizeX, sizeY, null, null);
 		x = 38;
-		y = y;
+		y = -28f;
 		buttons.attachChild(new TitleScreenSprite(Type.CONFIG, "title/config.png", x, y, BUTTON_SIZE, BUTTON_SIZE, configLabel, node));
 		
 		sizeX = 30;
