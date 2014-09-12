@@ -92,6 +92,7 @@ public class HexScapeFrame extends JFrame {
 	public void showView(ViewEnum view) {
 		layout.show(getContentPane(), view.name());
 		viewsMap.get(view).refresh();
+		pack();
 	}
 
 

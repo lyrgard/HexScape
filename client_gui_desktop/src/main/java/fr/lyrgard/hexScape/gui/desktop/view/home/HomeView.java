@@ -2,6 +2,7 @@ package fr.lyrgard.hexScape.gui.desktop.view.home;
 
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;
@@ -115,8 +116,8 @@ public class HomeView extends AbstractView {
 				return null;
 			}
 		});
-		View3d view3d = HexScapeFrame.getInstance().getView3d();
-		view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
+		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+		//view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
 		add(view3d, BorderLayout.CENTER);
 	}
 

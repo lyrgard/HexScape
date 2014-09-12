@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -88,8 +89,9 @@ public class GameView extends AbstractView {
 
 	@Override
 	public void refresh() {
-		View3d view3d = HexScapeFrame.getInstance().getView3d();
-		view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
+		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+		view3d.setSize(new Dimension(50, 50));
+		//view3d.setPreferredSize(new Dimension(200, 200));
 		add(view3d, "cell 1 1, grow, push");
 	}
 

@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.gui.desktop.components.game;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 
@@ -97,8 +98,9 @@ public class SelectedGamePanel extends JPanel {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				View3d view3d = HexScapeFrame.getInstance().getView3d();
-				view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
+				Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+				view3d.setSize(new Dimension(50, 50));
+				//view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
 				add(view3d, BorderLayout.CENTER);
 
 				DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId());
