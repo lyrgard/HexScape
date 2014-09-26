@@ -8,8 +8,8 @@ public class ConnectToServerMessage extends AbstractUserMessage {
 	private String host;
 	
 	@JsonCreator
-	public ConnectToServerMessage(@JsonProperty("playerId") String playerId, @JsonProperty("host") String host) {
-		super(playerId);
+	public ConnectToServerMessage(@JsonProperty("userId") String userId, @JsonProperty("host") String host) {
+		super(userId);
 		this.host = host;
 	}
 

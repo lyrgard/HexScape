@@ -14,9 +14,11 @@ import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
 import fr.lyrgard.hexScape.message.RevealMarkerMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
@@ -52,14 +54,12 @@ public class MarkerMessageListener extends AbstractMessageListener {
 		if (HexScapeCore.getInstance().isOnline()) {
 			ClientNetwork.getInstance().send(message);
 		} else {
-			String playerId = message.getPlayerId();
-			String gameId = message.getGameId();
 			String cardId = message.getCardId();
 			String markerId = UUID.randomUUID().toString();
 			int number = message.getNumber();
 			String markerTypeId = message.getMarkerTypeId();
 			String hiddenMarkerTypeId = message.getHiddenMarkerTypeId();
-			MarkerPlacedMessage resultMessage = new MarkerPlacedMessage(playerId, gameId, cardId, markerId, markerTypeId, hiddenMarkerTypeId, number);
+			MarkerPlacedMessage resultMessage = new MarkerPlacedMessage(CurrentUserInfo.getInstance().getPlayerId(), cardId, markerId, markerTypeId, hiddenMarkerTypeId, number);
 			CoreMessageBus.post(resultMessage);
 		}
 		
@@ -67,14 +67,21 @@ public class MarkerMessageListener extends AbstractMessageListener {
 	
 	@Subscribe public void onMarkerPlaced(MarkerPlacedMessage message) {
 		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		String markerTypeId = message.getMarkerTypeId();
 		int number = message.getNumber();
 		String hiddenMarkerTypeId = message.getHiddenMarkerTypeId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		String gameId = CurrentUserInfo.getInstance().getGameId();
+		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game == null) {
+			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+			return;
+		} 
+		
+		Player player = game.getPlayer(playerId);
 		if (player == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
@@ -86,7 +93,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		}
 		
-		CardInstance card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCard(cardId);
 		if (card == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;
@@ -143,25 +150,29 @@ public class MarkerMessageListener extends AbstractMessageListener {
 		if (HexScapeCore.getInstance().isOnline()) {
 			ClientNetwork.getInstance().send(message);
 		} else {
-			String playerId = message.getPlayerId();
-			String gameId = message.getGameId();
 			String cardId = message.getCardId();
 			String markerId = message.getMarkerId();
 			int number = message.getNumber();
-			MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(playerId, gameId, cardId, markerId, number);
+			MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(CurrentUserInfo.getInstance().getPlayerId(), cardId, markerId, number);
 			CoreMessageBus.post(resultMessage);
 		}
 	}
 	
 	@Subscribe public void onMarkerRemoved(MarkerRemovedMessage message) {
 		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		int number = message.getNumber();
 		
+		String gameId = CurrentUserInfo.getInstance().getGameId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game == null) {
+			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+			return;
+		} 
+		
+		Player player = game.getPlayer(playerId);
 		if (player == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
@@ -173,7 +184,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		}
 		
-		CardInstance card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCard(cardId);
 		if (card == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;
@@ -210,12 +221,20 @@ public class MarkerMessageListener extends AbstractMessageListener {
 		if (HexScapeCore.getInstance().isOnline()) {
 			ClientNetwork.getInstance().send(message);
 		} else {
-			String playerId = message.getPlayerId();
-			String gameId = message.getGameId();
+			
 			String cardId = message.getCardId();
 			String markerId = message.getMarkerId();
 			
-			Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+			String gameId = CurrentUserInfo.getInstance().getGameId();
+			String playerId = CurrentUserInfo.getInstance().getPlayerId();
+			
+			Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+			if (game == null) {
+				CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+				return;
+			} 
+			
+			Player player = game.getPlayer(playerId);
 			if (player == null) {
 				CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 				return;
@@ -227,7 +246,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 				return;
 			}
 			
-			CardInstance card = army.getCardsById().get(cardId);
+			CardInstance card = army.getCard(cardId);
 			if (card == null) {
 				CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 				return;
@@ -239,7 +258,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 						return;
 					}
 					String hiddenMarkerTypeId = ((HiddenMarkerInstance)marker).getHiddenMarkerDefinitionId();
-					MarkerRevealedMessage resultMessage = new MarkerRevealedMessage(playerId, gameId, cardId, markerId, hiddenMarkerTypeId);
+					MarkerRevealedMessage resultMessage = new MarkerRevealedMessage(playerId, cardId, markerId, hiddenMarkerTypeId);
 					CoreMessageBus.post(resultMessage);
 				}
 			}
@@ -248,12 +267,19 @@ public class MarkerMessageListener extends AbstractMessageListener {
 	
 	@Subscribe public void onMarkerRevealed(MarkerRevealedMessage message) {
 		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		String hiddenMarkerTypeId = message.getHiddenMarkerTypeId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		String gameId = CurrentUserInfo.getInstance().getGameId();
+		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game == null) {
+			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+			return;
+		} 
+		
+		Player player = game.getPlayer(playerId);
 		if (player == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
 			return;
@@ -265,7 +291,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		}
 		
-		CardInstance card = army.getCardsById().get(cardId);
+		CardInstance card = army.getCard(cardId);
 		if (card == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
 			return;

@@ -13,12 +13,10 @@ public class RemoveMarkerMessage extends AbstractMarkerMessage {
 
 	@JsonCreator
 	public RemoveMarkerMessage(
-			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("gameId") String gameId, 
 			@JsonProperty("cardId") String cardId, 
 			@JsonProperty("markerId") String markerId,
 			@JsonProperty("number") int number) {
-		super(playerId, gameId, cardId, markerId);
+		super(cardId, markerId);
 		this.number = number;
 	}
 

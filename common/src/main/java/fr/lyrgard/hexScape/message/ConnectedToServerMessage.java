@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class ConnectedToServerMessage extends AbstractUserMessage {
 
 	@JsonCreator
-	public ConnectedToServerMessage(@JsonProperty("playerId") String playerId) {
-		super(playerId);
+	public ConnectedToServerMessage(@JsonProperty("userId") String userId) {
+		super(userId);
 	}
 
 }

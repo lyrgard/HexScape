@@ -11,13 +11,13 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeDecorType;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeMap;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeTile;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.map.Decor;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Map;
@@ -36,7 +36,7 @@ public class VirtualScapeMapReader {
 		
 		virtualScapeMap.setVersion(bB.getDouble());
 		if (virtualScapeMap.getVersion() != 7.0E-4) {
-			GuiMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Old VirtualScape file version, not supported.\nTry opening the map file with the latest Virtualscape version and save it again."));
+			GuiMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getId(), "Old VirtualScape file version, not supported.\nTry opening the map file with the latest Virtualscape version and save it again."));
 			return null;
 		}
 		virtualScapeMap.setName(readCString(bB));

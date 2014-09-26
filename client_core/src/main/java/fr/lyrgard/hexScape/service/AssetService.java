@@ -3,11 +3,15 @@ package fr.lyrgard.hexScape.service;
 import java.io.File;
 import java.util.concurrent.Callable;
 
+import com.jme3.asset.AssetManager;
+import com.jme3.asset.DesktopAssetManager;
+
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.TitleScreen;
 
 public class AssetService {
@@ -48,6 +52,11 @@ public class AssetService {
 				public Void call() throws Exception {
 					TitleScreen.getInstance().populateNode();
 					if (HexScapeCore.getInstance().getMapManager() != null) {
+						AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(); 
+						if (assetManager instanceof DesktopAssetManager) {
+							((DesktopAssetManager) assetManager).clearCache();
+						}
+						
 						HexScapeCore.getInstance().getMapManager().redraw();
 					}
 					return null;
@@ -58,7 +67,7 @@ public class AssetService {
 
 		} catch (ZipException e) {
 			e.printStackTrace();
-			GuiMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "An error occurred while trying to unzip " + file.getAbsolutePath()));
+			GuiMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "An error occurred while trying to unzip " + file.getAbsolutePath()));
 		}
 
 	}

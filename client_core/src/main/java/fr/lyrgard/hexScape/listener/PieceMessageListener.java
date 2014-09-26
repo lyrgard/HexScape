@@ -7,14 +7,18 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.message.PlacePieceMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.IdGenerator;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
@@ -38,19 +42,32 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final String pieceModelId = message.getPieceModelId();
 		final String cardInstanceId = message.getCardInstanceId();
 		
-		final Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getArmy() != null && player.getArmy().getCardsById().keySet().contains(cardInstanceId)) {
-			final CardInstance card = player.getArmy().getCardsById().get(cardInstanceId);
-			
-			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
-				public Void call() throws Exception {
-					String pieceId = playerId + "-" + player.getPiecesById().size();
-					PieceInstance piece = new PieceInstance(pieceId, pieceModelId, card);
-					HexScapeCore.getInstance().getMapManager().beginPlacingPiece(new PieceManager(piece));
-					player.getPiecesById().put(piece.getId(), piece);
-					return null;
+		String gameId = CurrentUserInfo.getInstance().getGameId();
+		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		if (game == null) {
+			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+			return;
+		} 
+		
+	
+		for (Player player : game.getPlayers()) {
+			if (player != null && player.getArmy() != null) {
+
+				final CardInstance card = player.getArmy().getCard(cardInstanceId);
+
+				if (card != null) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+						public Void call() throws Exception {
+							String pieceId = IdGenerator.getInstance().getNewPieceId();
+							PieceInstance piece = new PieceInstance(pieceId, pieceModelId, card);
+							HexScapeCore.getInstance().getMapManager().beginPlacingPiece(new PieceManager(piece));
+							card.addPiece(piece);
+							return null;
+						}
+					});		
 				}
-			});		
+			}
 		}
 	}
 	
@@ -64,22 +81,30 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final int z = message.getZ();
 		final Direction direction = message.getDirection();
 			
-		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			// coming from ourself, advertise the placement
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);
 			}
 		} else {
 			// coming from another player, place the piece
-			Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+			String gameId = CurrentUserInfo.getInstance().getGameId();
+			
+			Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+			if (game == null) {
+				CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find game " + gameId));
+				return;
+			} 
+			
+			final Player player = game.getPlayer(playerId);
 			
 			if (player != null && player.getArmy() != null) {
-				CardInstance cardInstance = player.getArmy().getCardsById().get(cardInstanceId);
+				CardInstance cardInstance = player.getArmy().getCard(cardInstanceId);
 				PieceInstance piece = new PieceInstance(pieceId, pieceModelId, cardInstance);
 				piece.setDirection(direction);
 				final PieceManager pieceManager = new PieceManager(piece);
 				pieceManager.rotate(direction);
-				player.getPiecesById().put(piece.getId(), piece);
+				cardInstance.addPiece(piece);
 				HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
 
 					@Override
@@ -104,7 +129,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final int z = message.getZ();
 		final Direction direction = message.getDirection();
 			
-		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			// coming from ourself, advertise the placement
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);
@@ -135,7 +160,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final String playerId = message.getPlayerId();
 		final String pieceId = message.getPieceId();
 		
-		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			// coming from ourself, advertise the removing
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);
@@ -167,7 +192,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final String playerId = message.getPlayerId();
 		final String pieceId = message.getPieceId();
 		
-		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			// coming from ourself, advertise the placement
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);
@@ -197,7 +222,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 		final String playerId = message.getPlayerId();
 		final String pieceId = message.getPieceId();
 		
-		if (playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			// coming from ourself, advertise the placement
 			if (HexScapeCore.getInstance().isOnline()) {
 				ClientNetwork.getInstance().send(message);

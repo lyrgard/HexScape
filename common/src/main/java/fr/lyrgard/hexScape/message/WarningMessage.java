@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 
-public class WarningMessage extends AbstractUserMessage {
+public class WarningMessage extends AbstractPlayerMessage {
 
 	private String message;
 

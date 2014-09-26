@@ -6,15 +6,16 @@ import fr.lyrgard.hexScape.listener.ChatMessageListener;
 import fr.lyrgard.hexScape.listener.DiceMessageListener;
 import fr.lyrgard.hexScape.listener.ErrorMessageListener;
 import fr.lyrgard.hexScape.listener.GameMessageListener;
+import fr.lyrgard.hexScape.listener.GameRecorderListener;
 import fr.lyrgard.hexScape.listener.MapMessageListener;
 import fr.lyrgard.hexScape.listener.MarkerMessageListener;
 import fr.lyrgard.hexScape.listener.PieceMessageListener;
 import fr.lyrgard.hexScape.listener.RoomMessageListener;
 import fr.lyrgard.hexScape.listener.ServerListener;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardCollection;
-import fr.lyrgard.hexScape.model.player.ColorEnum;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.service.ConfigurationService;
 import fr.lyrgard.hexScape.service.MapManager;
 
@@ -32,19 +33,18 @@ public class HexScapeCore {
 	
 	private CardCollection cardInventory;
 	
-	private String playerId = "1";
-	
 	private MapManager mapManager;
 	
 	private String gameName = "heroscape";
 
 	private HexScapeCore() {
 		instance = this;
-		Player player = new Player("", ColorEnum.RED);
-		Universe.getInstance().getPlayersByIds().put(playerId, player);
+		User user = CurrentUserInfo.getInstance();
+		user.setId("1");
+		Universe.getInstance().getUsersByIds().put(user.getId(), user);
 		
 		String username = ConfigurationService.getInstance().getUserName();
-		player.setName(username);
+		user.setName(username);
 		
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();
@@ -53,6 +53,7 @@ public class HexScapeCore {
 		DiceMessageListener.start();
 		ErrorMessageListener.start();
 		GameMessageListener.start();
+		GameRecorderListener.start();
 		MapMessageListener.start();
 		MarkerMessageListener.start();
 		PieceMessageListener.start();
@@ -72,34 +73,6 @@ public class HexScapeCore {
 	public MapManager getMapManager() {
 		return mapManager;
 	}
-
-	public String getPlayerId() {
-		return playerId;
-	}
-
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
-	}
-
-	public String getGameId() {
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getGameId() != null) {
-			return player.getGameId();
-		} else {
-			return "";
-		}
-	}
-
-
-	public String getRoomId() {
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getRoom() != null) {
-			return player.getRoom().getId();
-		} else {
-			return "";
-		}
-	}
-
 
 	public void setMapManager(MapManager mapManager) {
 		this.mapManager = mapManager;

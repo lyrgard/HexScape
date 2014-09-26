@@ -5,7 +5,7 @@ import java.io.File;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class LoadArmyMessage extends AbstractUserMessage {
+public class LoadArmyMessage extends AbstractPlayerMessage {
 	
 	private File armyFile;
 	

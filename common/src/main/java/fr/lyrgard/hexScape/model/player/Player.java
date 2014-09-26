@@ -1,13 +1,13 @@
 package fr.lyrgard.hexScape.model.player;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
-import fr.lyrgard.hexScape.model.room.Room;
 
 public class Player {
 	
@@ -15,18 +15,13 @@ public class Player {
 	
 	private String name;
 	
-	private ColorEnum color;
+	private ColorEnum color = ColorEnum.RED;
 	
-	@JsonIgnore
+	private String userId;
+	
 	private Army army;
 	
-	@JsonIgnore
-	private Room room;
-
-	private String gameId;
-	
-	@JsonIgnore
-	private Map<String, PieceInstance> piecesById = new HashMap<>(); 
+	private List<PieceInstance> pieces = new ArrayList<PieceInstance>(); 
 
 	public Player() {
 	}
@@ -39,6 +34,18 @@ public class Player {
 
 	public String getName() {
 		return name;
+	}
+	
+	@JsonIgnore
+	public String getDisplayName() {
+		String result = name;
+		if (userId != null) {
+			User user = Universe.getInstance().getUsersByIds().get(userId);
+			if (user != null) {
+				result = user.getName() + " (" + result + ")";
+			}
+		}
+		return result;
 	}
 	
 	public void setName(String name) {
@@ -74,22 +81,6 @@ public class Player {
 		return name;
 	}
 
-	public Room getRoom() {
-		return room;
-	}
-
-	public void setRoom(Room room) {
-		this.room = room;
-	}
-
-	public String getGameId() {
-		return gameId;
-	}
-
-	public void setGameId(String gameId) {
-		this.gameId = gameId;
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -115,7 +106,15 @@ public class Player {
 		return true;
 	}
 
-	public Map<String, PieceInstance> getPiecesById() {
-		return piecesById;
+	public List<PieceInstance> getPieces() {
+		return pieces;
+	}
+
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 }

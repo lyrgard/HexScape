@@ -9,7 +9,9 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
 import fr.lyrgard.hexScape.message.ThrowDiceMessage;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class DiceMessageListener {
@@ -27,19 +29,23 @@ public class DiceMessageListener {
 	}
 
 	@Subscribe public void onThrowDiceMessage(ThrowDiceMessage message) {
-		String playerId = message.getPlayerId();
 		String diceTypeId = message.getDiceTypeId();
 		int number = message.getNumber();
 		int numberOfFaces = message.getNumberOfFaces();
+		String userId = message.getSessionUserId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId); 
 
-		if (player != null && player.getGameId() != null) {
-			List<Integer> results = new ArrayList<>();
-			for (int i = 0; i < number; i++) {
-				results.add(roll(numberOfFaces));
+		if (user != null && user.getGame() != null) {
+			Game game = user.getGame();
+			Player player = game.getPlayerByUserId(userId);
+			if (player != null) {
+				List<Integer> results = new ArrayList<>();
+				for (int i = 0; i < number; i++) {
+					results.add(roll(numberOfFaces));
+				}
+				ServerNetwork.getInstance().sendMessageToGame(new DiceThrownMessage(player.getId(), diceTypeId, results), game.getId());
 			}
-			ServerNetwork.getInstance().sendMessageToGame(new DiceThrownMessage(playerId, diceTypeId, results), player.getGameId());
 		}
 	}
 

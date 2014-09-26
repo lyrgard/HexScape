@@ -9,9 +9,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LoadArmyMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class ChooseArmyAction extends AbstractAction {
 
@@ -19,10 +19,13 @@ public class ChooseArmyAction extends AbstractAction {
 	private static final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/chooseArmy.png"));
 
 	private Component parent;
+	
+	private String playerId;
 
-	public ChooseArmyAction(Component parent) {
+	public ChooseArmyAction(Component parent, String playerId) {
 		super("open an army", icon);
 		this.parent = parent;
+		this.playerId = playerId;
 	}
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
@@ -35,7 +38,7 @@ public class ChooseArmyAction extends AbstractAction {
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			final File armyFile = chooser.getSelectedFile();
 			
-			LoadArmyMessage message = new LoadArmyMessage(HexScapeCore.getInstance().getPlayerId(), armyFile);
+			LoadArmyMessage message = new LoadArmyMessage(playerId, armyFile);
 			CoreMessageBus.post(message);			
 		}
 	}

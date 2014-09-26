@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.lyrgard.hexScape.model.map.Map;
 
-public class CreateGameMessage extends AbstractUserMessage {
+public class CreateGameMessage extends AbstractMessage {
 
 	private String name;
 	
@@ -14,12 +14,10 @@ public class CreateGameMessage extends AbstractUserMessage {
 	private int playerNumber;
 
 	@JsonCreator
-	public CreateGameMessage(
-			@JsonProperty("playerId") String playerId, 
+	public CreateGameMessage( 
 			@JsonProperty("name") String name, 
 			@JsonProperty("map") Map map,
 			@JsonProperty("playerNumber") int playerNumber) {
-		super(playerId);
 		this.name = name;
 		this.map = map;
 		this.playerNumber = playerNumber;

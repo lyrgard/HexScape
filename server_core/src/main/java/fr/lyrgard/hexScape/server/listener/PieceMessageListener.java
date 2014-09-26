@@ -10,7 +10,11 @@ import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.map.Direction;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class PieceMessageListener {
@@ -26,63 +30,106 @@ public class PieceMessageListener {
 	
 	
 	@Subscribe public void onPiecePlaced(PiecePlacedMessage message) {
+		String userId = message.getSessionUserId();
+		String cardId = message.getCardInstanceId();
+		String modelId = message.getModelId();
+		String pieceId = message.getPieceId();
+		Direction direction = message.getDirection();
 		
-		final String playerId = message.getPlayerId();
-//		final String pieceId = message.getPieceId();
-//		final String cardInstanceId = message.getCardInstanceId();
-//		final int x = message.getX();
-//		final int y = message.getY();
-//		final int z = message.getZ();
+		int x = message.getX();
+		int y = message.getY();
+		int z = message.getZ();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
+		if (user.getGame() != null && user.getPlayer() != null) {
+			for (Player owner : user.getGame().getPlayers()) {
+				if (owner.getArmy() != null) {
+					CardInstance card = owner.getArmy().getCard(cardId);
+					if (card != null) {
+						PieceInstance pieceInstance = new PieceInstance(pieceId, modelId, card);
+						pieceInstance.setDirection(direction);
+						pieceInstance.setX(x);
+						pieceInstance.setY(y);
+						pieceInstance.setZ(z);
+						card.addPiece(pieceInstance);
+						ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+						return;
+					}
+				}
+			}
 		}
-				
 	}
 	
 	@Subscribe public void onPieceMoved(PieceMovedMessage message) {
-		final String playerId = message.getPlayerId();
-//		final String pieceId = message.getPieceId();
-//		final int x = message.getX();
-//		final int y = message.getY();
-//		final int z = message.getZ();
+		String userId = message.getSessionUserId();
+		String pieceId = message.getPieceId();
+		Direction direction = message.getDirection();
+		int x = message.getX();
+		int y = message.getY();
+		int z = message.getZ();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			for (Player owner : user.getGame().getPlayers()) {
+				if (owner.getArmy() != null) {
+					for (CardInstance card : owner.getArmy().getCards()) {
+						PieceInstance piece = card.getPiece(pieceId);
+						if (piece != null) {
+							piece.setDirection(direction);
+							piece.setX(x);
+							piece.setY(y);
+							piece.setZ(z);
+							ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+							return;
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	@Subscribe public void onPieceRemoved(PieceRemovedMessage message) {
-		final String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
+		String pieceId = message.getPieceId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			for (Player owner : user.getGame().getPlayers()) {
+				if (owner.getArmy() != null) {
+					for (CardInstance card : owner.getArmy().getCards()) {
+						PieceInstance piece = card.getPiece(pieceId);
+						if (piece != null) {
+							card.getPieces().remove(piece);
+							card.getPieceLeftToPlace().add(piece.getModelId());
+							ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+							return;
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
-		final String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
 		}
 	}
 	
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
-		final String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(message, player.getGameId(), playerId);
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
 		}
 	}
 }

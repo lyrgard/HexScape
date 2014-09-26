@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
@@ -36,10 +35,8 @@ public class AddStackableMarkerToCardAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String playerId = HexScapeCore.getInstance().getPlayerId();
-		String gameId = HexScapeCore.getInstance().getGameId();
 		
-		PlaceMarkerMessage message = new PlaceMarkerMessage(playerId, gameId, card.getId(), markerType.getId(), number, null);
+		PlaceMarkerMessage message = new PlaceMarkerMessage(card.getId(), markerType.getId(), number, null, true);
 		CoreMessageBus.post(message);
 	}
 

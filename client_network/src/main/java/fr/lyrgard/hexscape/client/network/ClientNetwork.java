@@ -8,8 +8,7 @@ import org.eclipse.jetty.websocket.client.WebSocketClient;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
-import fr.lyrgard.hexScape.model.player.ColorEnum;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 
 public class ClientNetwork {
 	
@@ -26,18 +25,13 @@ public class ClientNetwork {
 	
 	ClientWebSocket socket;
 	WebSocketClient client;
-
-	public static void main(String[] args) {
-		Player player = new Player("Player1", ColorEnum.BLUE);
-		getInstance().connect(player, "localhost:4242");
-	}
 	
-	public void connect(Player player, String url) {
+	public void connect(User user, String url) {
 		if (socket == null) {
 			String destUri = "ws://" + url;
 			client = new WebSocketClient();
 			client.getPolicy().setMaxTextMessageSize(1000000);
-			socket = new ClientWebSocket(player);
+			socket = new ClientWebSocket(user);
 			try {
 				client.start();
 				URI echoUri = new URI(destUri);

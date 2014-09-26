@@ -19,6 +19,7 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DiceDefinitionReloadedMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.ImageExtensionEnum;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
@@ -114,7 +115,7 @@ public class DiceService {
 											faceFile = null;
 										}
 										if (faceFile == null) {
-											CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
+											CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
 											break diceDefinition;
 										}
 									}

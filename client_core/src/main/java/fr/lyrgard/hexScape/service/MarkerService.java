@@ -18,6 +18,7 @@ import org.apache.commons.lang.StringUtils;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
@@ -86,7 +87,7 @@ public class MarkerService {
 
 								File iconFile = new File(folder, markerIconFilename);
 								if (!iconFile.exists() || !iconFile.isFile() || !iconFile.canRead() ) {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
+									CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 
@@ -95,7 +96,7 @@ public class MarkerService {
 								try {
 									type = MarkerType.valueOf(typeString);
 								} catch (IllegalArgumentException e) {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
+									CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 
@@ -126,7 +127,7 @@ public class MarkerService {
 								markersByIds.put(marker.getId(), marker);
 
 							} catch (IOException e) {
-								CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
+								CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
 							}
 						}
 					}

@@ -17,7 +17,7 @@ public class ColorService {
 	
 	public ColorEnum getNextColorThatIsNot(ColorEnum color) {
 		nextOrdinal();
-		if (currentOrdinal == color.ordinal()) {
+		if (color != null && currentOrdinal == color.ordinal()) {
 			nextOrdinal();
 		}
 		return ColorEnum.values()[currentOrdinal];

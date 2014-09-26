@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 
 public class Room {
 	
@@ -16,13 +16,13 @@ public class Room {
 	
 	private Collection<Game> games;
 	
-	private Collection<Player> players;
+	private Collection<User> users;
 	
-	public Collection<Player> getPlayers() {
-		if (players == null) {
-			players = new ArrayList<>();
+	public Collection<User> getUsers() {
+		if (users == null) {
+			users = new ArrayList<>();
 		}
-		return players;
+		return users;
 	}
 	
 	public Collection<Game> getGames() {

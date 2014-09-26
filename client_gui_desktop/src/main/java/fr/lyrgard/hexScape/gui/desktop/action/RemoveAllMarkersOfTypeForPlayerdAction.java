@@ -6,11 +6,12 @@ import java.util.Iterator;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
@@ -33,37 +34,41 @@ public class RemoveAllMarkersOfTypeForPlayerdAction extends AbstractAction {
 
 
 	public void actionPerformed(ActionEvent e) {
-		String playerId = HexScapeCore.getInstance().getPlayerId();
-		String gameId = HexScapeCore.getInstance().getGameId();
+		String playerId = CurrentUserInfo.getInstance().getPlayerId();
+		String gameId = CurrentUserInfo.getInstance().getGameId();
 
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 
-		if (player != null) {
+		if (game != null) {
+			Player player = game.getPlayer(playerId);
 
-			for (CardInstance card : player.getArmy().getCardsById().values()) {
-				Iterator<MarkerInstance> it = card.getMarkers().iterator();
-				while (it.hasNext()) {
-					MarkerInstance marker = it.next();
-					boolean toRemove = false;
-					if (markerType.getId().equals(marker.getMarkerDefinitionId())) {
-						toRemove= true;
-					} else if (markerType instanceof HiddenMarkerDefinition) {
-						for (MarkerDefinition type : ((HiddenMarkerDefinition)markerType).getPossibleMarkersHidden()) {
-							if (type.getId().equals(marker.getMarkerDefinitionId())) {
-								toRemove = true;
-								break;
+			if (player != null) {
+
+				for (CardInstance card : player.getArmy().getCards()) {
+					Iterator<MarkerInstance> it = card.getMarkers().iterator();
+					while (it.hasNext()) {
+						MarkerInstance marker = it.next();
+						boolean toRemove = false;
+						if (markerType.getId().equals(marker.getMarkerDefinitionId())) {
+							toRemove= true;
+						} else if (markerType instanceof HiddenMarkerDefinition) {
+							for (MarkerDefinition type : ((HiddenMarkerDefinition)markerType).getPossibleMarkersHidden()) {
+								if (type.getId().equals(marker.getMarkerDefinitionId())) {
+									toRemove = true;
+									break;
+								}
 							}
 						}
-					}
 
-					if (toRemove) {
-						int number = 1;
-						if (marker instanceof StackableMarkerInstance) {
-							number = ((StackableMarkerInstance)marker).getNumber();
+						if (toRemove) {
+							int number = 1;
+							if (marker instanceof StackableMarkerInstance) {
+								number = ((StackableMarkerInstance)marker).getNumber();
+							}
+							it.remove();
+							RemoveMarkerMessage message = new RemoveMarkerMessage(card.getId(), marker.getId(), number);
+							CoreMessageBus.post(message);
 						}
-						it.remove();
-						RemoveMarkerMessage message = new RemoveMarkerMessage(playerId, gameId, card.getId(), marker.getId(), number);
-						CoreMessageBus.post(message);
 					}
 				}
 			}

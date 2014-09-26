@@ -12,7 +12,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
-import fr.lyrgard.hexScape.message.MessagePostedMessage;
+import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
@@ -25,7 +25,7 @@ public class MessageJsonMapperTest {
 	
 	@Test
 	public void testToJson() {
-		MessagePostedMessage message = new MessagePostedMessage("1", "chat message", "roomId", "gameId");
+		RoomMessagePostedMessage message = new RoomMessagePostedMessage("1", "chat message", "roomId");
 		
 		String result = null;
 		try {
@@ -35,7 +35,7 @@ public class MessageJsonMapperTest {
 		}
 		
 		assertNotNull(result);
-		assertEquals("{\"type\":\"MessagePostedMessage\",\"playerId\":\"1\",\"message\":\"chat message\",\"roomId\":\"roomId\",\"gameId\":\"gameId\"}", result);
+		assertEquals("{\"type\":\"MessagePostedMessage\",\"playerId\":\"1\",\"message\":\"chat message\",\"roomId\":\"roomId\"}", result);
 	}
 	
 	@Test
@@ -69,8 +69,8 @@ public class MessageJsonMapperTest {
 		
 		Army army = new Army();
 		army.setName("armyName");
-		army.getCardsById().put(cardInstance1.getId(), cardInstance1);
-		army.getCardsById().put(cardInstance2.getId(), cardInstance2);
+		army.addCard(cardInstance1);
+		army.addCard(cardInstance2);
 		ArmyLoadedMessage message = new ArmyLoadedMessage("playerId", army);
 		
 		String result = null;

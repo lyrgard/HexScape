@@ -15,25 +15,27 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.DisconnectAction;
-import fr.lyrgard.hexScape.gui.desktop.components.HexaFont;
-import fr.lyrgard.hexScape.gui.desktop.components.chatComponent.ChatPanel;
-import fr.lyrgard.hexScape.gui.desktop.components.game.SelectedGamePanel;
-import fr.lyrgard.hexScape.gui.desktop.components.player.PlayerList;
-import fr.lyrgard.hexScape.gui.desktop.components.room.GameListPanel;
 import fr.lyrgard.hexScape.gui.desktop.message.GameSelectedMessage;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
+import fr.lyrgard.hexScape.gui.desktop.view.common.HexaFont;
+import fr.lyrgard.hexScape.gui.desktop.view.common.chat.ChatPanel;
+import fr.lyrgard.hexScape.gui.desktop.view.room.games.GameListPanel;
+import fr.lyrgard.hexScape.gui.desktop.view.room.games.SelectedGamePanel;
+import fr.lyrgard.hexScape.gui.desktop.view.room.users.UserList;
+import fr.lyrgard.hexScape.gui.desktop.view.room.users.UserListModel;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
-import fr.lyrgard.hexScape.message.MessagePostedMessage;
-import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
+import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
+import fr.lyrgard.hexScape.message.UserJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 
 public class RoomView extends AbstractView {
@@ -42,7 +44,7 @@ public class RoomView extends AbstractView {
 
 	private JLabel roomTitle = new JLabel();
 
-	private PlayerListModel playerListModel;
+	private UserListModel userListModel;
 
 	private ChatPanel chatPanel;
 
@@ -70,14 +72,14 @@ public class RoomView extends AbstractView {
 		playersTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		playersPanel.add(playersTitle, BorderLayout.PAGE_START);
 
-		playerListModel = new PlayerListModel();
-		PlayerList playerList = new PlayerList(playerListModel);
-		playerList.setPreferredSize(new Dimension(200, 400));
-		playersPanel.add(playerList, BorderLayout.CENTER);
+		userListModel = new UserListModel();
+		UserList userList = new UserList(userListModel);
+		userList.setPreferredSize(new Dimension(200, 400));
+		playersPanel.add(userList, BorderLayout.CENTER);
 		add(playersPanel, BorderLayout.LINE_END);
 
 		centerPanel = new JPanel(new BorderLayout());
-		chatPanel = new ChatPanel(HexScapeCore.getInstance().getRoomId(), null);
+		chatPanel = new ChatPanel(null, null);
 		centerPanel.add(chatPanel, BorderLayout.CENTER);
 
 		selectedGamePanel.setVisible(false);
@@ -92,7 +94,7 @@ public class RoomView extends AbstractView {
 		chatPanel.clearText();
 		chatPanel.setRoomId(room.getId());
 		roomTitle.setText(room.getName());
-		playerListModel.setPlayers(room.getPlayers());
+		userListModel.setUsers(room.getUsers());
 		chatPanel.addAction("Room " + room.getName() + " joined.");
 	}
 
@@ -117,19 +119,19 @@ public class RoomView extends AbstractView {
 		});
 	}
 
-	@Subscribe public void onRoomMessageReceived(MessagePostedMessage message) {
-		String playerId = message.getPlayerId();
+	@Subscribe public void onRoomMessageReceived(RoomMessagePostedMessage message) {
+		String userId = message.getUserId();
 		String roomId = message.getRoomId();
 		final String messageContent = message.getMessage();
 
-		if (HexScapeCore.getInstance().getRoomId().equals(roomId)) {
-			final Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		if (CurrentUserInfo.getInstance().getRoomId().equals(roomId)) {
+			final User user = Universe.getInstance().getUsersByIds().get(userId);
 
-			if (player != null) {
+			if (user != null) {
 				EventQueue.invokeLater(new Runnable() {
 
 					public void run() {
-						chatPanel.addMessage(player, messageContent);
+						chatPanel.addMessage(user, messageContent);
 					}
 				});
 			}
@@ -137,35 +139,35 @@ public class RoomView extends AbstractView {
 
 	}
 
-	@Subscribe public void onPlayerJoined(PlayerJoinedRoomMessage message) {
-		String playerId = message.getPlayerId();
+	@Subscribe public void onPlayerJoined(UserJoinedRoomMessage message) {
+		String userId = message.getUserId();
 
-		final Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		final User user = Universe.getInstance().getUsersByIds().get(userId);
 
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				if (player != null) {
-					playerListModel.addPlayer(player);
-					chatPanel.addAction("player " + player.getName() + " joined the room");
+				if (user != null) {
+					userListModel.addUser(user);
+					chatPanel.addAction("player " + user.getName() + " joined the room");
 				}
 			}
 		});
 	}
 
 	@Subscribe public void onPlayerLeftRoom(DisconnectedFromServerMessage message) {
-		final String playerId = message.getPlayerId();
+		final String userId = message.getUserId();
 
-		if (!HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+		if (!CurrentUserInfo.getInstance().getId().equals(userId)) {
 
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
-					Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+					User user = Universe.getInstance().getUsersByIds().get(userId);
 
-					if (player != null) {
-						chatPanel.addAction("player " + player.getName() + " left the room");
-						playerListModel.removePlayer(player);
+					if (user != null) {
+						chatPanel.addAction("player " + user.getName() + " left the room");
+						userListModel.removeUser(user);
 					}
 				}
 			});
@@ -173,7 +175,7 @@ public class RoomView extends AbstractView {
 	}
 
 	@Subscribe public void onGameCreated(GameCreatedMessage message) {
-		final String playerId = message.getPlayerId();
+		final String userId = message.getUserId();
 		final Game game = message.getGame();
 
 		if (HexScapeCore.getInstance().isOnline()) {
@@ -182,17 +184,17 @@ public class RoomView extends AbstractView {
 				EventQueue.invokeLater(new Runnable() {
 
 					public void run() {
-						if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+						if (CurrentUserInfo.getInstance().getId().equals(userId)) {
 							GuiMessageBus.post(new GameSelectedMessage(game));
 							selectedGamePanel.setVisible(true);
 						} 
 
-						Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+						User user = Universe.getInstance().getUsersByIds().get(userId);
 
-						if (player != null) {
-							chatPanel.addAction("player " + player.getName() + " created game " + game.getName());
+						if (user != null) {
+							chatPanel.addAction("player " + user.getName() + " created game " + game.getName());
 						}
-						playerListModel.redraw();
+						userListModel.redraw();
 					}
 
 				});
@@ -202,23 +204,21 @@ public class RoomView extends AbstractView {
 	}
 
 	@Subscribe public void gameJoined(GameJoinedMessage message) {
-		final String gameId = message.getGameId();
-		final String playerId = message.getPlayerId();
+		final Game game = message.getGame();
+		final String userId = message.getUserId();
+		
 
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				if (!playerId.equals(HexScapeCore.getInstance().getPlayerId())) {
-					Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+				if (!userId.equals(CurrentUserInfo.getInstance().getId())) {
+					User user = Universe.getInstance().getUsersByIds().get(userId);
 
-					if (player != null && player.getGameId() != null && player.getGameId().equals(gameId)) {
-						Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-						if (game != null) {
-							chatPanel.addAction("player " + player.getName() + " joined game " + game.getName());
-						}
+					if (game != null) {
+						chatPanel.addAction("player " + user.getName() + " joined game " + game.getName());
 					}
 				}
-				playerListModel.redraw();
+				userListModel.redraw();
 			}
 		});
 	}
@@ -227,7 +227,7 @@ public class RoomView extends AbstractView {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				playerListModel.redraw();
+				userListModel.redraw();
 			}
 		});
 	}
@@ -242,14 +242,14 @@ public class RoomView extends AbstractView {
 				if (game != null) {
 					chatPanel.addAction("game " + game.getName() + " started");
 				}
-				playerListModel.redraw();
+				userListModel.redraw();
 			}
 		});
 	}
 
 	@Override
 	public void refresh() {
-		String roomId = HexScapeCore.getInstance().getRoomId();
+		String roomId = CurrentUserInfo.getInstance().getRoomId();
 
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 

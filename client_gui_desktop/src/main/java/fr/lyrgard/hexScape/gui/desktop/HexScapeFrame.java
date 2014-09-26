@@ -16,11 +16,12 @@ import com.google.common.eventbus.Subscribe;
 
 
 
-import fr.lyrgard.hexScape.HexScapeCore;
+
+
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
+import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
@@ -28,6 +29,7 @@ import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
 import fr.lyrgard.hexScape.message.WarningMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class HexScapeFrame extends JFrame {
 
@@ -96,7 +98,7 @@ public class HexScapeFrame extends JFrame {
 
 
 	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
-		if (message.getPlayerId().equals(HexScapeCore.getInstance().getPlayerId())) {
+		if (message.getUserId().equals(CurrentUserInfo.getInstance().getId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {

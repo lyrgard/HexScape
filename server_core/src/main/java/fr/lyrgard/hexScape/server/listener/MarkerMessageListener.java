@@ -9,11 +9,14 @@ import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.message.RemoveMarkerMessage;
 import fr.lyrgard.hexScape.message.RevealMarkerMessage;
+import fr.lyrgard.hexScape.model.IdGenerator;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.marker.MarkerInfo;
+import fr.lyrgard.hexScape.model.marker.UnknownTypeMarkerInstance;
+import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
-import fr.lyrgard.hexscape.server.network.id.IdGenerator;
 
 public class MarkerMessageListener {
 
@@ -31,81 +34,109 @@ public class MarkerMessageListener {
 	
 	
 	@Subscribe public void onPlaceMarker(PlaceMarkerMessage message) {
-		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
+		String userId = message.getSessionUserId();
 		String cardId = message.getCardId();
 		String markerTypeId = message.getMarkerTypeId();
 		String hiddenMarkerTypeId = message.getHiddenMarkerTypeId();
 		int number = message.getNumber();
+		boolean stackable = message.isStackable();
 		
-		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		
-		if (game != null) {
-			String markerId = IdGenerator.getInstance().getNewMarkerId();
-			MarkerInfo markerInfo = new MarkerInfo();
-			markerInfo.setId(markerId);
-			markerInfo.setMarkerTypeId(markerTypeId);
-			markerInfo.setHiddenMarkerTypeId(hiddenMarkerTypeId);
-			markerInfo.setNumber(number);
-			markerInfo.setCardId(cardId);
-			game.getMarkersById().put(markerInfo.getId(), markerInfo);
-			
-			MarkerPlacedMessage resultMessageForEmitter = new MarkerPlacedMessage(playerId, gameId, cardId, markerId, markerTypeId, hiddenMarkerTypeId, number);
-			ServerNetwork.getInstance().sendMessageToPlayer(resultMessageForEmitter, playerId);
-			
-			// Hide the hiddenMarkerTypeId for others players
-			MarkerPlacedMessage resultMessageForOthers = new MarkerPlacedMessage(playerId, gameId, cardId, markerId, markerTypeId, null, number);
-			ServerNetwork.getInstance().sendMessageToGameExceptPlayer(resultMessageForOthers, gameId, playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId); 
+
+		if (user != null && user.getGame() != null) {
+			if (user != null && user.getGame() != null && user.getPlayer() != null) {
+				for (Player owner : user.getGame().getPlayers()) {
+					if (owner.getArmy() != null) {
+						CardInstance card = owner.getArmy().getCard(cardId);
+						if (card != null) {
+							UnknownTypeMarkerInstance markerInfo = (UnknownTypeMarkerInstance)card.getMarkerByType(markerTypeId);
+							String markerId = null;
+							if (stackable && markerInfo != null) {
+								markerId = markerInfo.getId();
+								markerInfo.setNumber(markerInfo.getNumber() + number);
+							} else {
+								markerId = IdGenerator.getInstance().getNewMarkerId();
+								markerInfo = new UnknownTypeMarkerInstance(markerId, markerTypeId, hiddenMarkerTypeId, number);
+								
+								card.addMarker(markerInfo);
+							}
+							
+							MarkerPlacedMessage resultMessageForEmitter = new MarkerPlacedMessage(owner.getId(), cardId, markerId, markerTypeId, hiddenMarkerTypeId, number);
+							ServerNetwork.getInstance().sendMessageToUser(resultMessageForEmitter, userId);
+
+							// Hide the hiddenMarkerTypeId for others players
+							MarkerPlacedMessage resultMessageForOthers = new MarkerPlacedMessage(owner.getId(), cardId, markerId, markerTypeId, null, number);
+							ServerNetwork.getInstance().sendMessageToGameExceptUser(resultMessageForOthers, user.getGame().getId(), owner.getId());
+							
+							return;
+						}
+					}
+				}
+			}
 		}
 	}
 	
 	@Subscribe public void onRemoveMarker(RemoveMarkerMessage message) {
-		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
+		String userId = message.getSessionUserId();
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		int number = message.getNumber();
 		
 		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		
-		if (game != null) {
-			MarkerInfo markerInfo = game.getMarkersById().get(markerId) ;
-			if (markerInfo != null) {
-				if (markerInfo.getNumber() - number <= 0) {
-					game.getMarkersById().remove(markerId);
-				} else {
-					markerInfo.setNumber(markerInfo.getNumber() - number);
+		User user = Universe.getInstance().getUsersByIds().get(userId); 
+
+		if (user != null && user.getGame() != null) {
+			Game game = user.getGame();
+			for (Player owner : user.getGame().getPlayers()) {
+				if (owner.getArmy() != null) {
+					CardInstance card = owner.getArmy().getCard(cardId);
+					if (card != null) {
+						UnknownTypeMarkerInstance markerInfo = (UnknownTypeMarkerInstance)card.getMarker(markerId);
+						if (markerInfo != null) {
+							markerInfo.setNumber(markerInfo.getNumber() - number);
+							if (markerInfo.getNumber() <= 0) {
+								card.getMarkers().remove(markerInfo);
+							}
+
+							MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(user.getPlayerId(), cardId, markerId, number);
+							ServerNetwork.getInstance().sendMessageToGame(resultMessage, game.getId());
+
+							return;
+						}
+					}
 				}
-					
-				MarkerRemovedMessage resultMessage = new MarkerRemovedMessage(playerId, gameId, cardId, markerId, number);
-				ServerNetwork.getInstance().sendMessageToGame(resultMessage, gameId);
 			}
 		}
 	}
 	
 	@Subscribe public void onRevealMarker(RevealMarkerMessage message) {
-		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
+		String userId = message.getSessionUserId();
 		String cardId = message.getCardId();
 		String markerId = message.getMarkerId();
 		
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		
-		if (game != null) {
-			MarkerInfo markerInfo = game.getMarkersById().get(markerId) ;
-			if (markerInfo != null) {
-				if (markerInfo.getHiddenMarkerTypeId() != null) {
-					String hiddenMarkerTypeId = markerInfo.getHiddenMarkerTypeId();
-					
-					markerInfo.setMarkerTypeId(hiddenMarkerTypeId);
-					markerInfo.setMarkerTypeId(null);
-					
-					MarkerRevealedMessage resultMessage = new MarkerRevealedMessage(playerId, gameId, cardId, markerId, hiddenMarkerTypeId);
-					ServerNetwork.getInstance().sendMessageToGame(resultMessage, gameId);
-					
-					
+		User user = Universe.getInstance().getUsersByIds().get(userId); 
+
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			Game game = user.getGame();
+			for (Player owner : user.getGame().getPlayers()) {
+				if (owner.getArmy() != null) {
+					CardInstance card = owner.getArmy().getCard(cardId);
+					if (card != null) {
+						UnknownTypeMarkerInstance markerInfo = (UnknownTypeMarkerInstance)card.getMarker(markerId);
+						if (markerInfo != null) {
+							if (markerInfo.getHiddenMarkerTypeId() != null) {
+								String hiddenMarkerTypeId = markerInfo.getHiddenMarkerTypeId();
+								
+								markerInfo.setMarkerDefinitionId(hiddenMarkerTypeId);
+								markerInfo.setHiddenMarkerTypeId(null);
+								
+								MarkerRevealedMessage resultMessage = new MarkerRevealedMessage(user.getPlayerId(), cardId, markerId, hiddenMarkerTypeId);
+								ServerNetwork.getInstance().sendMessageToGame(resultMessage, game.getId());
+								
+								return;
+							}
+						}
+					}
 				}
 			}
 		}

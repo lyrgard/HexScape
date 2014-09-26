@@ -10,17 +10,21 @@ import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
+import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.LeaveGameMessage;
-import fr.lyrgard.hexScape.message.MessagePostedMessage;
+import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
+import fr.lyrgard.hexScape.model.IdGenerator;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.map.Map;
+import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
-import fr.lyrgard.hexscape.server.network.id.IdGenerator;
 
 public class GameMessageListener {
 
@@ -36,114 +40,160 @@ public class GameMessageListener {
 	private GameMessageListener() {
 	}
 	
+	@Subscribe public void onRestoreGame(RestoreGameMessage message) {
+		Game game = message.getGame();
+		String userId = message.getSessionUserId();
+		String gameId = IdGenerator.getInstance().getNewGameId();
+		
+		game.setId(gameId);
+		game.setStarted(false);
+		
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		if (user != null) {
+			Universe.getInstance().getGamesByGameIds().put(gameId, game);
+			user.getRoom().getGames().add(game);
+			
+			GameCreatedMessage resultMessage = new GameCreatedMessage(user.getId(), game);
+			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
+		}
+	}
 	
 	@Subscribe public void onCreateGame(CreateGameMessage message) {
-		String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
 		String name = message.getName();
 		Map map = message.getMap();
 		int playerNumber = message.getPlayerNumber();
 		
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		
-		if (player != null && player.getRoom() != null && player.getRoom().getId() != null) {
+		if (user != null && user.getRoom() != null) {
 			String gameId = IdGenerator.getInstance().getNewGameId();
 			Game game = new Game();
 			game.setId(gameId);
 			game.setName(name);
 			game.setMap(map);
 			game.setPlayerNumber(playerNumber);
-			game.getPlayersIds().add(player.getId());
-			player.setGameId(gameId);
+			for (int i = 1; i <= playerNumber; i++) {
+				Player player = new Player();
+				player.setId(IdGenerator.getInstance().getNewPlayerId());
+				player.setName("PLAYER " + i);
+				player.setColor(ColorEnum.values()[(i-1) % ColorEnum.values().length]);
+				game.getPlayers().add(player);
+			}
 			Universe.getInstance().getGamesByGameIds().put(gameId, game);
-			player.getRoom().getGames().add(game);
+			user.getRoom().getGames().add(game);
 			
-			
-			GameCreatedMessage resultMessage = new GameCreatedMessage(playerId, game);
-			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+			GameCreatedMessage resultMessage = new GameCreatedMessage(user.getId(), game);
+			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
 		}
 	}
 	
 	@Subscribe public void onStartGame(StartGameMessage message) {
-		String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
 		String gameId = message.getGameId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		if (player != null && player.getRoom() != null && player.getRoom().getId() != null && game != null && game.getPlayersIds().contains(playerId)) {
-			if (!game.isStarted()) {
-				game.setStarted(true);
-				GameStartedMessage resultMessage = new GameStartedMessage(playerId, gameId);
-				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
-			} else {
-				ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to start the game : the game has already started");
-				ServerNetwork.getInstance().sendMessageToPlayer(resultMessage, playerId);
-			}
-		}
-	}
-	
-	@Subscribe public void onJoinGame(JoinGameMessage message) {
-		String gameId = message.getGameId();
-		String playerId = message.getPlayerId();
-		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
-		
-		if (player != null && game != null) {
-			if (player.getGameId() == null && !game.getPlayersIds().contains(playerId) && game.getPlayerNumber() > game.getPlayersIds().size()) {
+		if (user != null) {
+			Game game = user.getGame();
+
+			if (user != null && user.getRoom() != null && game != null) {
 				if (!game.isStarted()) {
-					player.setGameId(game.getId());
-					game.getPlayersIds().add(playerId);
-					GameJoinedMessage resultMessage = new GameJoinedMessage(playerId, gameId); 
-					
-					ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
+					game.setStarted(true);
+					GameStartedMessage resultMessage = new GameStartedMessage(user.getId(), gameId);
+					ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
 				} else {
-					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game : the game has already started");
-					ServerNetwork.getInstance().sendMessageToPlayer(resultMessage, playerId);
+					ErrorMessage resultMessage = new ErrorMessage(user.getId(), "Unable to start the game : the game has already started");
+					ServerNetwork.getInstance().sendMessageToUser(resultMessage, user.getId());
 				}
 			}
 		}
 	}
 	
-	@Subscribe public void onLeaveGame(LeaveGameMessage message) {
+	@Subscribe public void onJoinGame(JoinGameMessage message) {
+		String userId = message.getSessionUserId();
 		String gameId = message.getGameId();
 		String playerId = message.getPlayerId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+
+		if (user != null && game != null) {
+			Player player = game.getPlayer(playerId);
+
+			if (user.getPlayer() == null && player.getUserId() == null) {
+				player.setUserId(user.getId());
+				user.setPlayer(player);
+				user.setGame(game);
+
+				GameJoinedMessage resultMessage = new GameJoinedMessage(user.getId(), game, player.getId()); 
+
+				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
+			} else {
+				if (user.getPlayer() != null) {
+					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game : you already joined another game");
+					ServerNetwork.getInstance().sendMessageToUser(resultMessage, userId);
+				} else if (player.getUserId() != null) {
+					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game as player " + player.getName() + " : another user already took this player");
+					ServerNetwork.getInstance().sendMessageToUser(resultMessage, userId);
+				}
+			}
+		} 
+	}
+	
+	@Subscribe public void onLeaveGame(LeaveGameMessage message) {
+		String userId = message.getSessionUserId();
 		
-		if (player != null && game != null) {
-			player.setGameId(null);
-			game.getPlayersIds().remove(player.getId());
-			
-			GameLeftMessage resultMessage = new GameLeftMessage(playerId, gameId);
-			ServerNetwork.getInstance().sendMessageToRoom(resultMessage, player.getRoom().getId());
-			
-			if (game.getPlayersIds().isEmpty()) {
-				player.getRoom().getGames().remove(game);
-				Universe.getInstance().getGamesByGameIds().remove(game.getId());
-				GameEndedMessage returnMessage3 = new GameEndedMessage(game.getId());
-				ServerNetwork.getInstance().sendMessageToRoom(returnMessage3, player.getRoom().getId());
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		if (user != null) {
+			Game game = user.getGame();
+
+			if (game != null) {
+				
+				Player player = user.getPlayer();
+				player.setUserId(null);
+				user.setPlayer(null);
+				user.setGame(null);
+
+				GameLeftMessage resultMessage = new GameLeftMessage(player.getId(), game.getId());
+				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
+
+				if (game.getFreePlayers().size() == game.getPlayers().size()) {
+					user.getRoom().getGames().remove(game);
+					Universe.getInstance().getGamesByGameIds().remove(game.getId());
+
+					GameEndedMessage returnMessage2 = new GameEndedMessage(game.getId());
+					ServerNetwork.getInstance().sendMessageToRoom(returnMessage2, user.getRoom().getId());
+				}
 			}
 		}
 	}
 	
-	@Subscribe public void onMessagePosted(MessagePostedMessage message) {
-		String gameId = message.getGameId();
+	@Subscribe public void onMessagePosted(GameMessagePostedMessage message) {
+		String userId = message.getSessionUserId();
 		
-		if (gameId != null) {
-			ServerNetwork.getInstance().sendMessageToGame(message, gameId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		if (user != null && user.getGameId() != null) {
+			ServerNetwork.getInstance().sendMessageToGame(message, user.getGameId());
 		}
 	}
 	
 	@Subscribe public void onArmyLoaded(ArmyLoadedMessage message) {
+		String userId = message.getSessionUserId();
 		String playerId = message.getPlayerId();
-		//Army army = message.getArmy();
+		Army army = message.getArmy();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-		if (player != null && player.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGame(message, player.getGameId());
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+	
+		if (user != null && user.getGameId() != null) {
+			Player owner = user.getGame().getPlayer(playerId);
+			if (owner != null) {
+				owner.setArmy(army);
+				ServerNetwork.getInstance().sendMessageToGame(message, user.getGameId());
+			}
 		}
 	}
 	

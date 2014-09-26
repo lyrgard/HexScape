@@ -3,8 +3,8 @@ package fr.lyrgard.hexScape.message;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class GameLeftMessage extends AbstractUserMessage {
-
+public class GameLeftMessage extends AbstractPlayerMessage {
+	
 	private String gameId;
 
 	@JsonCreator

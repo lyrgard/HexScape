@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.lyrgard.hexScape.model.card.Army;
 
-public class ArmyLoadedMessage extends AbstractUserMessage {
+public class ArmyLoadedMessage extends AbstractPlayerMessage {
 	private Army army;
 
 	@JsonCreator

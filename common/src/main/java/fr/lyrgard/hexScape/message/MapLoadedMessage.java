@@ -11,9 +11,9 @@ public class MapLoadedMessage extends AbstractUserMessage {
 
 	@JsonCreator
 	public MapLoadedMessage(
-			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("userId") String userId, 
 			@JsonProperty("map") Map map) {
-		super(playerId);
+		super(userId);
 		this.map = map;
 	}
 

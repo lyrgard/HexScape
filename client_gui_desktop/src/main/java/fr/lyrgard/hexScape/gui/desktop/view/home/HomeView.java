@@ -7,6 +7,11 @@ import java.awt.EventQueue;
 import java.util.concurrent.Callable;
 
 
+
+
+
+
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
@@ -14,16 +19,19 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.ConnectToServerAction;
+import fr.lyrgard.hexScape.gui.desktop.action.JoinGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.OpenConfigDialogAction;
 import fr.lyrgard.hexScape.gui.desktop.action.OpenNewGameDialogAction;
-import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 //import fr.lyrgard.hexScape.gui.desktop.action.ConnectToServerAction;
 //import fr.lyrgard.hexScape.gui.desktop.action.OpenConfigDialogAction;
 //import fr.lyrgard.hexScape.gui.desktop.action.OpenNewGameDialogAction;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
+import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
+import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.TitleScreenSprite.Type;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.TitleScreenButtonClicked;
 
 public class HomeView extends AbstractView {
@@ -120,10 +128,18 @@ public class HomeView extends AbstractView {
 		add(view3d, BorderLayout.CENTER);
 	}
 
-	@Subscribe public void onGameCreated(GameCreatedMessage message) {
+	@Subscribe public void onGameCreatedSolo(GameCreatedMessage message) {
 		if (!HexScapeCore.getInstance().isOnline()) {
 			String gameId = message.getGame().getId();
-			StartGameMessage resultMessage = new StartGameMessage(HexScapeCore.getInstance().getPlayerId(), gameId);
+			JoinGameAction action = new JoinGameAction(gameId);
+			action.actionPerformed(null);
+		}
+	}
+	
+	@Subscribe public void onGameJoinSolo(GameJoinedMessage message) {
+		if (!HexScapeCore.getInstance().isOnline()) {
+			
+			StartGameMessage resultMessage = new StartGameMessage(CurrentUserInfo.getInstance().getPlayerId(), message.getGame().getId());
 			CoreMessageBus.post(resultMessage);
 		}
 	}
@@ -135,7 +151,7 @@ public class HomeView extends AbstractView {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
-					new OpenNewGameDialogAction(false, getTopLevelAncestor()).actionPerformed(null);
+					new OpenNewGameDialogAction(getTopLevelAncestor()).actionPerformed(null);
 				}
 			});
 			break;

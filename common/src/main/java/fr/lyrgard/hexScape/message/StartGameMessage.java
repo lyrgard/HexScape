@@ -8,9 +8,9 @@ public class StartGameMessage extends AbstractUserMessage {
 
 	@JsonCreator
 	public StartGameMessage(
-			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("userId") String userId, 
 			@JsonProperty("gameId") String gameId) {
-		super(playerId);
+		super(userId);
 		this.gameId = gameId;
 	}
 

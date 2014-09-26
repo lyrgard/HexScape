@@ -22,25 +22,26 @@ import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
+import fr.lyrgard.hexScape.model.IdGenerator;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
-import fr.lyrgard.hexScape.model.player.Player;
-import fr.lyrgard.hexscape.server.network.id.IdGenerator;
+import fr.lyrgard.hexScape.model.player.User;
 
 @WebSocket
 public class ServerWebSocket extends WebSocketHandler {
 
-	private String playerId;
+	private String userId;
 
 	private Session session;
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
 		System.out.println("Close: statusCode=" + statusCode + ", reason=" + reason);
-		ServerNetwork.getInstance().unRegisterSocket(playerId);
+		ServerNetwork.getInstance().unRegisterSocket(userId);
 		
 		// Make the user to leave room
-		DisconnectedFromServerMessage message = new DisconnectedFromServerMessage(playerId);
+		DisconnectedFromServerMessage message = new DisconnectedFromServerMessage(userId);
+		message.setSessionUserId(userId);
 		CoreMessageBus.post(message);
 		
 	}
@@ -53,9 +54,7 @@ public class ServerWebSocket extends WebSocketHandler {
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
 		this.session = session;
-		playerId = IdGenerator.getInstance().getNewUserId(); 
-		
-		
+		userId = IdGenerator.getInstance().getNewUserId(); 		
 	}
 
 	@OnWebSocketMessage
@@ -67,17 +66,17 @@ public class ServerWebSocket extends WebSocketHandler {
 			} else if (message instanceof UserInformationMessage) {
 				String name = ((UserInformationMessage) message).getName();
 				ColorEnum color = ((UserInformationMessage) message).getColor();
-				Player player = new Player(name, color);
-				player.setId(playerId);
-				Universe.getInstance().getPlayersByIds().put(playerId, player);
-				System.out.println("User connected : " + playerId + ",  " + player.getName() + ", " + player.getColor() );
-				send(new UserIdAllocatedMessage(playerId));
-				ServerNetwork.getInstance().registerSocket(playerId, this);
+				User user = new User();
+				user.setName(name);
+				user.setColor(color);
+				user.setId(userId);
+				Universe.getInstance().getUsersByIds().put(userId, user);
+				System.out.println("User connected : " + userId + ",  " + user.getName() + ", " + user.getColor() );
+				send(new UserIdAllocatedMessage(userId));
+				ServerNetwork.getInstance().registerSocket(userId, this);
 			} else {
 				//System.out.println("Received message " + message.getClass() + " from player " + playerId);
-				if (message instanceof AbstractUserMessage) {
-					((AbstractUserMessage)message).setPlayerId(playerId);
-				}
+				message.setSessionUserId(userId);
 				CoreMessageBus.post(message);
 			}
 		} catch (JsonParseException e) {

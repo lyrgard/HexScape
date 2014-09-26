@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class MarkerPlacedMessage extends AbstractMarkerMessage {
+	
+	private String playerId;
 
 	private String markerTypeId;
 	
@@ -14,13 +16,13 @@ public class MarkerPlacedMessage extends AbstractMarkerMessage {
 	@JsonCreator
 	public MarkerPlacedMessage(
 			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("gameId") String gameId, 
 			@JsonProperty("cardId") String cardId, 
 			@JsonProperty("markerId") String markerId,
 			@JsonProperty("markerTypeId") String markerTypeId,
 			@JsonProperty("hiddenMarkerTypeId") String hiddenMarkerTypeId,
 			@JsonProperty("number") int number) {
-		super(playerId, gameId, cardId, markerId);
+		super(cardId, markerId);
+		this.playerId = playerId;
 		this.markerTypeId = markerTypeId;
 		this.number = number;
 		this.hiddenMarkerTypeId = hiddenMarkerTypeId;
@@ -36,6 +38,14 @@ public class MarkerPlacedMessage extends AbstractMarkerMessage {
 
 	public String getHiddenMarkerTypeId() {
 		return hiddenMarkerTypeId;
+	}
+
+	public String getPlayerId() {
+		return playerId;
+	}
+
+	public void setPlayerId(String playerId) {
+		this.playerId = playerId;
 	}
 
 }

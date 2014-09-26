@@ -17,21 +17,21 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 
 @WebSocket
 public class ClientWebSocket {
 
 	private final CountDownLatch closeLatch;
 
-	private Player player;
+	private User user;
 
 	private Session session;
 
-	public ClientWebSocket(Player player) {
+	public ClientWebSocket(User user) {
 		super();
 		this.closeLatch = new CountDownLatch(1);
-		this.player = player;
+		this.user = user;
 	}
 
 	public boolean awaitClose(int duration, TimeUnit unit) throws InterruptedException {
@@ -50,7 +50,7 @@ public class ClientWebSocket {
 		System.out.printf("Got connect: %s%n", session);
 		this.session = session;
 		try {
-			send(new UserInformationMessage(player.getName(), player.getColor()));
+			send(new UserInformationMessage(user.getName(), user.getColor()));
 		} catch (Throwable t) {
 			t.printStackTrace();
 		}

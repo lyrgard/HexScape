@@ -3,15 +3,12 @@ package fr.lyrgard.hexScape.server.listener;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
-import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
-import fr.lyrgard.hexScape.message.MessagePostedMessage;
-import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
+import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
+import fr.lyrgard.hexScape.message.UserJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
@@ -32,29 +29,31 @@ public class RoomMessageListener  {
 
 	
 	@Subscribe public void onJoinRoom(JoinRoomMessage message) {
-		String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
 		String roomId = message.getRoomId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 		
-		if (player != null && room != null) {
-			room.getPlayers().add(player);
-			player.setRoom(room);
+		if (user != null && room != null) {
+			room.getUsers().add(user);
+			user.setRoom(room);
 			
 			RoomJoinedMessage returnMessage = new RoomJoinedMessage(room);
-			ServerNetwork.getInstance().sendMessageToPlayer(returnMessage, playerId);
+			ServerNetwork.getInstance().sendMessageToUser(returnMessage, user.getId());
 			
-			PlayerJoinedRoomMessage broadcastMessage = new PlayerJoinedRoomMessage(playerId, player.getName(), player.getColor(), roomId);
-			ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(broadcastMessage, roomId, playerId);
+			UserJoinedRoomMessage broadcastMessage = new UserJoinedRoomMessage(user.getId(), user.getName(), user.getColor(), roomId);
+			ServerNetwork.getInstance().sendMessageToRoomExceptUser(broadcastMessage, roomId, user.getId());
 		}
 	}
 	
-	@Subscribe public void onMessagePosted(MessagePostedMessage message) {
-		String roomId = message.getRoomId();
+	@Subscribe public void onRoomMessagePosted(RoomMessagePostedMessage message) {
+		String userId = message.getSessionUserId();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		if (roomId != null) {
-			ServerNetwork.getInstance().sendMessageToRoom(message, roomId);
+		if (user != null && user.getRoom() != null) {
+			ServerNetwork.getInstance().sendMessageToRoom(message, user.getRoom().getId());
 		}
 	}
 }

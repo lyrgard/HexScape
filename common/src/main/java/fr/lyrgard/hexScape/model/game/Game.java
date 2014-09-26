@@ -1,11 +1,17 @@
 package fr.lyrgard.hexScape.model.game;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.lyrgard.hexScape.model.map.Map;
-import fr.lyrgard.hexScape.model.marker.MarkerInfo;
+import fr.lyrgard.hexScape.model.player.Player;
 
 public class Game {
 	
@@ -19,17 +25,54 @@ public class Game {
 	
 	private boolean started;
 
-	private Collection<String> playersIds;
+	private Collection<Player> players;
 	
 	private Collection<String> observersIds;
-	
-	private java.util.Map<String, MarkerInfo> markersById = new HashMap<>();
 
-	public Collection<String> getPlayersIds() {
-		if (playersIds == null) {
-			playersIds = new ArrayList<>();
+	@JsonIgnore
+	private static ObjectMapper mapper = new ObjectMapper();
+	
+	public static Game fromJson(String string) throws JsonParseException, JsonMappingException, IOException {
+		return mapper.readValue(string, Game.class);
+	}
+	
+	public String toJson() throws JsonProcessingException {
+		return mapper.writeValueAsString(this);
+	}
+	
+	public Collection<Player> getPlayers() {
+		if (players == null) {
+			players = new ArrayList<>();
 		}
-		return playersIds;
+		return players;
+	}
+	
+	public Player getPlayer(String playerId) {
+		for (Player player : getPlayers()) {
+			if (player.getId().equals(playerId)) {
+				return player;
+			}
+		}
+		return null;
+	}
+	
+	public Player getPlayerByUserId(String userId) {
+		for (Player player : getPlayers()) {
+			if (player.getUserId() != null && player.getUserId().equals(userId)) {
+				return player;
+			}
+		}
+		return null;
+	}
+	
+	public Collection<Player> getFreePlayers() {
+		Collection<Player> freePlayers = new ArrayList<>();
+		for (Player player : players) {
+			if (player.getUserId() == null) {
+				freePlayers.add(player);
+			}
+		}
+		return freePlayers;
 	}
 
 	public Collection<String> getObserversIds() {
@@ -71,11 +114,6 @@ public class Game {
 	public void setPlayerNumber(int playerNumber) {
 		this.playerNumber = playerNumber;
 	}
-
-	public java.util.Map<String, MarkerInfo> getMarkersById() {
-		return markersById;
-	}
-
 
 	public boolean isStarted() {
 		return started;
