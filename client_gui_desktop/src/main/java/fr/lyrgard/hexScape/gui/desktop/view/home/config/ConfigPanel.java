@@ -66,7 +66,6 @@ public class ConfigPanel extends JPanel {
 					ConfigurationService.getInstance().setGameFolder((String)gameList.getSelectedItem());
 					ConfigurationService.getInstance().save();
 					if (gameChanged) {
-						HexScapeCore.getInstance().setGameName((String)gameList.getSelectedItem());
 						AssetService.getInstance().reloadAssets();
 					}
 					GuiMessageBus.post(new InfoMessage(CurrentUserInfo.getInstance().getId(), "Configuration saved"));

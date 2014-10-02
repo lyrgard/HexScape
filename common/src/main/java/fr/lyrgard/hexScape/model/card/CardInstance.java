@@ -44,7 +44,12 @@ public class CardInstance {
 	}
 	
 	public PieceInstance getPiece(String pieceId) {
-		return pieces.stream().filter(piece -> piece.getId().equals(pieceId)).findFirst().orElse(null);
+		for (PieceInstance piece : pieces) {
+			if (piece.getId().equals(pieceId)) {
+				return piece;
+			}
+		}
+		return null;
 	}
 	
 	public void addMarker(MarkerInstance marker) {
@@ -63,11 +68,21 @@ public class CardInstance {
 	}
 	
 	public MarkerInstance getMarker(String markerId) {
-		return markers.stream().filter(m -> m.getId().equals(markerId)).findFirst().orElse(null);
+		for (MarkerInstance m : markers) {
+			if (m.getId().equals(markerId)) {
+				return m;
+			}
+		}
+		return null;
 	}
 	
 	public MarkerInstance getMarkerByType(String markerTypeId) {
-		return markers.stream().filter(m -> m.getMarkerDefinitionId().equals(markerTypeId)).findFirst().orElse(null);
+		for (MarkerInstance m : markers) {
+			if (m.getMarkerDefinitionId().equals(markerTypeId)) {
+				return m;
+			}
+		}
+		return null;
 	}
 
 	public String getId() {

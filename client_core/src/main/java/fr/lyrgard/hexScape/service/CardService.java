@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
@@ -37,7 +36,7 @@ public class CardService {
 	private List<File> getCardFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, CARDS_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), CARDS_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), CARDS_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;

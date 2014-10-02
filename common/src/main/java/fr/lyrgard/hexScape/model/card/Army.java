@@ -15,7 +15,12 @@ public class Army {
 	}
 	
 	public CardInstance getCard(String cardId) {
-		return cards.stream().filter(card -> card.getId().equals(cardId)).findFirst().orElse(null);
+		for (CardInstance card : cards) {
+			if (card.getId().equals(cardId)) {
+				return card;
+			}
+		}
+		return null;
 	}
 
 	public String getName() {

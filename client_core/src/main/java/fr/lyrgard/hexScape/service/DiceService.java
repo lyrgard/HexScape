@@ -14,7 +14,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DiceDefinitionReloadedMessage;
@@ -57,7 +56,7 @@ public class DiceService {
 	private List<File> getDiceFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, DICE_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), DICE_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), DICE_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;

@@ -16,7 +16,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
@@ -64,7 +63,7 @@ public class MarkerService {
 	private List<File> getMarkerFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, MARKERS_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), MARKERS_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), MARKERS_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;

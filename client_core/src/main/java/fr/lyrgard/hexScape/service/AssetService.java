@@ -55,6 +55,10 @@ public class AssetService {
 	}
 	
 	public void reloadAssets() {
+		if (ConfigurationService.getInstance().getGameFolder().equals(ConfigurationService.DEFAULT_GAME_NAME)) {
+			ConfigurationService.getInstance().initGameFolder();
+			ConfigurationService.getInstance().save();
+		}
 		TextureService.getInstance().loadTileTexture();
 		ExternalModelService.getInstance().clear();
 		CardService.getInstance().loadCardInventory();

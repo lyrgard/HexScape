@@ -36,7 +36,7 @@ public class TextureService  {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, TILES_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), TILES_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), TILES_FOLDER_NAME);
 		File commonFile = new File(commonFolder, TEXTURES_FILE_NAME);
 		File gameFile = new File(gameFolder, TEXTURES_FILE_NAME);
 		if (gameFile.exists() && gameFile.isFile() && gameFile.canRead()) {

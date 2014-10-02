@@ -15,6 +15,8 @@ import fr.lyrgard.hexScape.model.player.User;
 
 public class ConfigurationService {
 	
+	public static final String DEFAULT_GAME_NAME = "DEFAULT_GAME_NAME";
+	
 	private static final String CONFIG_FILENAME = "config.properties";
 	
 	private static final String USER_NAME_KEY = "user.name";
@@ -52,10 +54,7 @@ public class ConfigurationService {
 		setUserName("Player");
 		setServerHost("hexscape.lyrgard.fr:4242");
 		
-		List<String> gameFolders = getGameFolders();
-		if (!gameFolders.isEmpty()) {
-			setGameFolder(gameFolders.get(0));
-		}
+		initGameFolder();
 		
 		save();
 	}
@@ -117,13 +116,20 @@ public class ConfigurationService {
 	public String getGameFolder() {
 		String gameFolder = properties.getProperty(GAME_FOLDER);
 		if (gameFolder == null) {
-			gameFolder = "DEFAULT_GAME_NAME";
+			gameFolder = DEFAULT_GAME_NAME;
 		}
 		return gameFolder;
 	}
 	
 	public void setGameFolder(String gameFolder) {
 		properties.put(GAME_FOLDER, gameFolder);
+	}
+	
+	public void initGameFolder() {
+		List<String> gameFolders = getGameFolders();
+		if (!gameFolders.isEmpty()) {
+			setGameFolder(gameFolders.get(0));
+		}
 	}
 	
 	public void save() {

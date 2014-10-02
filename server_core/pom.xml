@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fr.lyrgard.hexscape</groupId>
 		<artifactId>hexscape</artifactId>
-		<version>1.0.0-beta</version>
+		<version>1.1.0-beta</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	
@@ -14,6 +14,7 @@
 		<plugins>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -23,6 +24,8 @@
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
 					</descriptorRefs>
+					<finalName>HexScape_Server-${pom.version}</finalName>
+					<appendAssemblyId>false</appendAssemblyId>
 				</configuration>
 			</plugin>
 		</plugins>

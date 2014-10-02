@@ -34,8 +34,6 @@ public class HexScapeCore {
 	private CardCollection cardInventory;
 	
 	private MapManager mapManager;
-	
-	private String gameName = null;
 
 	private HexScapeCore() {
 		instance = this;
@@ -45,8 +43,6 @@ public class HexScapeCore {
 		
 		String username = ConfigurationService.getInstance().getUserName();
 		user.setName(username);
-		
-		gameName = ConfigurationService.getInstance().getGameFolder();
 		
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();
@@ -86,14 +82,6 @@ public class HexScapeCore {
 
 	public void setOnline(boolean online) {
 		this.online = online;
-	}
-
-	public String getGameName() {
-		return gameName;
-	}
-
-	public void setGameName(String gameName) {
-		this.gameName = gameName;
 	}
 	
 }
