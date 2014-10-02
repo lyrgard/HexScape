@@ -17,6 +17,7 @@ import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexScape.service.ColorService;
+import fr.lyrgard.hexScape.service.MarkerService;
 
 public class RoomMessageListener {
 
@@ -55,6 +56,7 @@ public class RoomMessageListener {
 		// add our own Player object
 		room.getUsers().add(user);
 		for (Game game : room.getGames()) {
+			MarkerService.getInstance().normalizeMarkers(game);
 			Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
 			for (Player player : game.getPlayers()) {
 				if (player.getUserId() != null) {

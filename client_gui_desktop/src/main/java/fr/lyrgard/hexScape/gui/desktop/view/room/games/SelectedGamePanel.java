@@ -36,6 +36,7 @@ import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 
@@ -182,7 +183,7 @@ public class SelectedGamePanel extends JPanel {
 
 			public void run() {
 
-				if (StringUtils.equals(game.getId(), SelectedGamePanel.this.game.getId())) {
+				if (SelectedGamePanel.this.game != null && StringUtils.equals(game.getId(), SelectedGamePanel.this.game.getId())) {
 					Player player = game.getPlayer(playerId);
 
 					if (player != null) {
@@ -219,11 +220,16 @@ public class SelectedGamePanel extends JPanel {
 				EventQueue.invokeLater(new Runnable() {
 
 					public void run() {
-						joinButton.setVisible(false);
-						startButton.setVisible(false);
-						leaveButton.setVisible(false);
+						Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+						if (game != null) {
+							if (game.getFreePlayers().isEmpty()) {
+								joinButton.setVisible(false);
+							}
+							startButton.setVisible(false);
+							leaveButton.setVisible(false);
 
-						gameTitle.setText(getTitle());
+							gameTitle.setText(getTitle());
+						}
 					}
 				});
 			}

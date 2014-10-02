@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,10 +20,18 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
+import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
+import fr.lyrgard.hexScape.model.marker.UnknownTypeMarkerInstance;
+import fr.lyrgard.hexScape.model.player.Player;
 
 public class MarkerService {
 	
@@ -149,6 +158,59 @@ public class MarkerService {
 		
 		
 		return markersByIds.values();
+	}
+	
+	public void normalizeMarkers(Game game) {
+		if (game != null) {
+			for (Player player : game.getPlayers()) {
+				if (player != null && player.getArmy() != null) {
+					for (CardInstance card : player.getArmy().getCards()) {
+						if (card != null) {
+							List<MarkerInstance> newMarkers = new ArrayList<>();
+							Iterator<MarkerInstance> it = card.getMarkers().iterator();
+							while (it.hasNext()) {
+								MarkerInstance marker = it.next();
+								if (marker instanceof UnknownTypeMarkerInstance) {
+									MarkerInstance newMarker = getNewMarkerInstance(marker.getMarkerDefinitionId(), marker.getId(), ((UnknownTypeMarkerInstance) marker).getNumber(), ((UnknownTypeMarkerInstance) marker).getHiddenMarkerTypeId());
+									newMarkers.add(newMarker);
+									it.remove();
+								}
+							}
+							for (MarkerInstance marker : newMarkers) {
+								card.addMarker(marker);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public MarkerInstance getNewMarkerInstance(String markerTypeId, String id, int number, String hiddenMarkerTypeId) {
+		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
+		if (markerDefinition == null) {
+			CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getId(), "Unable to find marker type " + markerTypeId));
+			return null;
+		}
+		
+		MarkerInstance marker = null;
+		
+		switch (markerDefinition.getType()) {
+		case NORMAL:
+			marker = new MarkerInstance(markerDefinition.getId());
+			break;
+		case STACKABLE:
+			marker = new StackableMarkerInstance(markerDefinition.getId(), number);
+			break;
+		case REVEALABLE:
+			marker = new RevealableMarkerInstance(markerDefinition.getId());
+			break;
+		case HIDDEN:
+			marker = new HiddenMarkerInstance(markerDefinition.getId(), hiddenMarkerTypeId);
+			break;
+		}
+		marker.setId(id);
+		return marker;
 	}
 
 	public Map<String, MarkerDefinition> getMarkersByIds() {

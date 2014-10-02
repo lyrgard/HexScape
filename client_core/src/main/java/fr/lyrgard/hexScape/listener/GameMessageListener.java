@@ -26,6 +26,7 @@ import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
+import fr.lyrgard.hexScape.service.MarkerService;
 import fr.lyrgard.hexscape.client.network.ClientNetwork;
 
 public class GameMessageListener {
@@ -86,6 +87,7 @@ private static GameMessageListener instance;
 	@Subscribe public void onGameCreated(GameCreatedMessage message) {
 		Game game = message.getGame();
 		
+		MarkerService.getInstance().normalizeMarkers(game);
 		Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
 		GuiMessageBus.post(message);
 		
@@ -165,6 +167,7 @@ private static GameMessageListener instance;
 			Player player = game.getPlayer(playerId);
 			if (player != null) {
 				player.setUserId(user.getId());
+				MarkerService.getInstance().normalizeMarkers(game);
 				user.setGame(game);
 				user.setPlayer(player);
 				if (CurrentUserInfo.getInstance().getId().equals(userId)) {

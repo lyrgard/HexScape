@@ -66,7 +66,7 @@ public class MarkerMessageListener {
 
 							// Hide the hiddenMarkerTypeId for others players
 							MarkerPlacedMessage resultMessageForOthers = new MarkerPlacedMessage(owner.getId(), cardId, markerId, markerTypeId, null, number);
-							ServerNetwork.getInstance().sendMessageToGameExceptUser(resultMessageForOthers, user.getGame().getId(), owner.getId());
+							ServerNetwork.getInstance().sendMessageToGameExceptUser(resultMessageForOthers, user.getGame().getId(), userId);
 							
 							return;
 						}

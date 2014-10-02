@@ -1,12 +1,20 @@
 package fr.lyrgard.hexScape.model.marker;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class UnknownTypeMarkerInstance extends MarkerInstance {
 	
 	private String hiddenMarkerTypeId;
 	
 	private int number;
 	
-	public UnknownTypeMarkerInstance(String id, String markerDefinitionId, String hiddenMarkerTypeId, int number) {
+	@JsonCreator
+	public UnknownTypeMarkerInstance(
+			@JsonProperty("id") String id, 
+			@JsonProperty("markerDefinitionId") String markerDefinitionId, 
+			@JsonProperty("hiddenMarkerTypeId") String hiddenMarkerTypeId, 
+			@JsonProperty("number") int number) {
 		super(markerDefinitionId);
 		setId(id);
 		this.hiddenMarkerTypeId = hiddenMarkerTypeId;

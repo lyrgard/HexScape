@@ -16,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 		@Type(value = RevealableMarkerInstance.class, name = "RevealableMarkerInstance"),
 	    @Type(value = StackableMarkerInstance.class, name = "StackableMarkerInstance"),
 	    @Type(value = HiddenMarkerInstance.class, name = "HiddenMarkerInstance"),
+	    @Type(value = UnknownTypeMarkerInstance.class, name = "UnknownTypeMarkerInstance"),
 	    }) 
 public class MarkerInstance implements Comparable<MarkerInstance>{
 	

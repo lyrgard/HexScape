@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
+import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 
 public class CardInstance {
@@ -47,7 +48,18 @@ public class CardInstance {
 	}
 	
 	public void addMarker(MarkerInstance marker) {
-		markers.add(marker);
+		if (marker instanceof StackableMarkerInstance) {
+			for (MarkerInstance markerOnCard : getMarkers()) {
+				if (markerOnCard.getMarkerDefinitionId().equals(marker.getMarkerDefinitionId())) {
+					// a marker of this type is already on the card. Add "number" to it
+					((StackableMarkerInstance)markerOnCard).setNumber(((StackableMarkerInstance)markerOnCard).getNumber() + number);				
+					return;
+				}
+			}
+			markers.add(marker);
+		} else {
+			markers.add(marker);
+		}
 	}
 	
 	public MarkerInstance getMarker(String markerId) {
@@ -96,6 +108,14 @@ public class CardInstance {
 
 	public List<PieceInstance> getPieces() {
 		return pieces;
+	}
+
+	public void setPieces(List<PieceInstance> pieces) {
+		if (pieces != null) {
+			for (PieceInstance piece : pieces) {
+				addPiece(piece);
+			}
+		}
 	}
 
 }

@@ -1,7 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game.leftPanel;
 
 
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,8 @@ public class ArmiesTabbedPane extends JTabbedPane {
 	private static final long serialVersionUID = 7018446148678245684L;
 	
 	private Map<String, ArmyPanel> armyPanelByPlayerIds = new HashMap<String, ArmyPanel>();
+	
+	private Map<String, Integer> tabIndexByPlayerId = new HashMap<>();
 	
 	public ArmiesTabbedPane() {
 		//addTab("Your army", yourArmyPanel);
@@ -64,6 +65,7 @@ public class ArmiesTabbedPane extends JTabbedPane {
 		
 		removeAll();
 		armyPanelByPlayerIds.clear();
+		tabIndexByPlayerId.clear();
 		
 		final Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
@@ -79,14 +81,18 @@ public class ArmiesTabbedPane extends JTabbedPane {
 						addTab("Your army (" + CurrentUserInfo.getInstance().getPlayer().getName() + ")", yourArmyPanel);
 						yourArmyPanel.setArmy(currentPlayer.getArmy());
 						armyPanelByPlayerIds.put(currentPlayer.getId(), yourArmyPanel);
+						tabIndexByPlayerId.put(currentPlayer.getId(), 0);
 					}
 					
+					int i = 1;
 					for (Player player : game.getPlayers()) {
 						if (!player.getId().equals(CurrentUserInfo.getInstance().getPlayerId())) {
 							if (player != null) {
 								ArmyPanel otherPlayerArmyPanel = new ArmyPanel(player.getId(), player.getArmy());
 								addTab(player.getDisplayName(), otherPlayerArmyPanel);
 								armyPanelByPlayerIds.put(player.getId(), otherPlayerArmyPanel);
+								tabIndexByPlayerId.put(player.getId(), i);
+								i++;
 							}
 						}
 					}
@@ -96,10 +102,22 @@ public class ArmiesTabbedPane extends JTabbedPane {
 	}
 	
 	@Subscribe public void onGameJoined(GameJoinedMessage message) {
+		Game game = message.getGame();
+		String playerId = message.getPlayerId();
 		
+		if (game.getId().equals(CurrentUserInfo.getInstance().getGameId()) && game.isStarted()) {
+			Player player = game.getPlayer(playerId);
+			Integer tabIndex = tabIndexByPlayerId.get(playerId);
+			if (tabIndex != null && player != null) {
+				setTitleAt(tabIndex, player.getDisplayName());
+			}
+		}
 	}
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String gameId = message.getGameId();
+		String playerId = message.getPlayerId();
+		
 		if (CurrentUserInfo.getInstance().getPlayer() == null) {
 			// current player is null == we left the game
 			EventQueue.invokeLater(new Runnable() {
@@ -108,6 +126,13 @@ public class ArmiesTabbedPane extends JTabbedPane {
 					empty();
 				}
 			});
+		} else if (gameId.equals(CurrentUserInfo.getInstance().getGameId())){
+			Game game = CurrentUserInfo.getInstance().getGame();
+			Player player = game.getPlayer(playerId);
+			Integer tabIndex = tabIndexByPlayerId.get(playerId);
+			if (tabIndex != null && player != null) {
+				setTitleAt(tabIndex, player.getName());
+			}
 		}
 	} 
 

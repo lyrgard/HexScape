@@ -99,50 +99,20 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		}
 		
+		
+		
 		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
 		if (markerDefinition == null) {
 			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find marker type " + markerTypeId));
 			return;
 		}
 		
-		MarkerInstance marker = null;
-		
-		switch (markerDefinition.getType()) {
-		case NORMAL:
-			marker = new MarkerInstance(markerDefinition.getId());
-			marker.setId(markerId);
-			card.getMarkers().add(marker);
-			break;
-		case STACKABLE:
-			addStackableMarkerToCard(card, markerDefinition, number, markerId);
-			break;
-		case REVEALABLE:
-			marker = new RevealableMarkerInstance(markerDefinition.getId());
-			marker.setId(markerId);
-			card.getMarkers().add(marker);
-			break;
-		case HIDDEN:
-			marker = new HiddenMarkerInstance(markerDefinition.getId(), hiddenMarkerTypeId);
-			marker.setId(markerId);
-			card.getMarkers().add(marker);
-			break;
+		MarkerInstance marker = MarkerService.getInstance().getNewMarkerInstance(markerTypeId, markerId, number, hiddenMarkerTypeId);
+		if (marker != null) {
+			card.addMarker(marker);
 		}
 		
 		GuiMessageBus.post(message);
-	}
-
-	private void addStackableMarkerToCard(CardInstance card, MarkerDefinition markerDefinition, int number, String markerId) {
-		for (MarkerInstance markerOnCard : card.getMarkers()) {
-			if (markerOnCard.getMarkerDefinitionId().equals(markerDefinition.getId())) {
-				// a marker of this type is already on the card. Add "number" to it
-				((StackableMarkerInstance)markerOnCard).setNumber(((StackableMarkerInstance)markerOnCard).getNumber() + number);				
-				return;
-			}
-		}
-		StackableMarkerInstance marker = new StackableMarkerInstance(markerDefinition.getId(), number);
-		marker.setId(markerId);
-		card.getMarkers().add(marker);
-		
 	}
 
 	@Subscribe public void onRemoveMarkerMessage(RemoveMarkerMessage message) {
@@ -279,21 +249,9 @@ public class MarkerMessageListener extends AbstractMessageListener {
 			return;
 		} 
 		
-		Player player = game.getPlayer(playerId);
-		if (player == null) {
-			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find player " + playerId));
-			return;
-		} 
-		
-		Army army = player.getArmy();
-		if (army == null) {
-			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find army for player " + playerId));
-			return;
-		}
-		
-		CardInstance card = army.getCard(cardId);
+		CardInstance card = game.getCard(cardId);
 		if (card == null) {
-			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " for player " + playerId + " in game " + gameId));
+			CoreMessageBus.post(new ErrorMessage(playerId, "Unable to find card " + cardId + " in game " + gameId));
 			return;
 		}
 		
@@ -306,7 +264,7 @@ public class MarkerMessageListener extends AbstractMessageListener {
 				RevealableMarkerInstance revealedMarker = new RevealableMarkerInstance(hiddenMarkerTypeId);
 				revealedMarker.setId(markerId);
 				card.getMarkers().remove(marker);
-				card.getMarkers().add(revealedMarker);
+				card.addMarker(revealedMarker);
 				
 				GuiMessageBus.post(message);
 				break;

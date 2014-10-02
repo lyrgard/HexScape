@@ -96,10 +96,9 @@ public class PieceMessageListener extends AbstractMessageListener {
 				return;
 			} 
 			
-			final Player player = game.getPlayer(playerId);
+			CardInstance cardInstance = game.getCard(cardInstanceId);
 			
-			if (player != null && player.getArmy() != null) {
-				CardInstance cardInstance = player.getArmy().getCard(cardInstanceId);
+			if (cardInstance != null) {
 				PieceInstance piece = new PieceInstance(pieceId, pieceModelId, cardInstance);
 				piece.setDirection(direction);
 				final PieceManager pieceManager = new PieceManager(piece);

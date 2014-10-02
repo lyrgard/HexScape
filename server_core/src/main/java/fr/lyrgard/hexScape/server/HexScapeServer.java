@@ -3,6 +3,11 @@ package fr.lyrgard.hexScape.server;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kohsuke.args4j.CmdLineException;
+import org.kohsuke.args4j.CmdLineParser;
+import org.kohsuke.args4j.Option;
+import org.kohsuke.args4j.spi.IntOptionHandler;
+
 import fr.lyrgard.hexScape.model.ServerConstant;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
@@ -22,6 +27,11 @@ public class HexScapeServer {
 
 	private static final HexScapeServer instance = new HexScapeServer();
 	
+	
+	@Option(name="-p", aliases={"--port"}, usage="The port to use for incoming connections", handler=IntOptionHandler.class)
+	private int port = ServerConstant.SERVER_PORT;
+	
+	
 	private Map<String, Room> rooms = new HashMap<>();
 	
 	private Map<String, Game> games = new HashMap<>();
@@ -37,6 +47,24 @@ public class HexScapeServer {
 	}
 	
 	private HexScapeServer() {
+	}
+	
+	public static void main(String... args) {
+		CmdLineParser parser = new CmdLineParser(getInstance());
+		try {
+			parser.parseArgument(args);
+			getInstance().start();
+		} catch (CmdLineException e) {
+			System.err.println(e.getMessage());
+			// print the list of available options
+			parser.printUsage(System.err);
+			System.err.println();
+		}
+		
+	}
+	
+	private void start() {
+		
 		Room room = new Room();
 		room.setId(Room.DEFAULT_ROOM_ID);
 		room.setName(Room.DEFAULT_ROOM_ID);
@@ -49,14 +77,11 @@ public class HexScapeServer {
 		PieceMessageListener.start();
 		MarkerMessageListener.start();
 		try {
-			ServerNetwork.getInstance().start(ServerConstant.SERVER_PORT);
+			ServerNetwork.getInstance().start(port);
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
 		}
-	}
-	
-	public static void main(String... args) {
 	}
 
 	public Map<String, Room> getRooms() {

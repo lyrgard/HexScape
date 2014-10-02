@@ -41,7 +41,6 @@ import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
-import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.CardService;
 import fr.lyrgard.hexScape.service.MarkerService;
 
@@ -96,6 +95,9 @@ public class ArmyCardPanel extends JPanel {
 		addFigureButton.setAlignmentX(24);
 		buttonPanel.add(addFigureButton);
 		buttonPanel.add(figureNumbersLabel);
+		if (card.getPieceLeftToPlace().size() == 0) {
+			addFigureButton.setEnabled(false);
+		}
 
 		JLabel imageLabel = new JLabel(imageIcon);
 		add(imageLabel, BorderLayout.LINE_END);
@@ -147,17 +149,14 @@ public class ArmyCardPanel extends JPanel {
 				Game game = CurrentUserInfo.getInstance().getGame();
 				
 				if (game != null) {
-					Player player = game.getPlayer(playerId);
-					if (player != null) {
 
-						if (card.getId().equals(cardId)) {
-							card.getPieceLeftToPlace().poll();
-							selectNextPiece();
-							if (card.getPieceLeftToPlace().size() == 0) {
-								addFigureButton.setEnabled(false);
-							} else {
-								addFigureButton.getAction().actionPerformed(null);
-							}
+					if (card.getId().equals(cardId)) {
+						card.getPieceLeftToPlace().poll();
+						selectNextPiece();
+						if (card.getPieceLeftToPlace().size() == 0) {
+							addFigureButton.setEnabled(false);
+						} else if (StringUtils.equals(playerId, CurrentUserInfo.getInstance().getPlayerId())) {
+							addFigureButton.getAction().actionPerformed(null);
 						}
 					}
 				}

@@ -1,5 +1,10 @@
 package fr.lyrgard.hexScape.server.listener;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -24,6 +29,7 @@ import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
+import fr.lyrgard.hexScape.server.service.GameService;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class GameMessageListener {
@@ -126,10 +132,22 @@ public class GameMessageListener {
 				player.setUserId(user.getId());
 				user.setPlayer(player);
 				user.setGame(game);
+				
+				try {
+					for (User userInRoom : user.getRoom().getUsers()) {
+						Game clone = Game.fromJson(game.toJson());
+						
+						GameService.removeUnseeableHiddenMarkersInfos(clone, userInRoom.getId());
+						
+						GameJoinedMessage resultMessage = new GameJoinedMessage(user.getId(), clone, player.getId()); 
 
-				GameJoinedMessage resultMessage = new GameJoinedMessage(user.getId(), game, player.getId()); 
+						ServerNetwork.getInstance().sendMessageToUser(resultMessage, userInRoom.getId());
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 
-				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
+				
 			} else {
 				if (user.getPlayer() != null) {
 					ErrorMessage resultMessage = new ErrorMessage(playerId, "Unable to join the game : you already joined another game");

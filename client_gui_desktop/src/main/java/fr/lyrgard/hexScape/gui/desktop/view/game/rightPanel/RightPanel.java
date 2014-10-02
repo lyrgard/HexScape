@@ -13,6 +13,7 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.view.common.chat.ChatPanel;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
+import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
@@ -162,23 +163,17 @@ public class RightPanel extends JPanel {
 		int number = message.getNumber();
 		
 		Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
+		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
 
-		if (game != null) {
+		if (game != null && markerDefinition != null) {
+			CardInstance card = game.getCard(cardId);
 			Player player = game.getPlayer(playerId);
-			MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
-			
-			
-			if (player != null && markerDefinition != null) {
-				for (Player owner : game.getPlayers()) {
-					if (owner.getArmy() != null) {
-						CardInstance card = owner.getArmy().getCard(cardId);
-						CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+			if (card != null && player != null) {
+				CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 
-						if (card != null) {
-							chatPanel.addPlayerAction(player, "player " + player.getName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
-							return;
-						}
-					}
+				if (card != null) {
+					chatPanel.addPlayerAction(player, "player " + player.getName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
+					return;
 				}
 			}
 		}
@@ -278,16 +273,35 @@ public class RightPanel extends JPanel {
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
-					if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
-						chatPanel.clearText();
-					} else {
+				if (CurrentUserInfo.getInstance().getGameId() == null) {
+					// The current user left the game
+					chatPanel.clearText();
+				} else {
+					if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
 						Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
-
 						if (game != null) {
 							Player player = game.getPlayer(playerId);
 							chatPanel.addPlayerAction(player, "player " + player.getName() + " left the game");
 						}
+					}
+				}
+			}
+		});
+	}
+	
+	
+	@Subscribe public void onGamejoined(GameJoinedMessage message) {
+		final String playerId = message.getPlayerId();
+		final String gameId = message.getGame().getId();
+
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+					Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
+					if (game != null) {
+						Player player = game.getPlayer(playerId);
+						chatPanel.addPlayerAction(player, player.getDisplayName() + " joined the game");
 					}
 				}
 			}
