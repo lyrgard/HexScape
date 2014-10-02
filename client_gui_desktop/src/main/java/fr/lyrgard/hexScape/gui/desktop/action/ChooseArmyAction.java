@@ -31,7 +31,7 @@ public class ChooseArmyAction extends AbstractAction {
 	public void actionPerformed(ActionEvent paramActionEvent) {
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
-				"Heroscape Army", "hsa");
+				"HexScape Army", "hsa");
 		chooser.setFileFilter(filter);
 
 		int returnVal = chooser.showOpenDialog(parent);

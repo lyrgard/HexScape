@@ -10,9 +10,12 @@ import fr.lyrgard.hexScape.model.map.Direction;
 
 public class DirectionService {
 
-	private static final DirectionService INSTANCE = new DirectionService();
+	private static DirectionService INSTANCE;
 
-	public static DirectionService getInstance() {
+	public static synchronized DirectionService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new DirectionService();
+		}
 		return INSTANCE;
 	}
 

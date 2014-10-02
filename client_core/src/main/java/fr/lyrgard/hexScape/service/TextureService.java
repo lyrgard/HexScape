@@ -11,9 +11,12 @@ public class TextureService  {
 	
 	private static final String TILES_FOLDER_NAME = "tiles";
 	private static final String TEXTURES_FILE_NAME = "TileTexture.bmp";
-	private static final TextureService INSTANCE = new TextureService();
+	private static TextureService INSTANCE;
 	
-	public static TextureService getInstance() {
+	public static synchronized TextureService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new TextureService();
+		}
 		return INSTANCE;
 	}
 	

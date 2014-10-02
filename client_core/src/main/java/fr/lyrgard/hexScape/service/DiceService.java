@@ -28,7 +28,10 @@ public class DiceService {
 	
 	
 
-	public static DiceService getInstance() {
+	public static synchronized DiceService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new DiceService();
+		}
 		return INSTANCE;
 	}
 	
@@ -43,7 +46,7 @@ public class DiceService {
 	private static final String BACKGROUND_COLOR = "backgroundColor";
 	private static final String FOREGROUND_COLOR = "foregroundColor";
 	
-	private static final DiceService INSTANCE = new DiceService();
+	private static DiceService INSTANCE;
 	
 	private Map<String, DiceType> diceTypes;
 

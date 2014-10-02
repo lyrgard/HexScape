@@ -35,7 +35,7 @@ public class HexScapeCore {
 	
 	private MapManager mapManager;
 	
-	private String gameName = "heroscape";
+	private String gameName = null;
 
 	private HexScapeCore() {
 		instance = this;
@@ -45,6 +45,8 @@ public class HexScapeCore {
 		
 		String username = ConfigurationService.getInstance().getUserName();
 		user.setName(username);
+		
+		gameName = ConfigurationService.getInstance().getGameFolder();
 		
 		hexScapeJme3Application = new HexScapeJme3Application();
 		ArmyMessageListener.start();

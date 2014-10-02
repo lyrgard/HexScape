@@ -17,10 +17,13 @@ import fr.lyrgard.hexScape.model.model3d.loader.ObjModelLoader;
 
 public class ExternalModelService {
 	
-	private static ExternalModelService instance = new ExternalModelService();
+	private static ExternalModelService INSTANCE;
 	
-	public static ExternalModelService getInstance() {
-		return instance;
+	public static synchronized ExternalModelService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new ExternalModelService();
+		}
+		return INSTANCE;
 	}
 	
 	private Map<String, ExternalModel> models = new HashMap<String, ExternalModel>();

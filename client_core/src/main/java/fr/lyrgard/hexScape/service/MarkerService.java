@@ -37,7 +37,10 @@ public class MarkerService {
 	
 	
 
-	public static MarkerService getInstance() {
+	public static synchronized MarkerService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new MarkerService();
+		}
 		return INSTANCE;
 	}
 
@@ -50,7 +53,7 @@ public class MarkerService {
 	private static final String POSSIBLE_MARKERS_HIDDEN = "possibleMarkersHidden";
 	private static final String CAN_BE_PLACED_REVEALED = "canBePlacedRevealed";
 	
-	private static final MarkerService INSTANCE = new MarkerService();
+	private static MarkerService INSTANCE;
 	
 	private MarkerService() {
 		getMarkersListForCard();

@@ -177,10 +177,12 @@ private static GameMessageListener instance;
 				}
 				Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
 				GuiMessageBus.post(message);
-				
-				if (CurrentUserInfo.getInstance().getId().equals(userId)) {
-					if (game.isStarted()) {
-						GuiMessageBus.post(new GameStartedMessage(userId, game.getId()));
+
+				if (HexScapeCore.getInstance().isOnline()) {
+					if (CurrentUserInfo.getInstance().getId().equals(userId)) {
+						if (game.isStarted()) {
+							GuiMessageBus.post(new GameStartedMessage(userId, game.getId()));
+						}
 					}
 				}
 			}

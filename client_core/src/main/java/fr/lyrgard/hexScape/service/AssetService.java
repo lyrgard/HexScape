@@ -20,9 +20,12 @@ public class AssetService {
 	
 	public static final File COMMON_ASSET_FOLDER = new File(ASSET_FOLDER, "common");  
 	
-	private static final AssetService INSTANCE = new AssetService();
+	private static AssetService INSTANCE;
 
-	public static AssetService getInstance() {
+	public static synchronized AssetService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new AssetService();
+		}
 		return INSTANCE;
 	}
 
@@ -41,28 +44,7 @@ public class AssetService {
 			ZipFile zipFile = new ZipFile(file);
 			zipFile.extractAll(ASSET_FOLDER.getAbsolutePath());
 
-			TextureService.getInstance().loadTileTexture();
-			ExternalModelService.getInstance().clear();
-			CardService.getInstance().loadCardInventory();
-			DiceService.getInstance().loadDiceTypes();
-
-			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
-
-				@Override
-				public Void call() throws Exception {
-					TitleScreen.getInstance().populateNode();
-					if (HexScapeCore.getInstance().getMapManager() != null) {
-						AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(); 
-						if (assetManager instanceof DesktopAssetManager) {
-							((DesktopAssetManager) assetManager).clearCache();
-						}
-						
-						HexScapeCore.getInstance().getMapManager().redraw();
-					}
-					return null;
-				}
-
-			});
+			reloadAssets();
 				
 
 		} catch (ZipException e) {
@@ -70,5 +52,30 @@ public class AssetService {
 			GuiMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "An error occurred while trying to unzip " + file.getAbsolutePath()));
 		}
 
+	}
+	
+	public void reloadAssets() {
+		TextureService.getInstance().loadTileTexture();
+		ExternalModelService.getInstance().clear();
+		CardService.getInstance().loadCardInventory();
+		DiceService.getInstance().loadDiceTypes();
+
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			@Override
+			public Void call() throws Exception {
+				TitleScreen.getInstance().populateNode();
+				if (HexScapeCore.getInstance().getMapManager() != null) {
+					AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(); 
+					if (assetManager instanceof DesktopAssetManager) {
+						((DesktopAssetManager) assetManager).clearCache();
+					}
+					
+					HexScapeCore.getInstance().getMapManager().redraw();
+				}
+				return null;
+			}
+
+		});
 	}
 }

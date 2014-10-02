@@ -12,9 +12,12 @@ import fr.lyrgard.hexScape.model.player.Player;
 
 public class SelectMarkerService {
 
-	private static final SelectMarkerService INSTANCE = new SelectMarkerService();
+	private static SelectMarkerService INSTANCE;
 	
-	public static SelectMarkerService getInstance() {
+	public static synchronized SelectMarkerService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new SelectMarkerService();
+		}
 		return INSTANCE;
 	}
 	

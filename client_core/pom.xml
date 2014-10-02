@@ -1,29 +1,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>fr.lyrgard.hexscape</groupId>
 	<artifactId>hexscape_client_core</artifactId>
-	<version>1.0.0-beta</version>
+
+	<parent>
+		<groupId>fr.lyrgard.hexscape</groupId>
+		<artifactId>hexscape</artifactId>
+		<version>1.0.0-beta</version>
+		<relativePath>../parent</relativePath>
+	</parent>
 
 	<properties>
 		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
 	</properties>
-	
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.2</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-	
-	
+
 	<repositories>
 		<repository>
 			<id>sonatype-public</id>
@@ -44,8 +34,8 @@
 			<artifactId>hexscape_client_network</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-		
-	
+
+
 		<!-- The core library -->
 		<dependency>
 			<groupId>com.jme3</groupId>
@@ -95,7 +85,7 @@
 			<artifactId>commons-lang</artifactId>
 			<version>2.6</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>net.lingala.zip4j</groupId>
 			<artifactId>zip4j</artifactId>

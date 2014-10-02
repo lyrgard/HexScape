@@ -6,9 +6,12 @@ import fr.lyrgard.hexScape.model.game.Game;
 
 public class GameRecorderService {
 
-	private static final GameRecorderService INSTANCE = new GameRecorderService();
+	private static GameRecorderService INSTANCE;
 	
 	public static GameRecorderService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new GameRecorderService();
+		}
 		return INSTANCE;
 	}
 	

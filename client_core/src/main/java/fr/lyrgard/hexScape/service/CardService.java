@@ -23,9 +23,12 @@ public class CardService {
 	
 	private static final String[] IMAGE_TYPES = {"jpg", "jpeg", "bmp", "png"};
 	
-	private static final CardService INSTANCE = new CardService();
+	private static CardService INSTANCE;
 	
-	public static CardService getInstance() {
+	public static synchronized CardService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new CardService();
+		}
 		return INSTANCE;
 	}
 	
