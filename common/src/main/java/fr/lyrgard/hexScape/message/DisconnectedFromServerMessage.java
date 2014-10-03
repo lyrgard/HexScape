@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class DisconnectedFromServerMessage extends AbstractUserMessage {
 
 	@JsonCreator
-	public DisconnectedFromServerMessage(@JsonProperty("playerId") String playerId) {
-		super(playerId);
+	public DisconnectedFromServerMessage(@JsonProperty("userId") String userId) {
+		super(userId);
 	}
 
 }

@@ -1,15 +1,13 @@
 package fr.lyrgard.hexScape.message;
 
-public abstract class AbstractMarkerMessage extends AbstractGameMessage {
+public abstract class AbstractMarkerMessage extends AbstractMessage {
 
 	private String markerId;
 	
 	private String cardId;
 	
 
-	public AbstractMarkerMessage(String playerId, String gameId, String cardId,
-			String markerId) {
-		super(playerId, gameId);
+	public AbstractMarkerMessage(String cardId, String markerId) {
 		this.cardId = cardId;
 		this.markerId = markerId;
 	}

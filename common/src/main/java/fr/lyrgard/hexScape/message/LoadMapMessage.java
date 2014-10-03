@@ -11,9 +11,9 @@ public class LoadMapMessage extends AbstractUserMessage {
 
 	@JsonCreator
 	public LoadMapMessage(
-			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("userId") String userId, 
 			@JsonProperty("mapFile") File mapFile) {
-		super(playerId);
+		super(userId);
 		this.mapFile = mapFile;
 	}
 

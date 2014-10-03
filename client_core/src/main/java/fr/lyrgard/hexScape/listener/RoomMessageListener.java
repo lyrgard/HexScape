@@ -4,18 +4,20 @@ import java.util.Iterator;
 
 import com.google.common.eventbus.Subscribe;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
-import fr.lyrgard.hexScape.message.PlayerJoinedRoomMessage;
+import fr.lyrgard.hexScape.message.UserJoinedRoomMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexScape.service.ColorService;
+import fr.lyrgard.hexScape.service.MarkerService;
 
 public class RoomMessageListener {
 
@@ -32,19 +34,19 @@ public class RoomMessageListener {
 		Room room = message.getRoom();
 		Universe.getInstance().getRoomsByRoomIds().put(room.getId(), room);
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
-		if (player != null) {
-			player.setRoom(room);
-		}
+		User user = Universe.getInstance().getUsersByIds().get(CurrentUserInfo.getInstance().getId());
 		
-		Iterator<Player> it = room.getPlayers().iterator();
+		CurrentUserInfo.getInstance().setRoom(room);
+		
+		Iterator<User> it = room.getUsers().iterator();
 		while (it.hasNext()) {
-			Player otherPlayers = it.next();
-			if (!otherPlayers.getId().equals(HexScapeCore.getInstance().getPlayerId())) {
-				if (otherPlayers.getColor() == player.getColor()) {
-					otherPlayers.setColor(ColorService.getInstance().getNextColorThatIsNot(player.getColor()));
+			User otherUser = it.next();
+			if (!otherUser.getId().equals(CurrentUserInfo.getInstance().getId())) {
+				if (otherUser.getColor() == user.getColor()) {
+					otherUser.setColor(ColorService.getInstance().getNextColorThatIsNot(user.getColor()));
 				}
-				Universe.getInstance().getPlayersByIds().put(otherPlayers.getId(), otherPlayers);
+				otherUser.setRoom(room);
+				Universe.getInstance().getUsersByIds().put(otherUser.getId(), otherUser);
 			} else {
 				// We need to replace ourself in the list by our own Player object (already created)
 				// so remove the player to is ourself
@@ -52,32 +54,42 @@ public class RoomMessageListener {
 			}
 		}
 		// add our own Player object
-		room.getPlayers().add(player);
+		room.getUsers().add(user);
 		for (Game game : room.getGames()) {
+			MarkerService.getInstance().normalizeMarkers(game);
 			Universe.getInstance().getGamesByGameIds().put(game.getId(), game);
+			for (Player player : game.getPlayers()) {
+				if (player.getUserId() != null) {
+					User aUser = Universe.getInstance().getUsersByIds().get(player.getUserId());
+					aUser.setPlayer(player);
+					aUser.setGame(game);
+				}
+			}
 		}
 		
 		GuiMessageBus.post(message);
 	}
 	
-	@Subscribe public void onPlayerJoindedRoom(PlayerJoinedRoomMessage message) {
-		String playerId = message.getPlayerId();
+	@Subscribe public void onPlayerJoindedRoom(UserJoinedRoomMessage message) {
+		String userId = message.getUserId();
 		String name = message.getName();
 		ColorEnum color = message.getColor();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
+		User user = Universe.getInstance().getUsersByIds().get(CurrentUserInfo.getInstance().getId());
 		
-		Player joiningPlayer = new Player(name, color);
-		joiningPlayer.setId(playerId);
+		User joiningUser = new User();
+		joiningUser.setId(userId);
+		joiningUser.setName(name);
+		joiningUser.setColor(color);
 
-		String roomId = HexScapeCore.getInstance().getRoomId();
+		String roomId = CurrentUserInfo.getInstance().getRoomId();
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 		if (room != null) {
-			if (joiningPlayer.getColor() == player.getColor()) {
-				joiningPlayer.setColor(ColorService.getInstance().getNextColorThatIsNot(player.getColor()));
+			if (joiningUser.getColor() == user.getColor()) {
+				joiningUser.setColor(ColorService.getInstance().getNextColorThatIsNot(user.getColor()));
 			}
-			Universe.getInstance().getPlayersByIds().put(joiningPlayer.getId(), joiningPlayer);
-			room.getPlayers().add(joiningPlayer);
+			Universe.getInstance().getUsersByIds().put(joiningUser.getId(), joiningUser);
+			room.getUsers().add(joiningUser);
 		}
 
 		GuiMessageBus.post(message);

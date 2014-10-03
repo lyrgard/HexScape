@@ -32,7 +32,7 @@ public class ShowCardAction extends AbstractAction {
 		EventQueue.invokeLater(new Runnable() {
 			
 			public void run() {
-				ImageIcon image = new ImageIcon(new File(card.getFolder(), "card.jpg").getAbsolutePath());
+				ImageIcon image = new ImageIcon(new File(card.getImagePath()).getAbsolutePath());
 				int height = image.getIconHeight();
 				int width = image.getIconWidth();
 				Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();

@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -15,19 +16,30 @@ import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerType;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.RevealableMarkerInstance;
+import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
+import fr.lyrgard.hexScape.model.marker.UnknownTypeMarkerInstance;
+import fr.lyrgard.hexScape.model.player.Player;
 
 public class MarkerService {
 	
 	
 
-	public static MarkerService getInstance() {
+	public static synchronized MarkerService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new MarkerService();
+		}
 		return INSTANCE;
 	}
 
@@ -40,7 +52,7 @@ public class MarkerService {
 	private static final String POSSIBLE_MARKERS_HIDDEN = "possibleMarkersHidden";
 	private static final String CAN_BE_PLACED_REVEALED = "canBePlacedRevealed";
 	
-	private static final MarkerService INSTANCE = new MarkerService();
+	private static MarkerService INSTANCE;
 	
 	private MarkerService() {
 		getMarkersListForCard();
@@ -51,7 +63,7 @@ public class MarkerService {
 	private List<File> getMarkerFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, MARKERS_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), MARKERS_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), MARKERS_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;
@@ -86,7 +98,7 @@ public class MarkerService {
 
 								File iconFile = new File(folder, markerIconFilename);
 								if (!iconFile.exists() || !iconFile.isFile() || !iconFile.canRead() ) {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
+									CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "No icon.png file was found in " + markerPropertiesFile.getAbsolutePath() + " marker definition. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 
@@ -95,7 +107,7 @@ public class MarkerService {
 								try {
 									type = MarkerType.valueOf(typeString);
 								} catch (IllegalArgumentException e) {
-									CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
+									CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "The marker type \"" + typeString + "\" in " + markerPropertiesFile.getAbsolutePath() + " is not a valid type. This marker definition will be skiped"));
 									continue markerDefinition;
 								}
 
@@ -126,7 +138,7 @@ public class MarkerService {
 								markersByIds.put(marker.getId(), marker);
 
 							} catch (IOException e) {
-								CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
+								CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "Error reading file \"" + markerPropertiesFile.getAbsolutePath() + "\". This marker definition will be skiped"));
 							}
 						}
 					}
@@ -148,6 +160,59 @@ public class MarkerService {
 		
 		
 		return markersByIds.values();
+	}
+	
+	public void normalizeMarkers(Game game) {
+		if (game != null) {
+			for (Player player : game.getPlayers()) {
+				if (player != null && player.getArmy() != null) {
+					for (CardInstance card : player.getArmy().getCards()) {
+						if (card != null) {
+							List<MarkerInstance> newMarkers = new ArrayList<>();
+							Iterator<MarkerInstance> it = card.getMarkers().iterator();
+							while (it.hasNext()) {
+								MarkerInstance marker = it.next();
+								if (marker instanceof UnknownTypeMarkerInstance) {
+									MarkerInstance newMarker = getNewMarkerInstance(marker.getMarkerDefinitionId(), marker.getId(), ((UnknownTypeMarkerInstance) marker).getNumber(), ((UnknownTypeMarkerInstance) marker).getHiddenMarkerTypeId());
+									newMarkers.add(newMarker);
+									it.remove();
+								}
+							}
+							for (MarkerInstance marker : newMarkers) {
+								card.addMarker(marker);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	public MarkerInstance getNewMarkerInstance(String markerTypeId, String id, int number, String hiddenMarkerTypeId) {
+		MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(markerTypeId);
+		if (markerDefinition == null) {
+			CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getId(), "Unable to find marker type " + markerTypeId));
+			return null;
+		}
+		
+		MarkerInstance marker = null;
+		
+		switch (markerDefinition.getType()) {
+		case NORMAL:
+			marker = new MarkerInstance(markerDefinition.getId());
+			break;
+		case STACKABLE:
+			marker = new StackableMarkerInstance(markerDefinition.getId(), number);
+			break;
+		case REVEALABLE:
+			marker = new RevealableMarkerInstance(markerDefinition.getId());
+			break;
+		case HIDDEN:
+			marker = new HiddenMarkerInstance(markerDefinition.getId(), hiddenMarkerTypeId);
+			break;
+		}
+		marker.setId(id);
+		return marker;
 	}
 
 	public Map<String, MarkerDefinition> getMarkersByIds() {

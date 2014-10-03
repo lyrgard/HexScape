@@ -9,6 +9,7 @@ import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
@@ -27,38 +28,42 @@ public class ServerMessageListener {
 	}
 
 	@Subscribe public void onDisconnect(DisconnectedFromServerMessage message) {
-		String playerId = message.getPlayerId();
+		String userId = message.getSessionUserId();
 
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 
-		if (player != null) {
-			Room room = player.getRoom();
+		if (user != null) {
+			Room room = user.getRoom();
 
 
 			if (room != null) {
-				room.getPlayers().remove(player);
-				player.setRoom(null);
+				room.getUsers().remove(user);
+				user.setRoom(null);
 
-				DisconnectedFromServerMessage returnMessage = new DisconnectedFromServerMessage(playerId);
-				ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage, room.getId(), playerId);
+				DisconnectedFromServerMessage returnMessage = new DisconnectedFromServerMessage(userId);
+				ServerNetwork.getInstance().sendMessageToRoomExceptUser(returnMessage, room.getId(), userId);
 
-				if (player.getGameId() != null) {
-					Game game = Universe.getInstance().getGamesByGameIds().get(player.getGameId());
-					game.getPlayersIds().remove(playerId);
-					player.setGameId(null);
-					GameLeftMessage returnMessage2 = new GameLeftMessage(playerId, game.getId());
-					ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage2, room.getId(), playerId);
+				if (user.getGame() != null) {
+					Game game = user.getGame();
+					Player player = game.getPlayerByUserId(userId);
+					player.setUserId(null);
+					user.setGame(null);
+					user.setPlayer(null);
+					
+					GameLeftMessage returnMessage2 = new GameLeftMessage(user.getId(), game.getId());
+					ServerNetwork.getInstance().sendMessageToRoomExceptUser(returnMessage2, room.getId(), user.getId());
 
-					if (game.getPlayersIds().isEmpty()) {
+					if (game.getFreePlayers().size() == game.getPlayers().size()) {
+						// Empty game, remove
 						room.getGames().remove(game);
 						Universe.getInstance().getGamesByGameIds().remove(game.getId());
 						GameEndedMessage returnMessage3 = new GameEndedMessage(game.getId());
-						ServerNetwork.getInstance().sendMessageToRoomExceptPlayer(returnMessage3, room.getId(), playerId);
+						ServerNetwork.getInstance().sendMessageToRoomExceptUser(returnMessage3, room.getId(), userId);
 					}
 				}
 			}
 
-			Universe.getInstance().getPlayersByIds().remove(playerId);
+			Universe.getInstance().getUsersByIds().remove(userId);
 		}
 	}
 }

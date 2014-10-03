@@ -1,6 +1,6 @@
 package fr.lyrgard.hexScape.message;
 
-public abstract class AbstractGameMessage extends AbstractUserMessage {
+public abstract class AbstractGameMessage extends AbstractPlayerMessage {
 
 	private String gameId;
 

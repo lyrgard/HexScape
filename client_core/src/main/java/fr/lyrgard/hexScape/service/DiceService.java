@@ -14,11 +14,11 @@ import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DiceDefinitionReloadedMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.ImageExtensionEnum;
 import fr.lyrgard.hexScape.model.dice.DiceFace;
 import fr.lyrgard.hexScape.model.dice.DiceType;
@@ -27,7 +27,10 @@ public class DiceService {
 	
 	
 
-	public static DiceService getInstance() {
+	public static synchronized DiceService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new DiceService();
+		}
 		return INSTANCE;
 	}
 	
@@ -42,7 +45,7 @@ public class DiceService {
 	private static final String BACKGROUND_COLOR = "backgroundColor";
 	private static final String FOREGROUND_COLOR = "foregroundColor";
 	
-	private static final DiceService INSTANCE = new DiceService();
+	private static DiceService INSTANCE;
 	
 	private Map<String, DiceType> diceTypes;
 
@@ -53,7 +56,7 @@ public class DiceService {
 	private List<File> getDiceFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, DICE_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), DICE_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), DICE_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;
@@ -114,7 +117,7 @@ public class DiceService {
 											faceFile = null;
 										}
 										if (faceFile == null) {
-											CoreMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
+											CoreMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "No image was found for face \"" + face + "\" for dice \"" + folder.getAbsolutePath() + "\". Dice definition skiped"));
 											break diceDefinition;
 										}
 									}

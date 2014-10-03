@@ -11,8 +11,9 @@ import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexscape.client.network.ClientNetwork;
 
@@ -32,62 +33,61 @@ public class ServerListener {
 	
 	@Subscribe public void onConnectToServerMessage(ConnectToServerMessage message) {
 		String host = message.getHost();
-		String playerId = HexScapeCore.getInstance().getPlayerId();
+		String userId = CurrentUserInfo.getInstance().getId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
-		if (player != null) {
-			ClientNetwork.getInstance().connect(player, host);
+		if (user != null) {
+			ClientNetwork.getInstance().connect(user, host);
 		}
 	}
 	
 	@Subscribe public void onDisconnectFromServerMessage(DisconnectFromServerMessage message) {
 		ClientNetwork.getInstance().disconnect();
 		
-		String oldPlayerId = HexScapeCore.getInstance().getPlayerId();
-		Player player = Universe.getInstance().getPlayersByIds().get(oldPlayerId);
+		String oldUserId = CurrentUserInfo.getInstance().getId();
+		User user = Universe.getInstance().getUsersByIds().get(oldUserId);
 		
 		Universe.getInstance().getGamesByGameIds().clear();
 		Universe.getInstance().getRoomsByRoomIds().clear();
-		Universe.getInstance().getPlayersByIds().clear();
+		Universe.getInstance().getUsersByIds().clear();
 		
-		String newPlayerId = "1";
-		HexScapeCore.getInstance().setPlayerId(newPlayerId);
-		player.setId(newPlayerId);
-		Universe.getInstance().getPlayersByIds().put(newPlayerId, player);
+		String newUserId = "1";
+		CurrentUserInfo.getInstance().setId(newUserId);
+		user.setId(newUserId);
+		Universe.getInstance().getUsersByIds().put(newUserId, user);
 		
 		HexScapeCore.getInstance().setOnline(false);
-		DisconnectedFromServerMessage resultMessage = new DisconnectedFromServerMessage(newPlayerId);
+		DisconnectedFromServerMessage resultMessage = new DisconnectedFromServerMessage(newUserId);
 		GuiMessageBus.post(resultMessage);
 	}
 
 
 	@Subscribe public void onUserIdAllocated(UserIdAllocatedMessage message) {
-		String playerId = message.getPlayerId();
-		String oldPlayerId = HexScapeCore.getInstance().getPlayerId();
+		String userId = message.getUserId();
+		String oldUserId = CurrentUserInfo.getInstance().getId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(oldPlayerId);
+		User user = Universe.getInstance().getUsersByIds().get(oldUserId);
 		
-		if (player != null) {
-			player.setId(playerId);
-			Universe.getInstance().getPlayersByIds().put(playerId, player);
+		if (user != null) {
+			user.setId(userId);
+			Universe.getInstance().getUsersByIds().put(userId, user);
 		}
-		HexScapeCore.getInstance().setPlayerId(playerId);
+		CurrentUserInfo.getInstance().setId(userId);
 		
-		if (player != null) {
-			Universe.getInstance().getPlayersByIds().remove(oldPlayerId);
+		if (user != null) {
+			Universe.getInstance().getUsersByIds().remove(oldUserId);
 		}
-		ConnectedToServerMessage resultMessage = new ConnectedToServerMessage(playerId);
+		ConnectedToServerMessage resultMessage = new ConnectedToServerMessage(userId);
 		CoreMessageBus.post(resultMessage);
 	}
 	
 	@Subscribe public void onConnectedToServer(ConnectedToServerMessage message) {
-		String playerId = message.getPlayerId();
 
 		HexScapeCore.getInstance().setOnline(true);
 		GuiMessageBus.post(message);
 		
-		JoinRoomMessage resultMessage = new JoinRoomMessage(playerId, Room.DEFAULT_ROOM_ID); 
+		JoinRoomMessage resultMessage = new JoinRoomMessage(Room.DEFAULT_ROOM_ID); 
 		ClientNetwork.getInstance().send(resultMessage);
 	}
 	

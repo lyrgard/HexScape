@@ -11,9 +11,9 @@ public class GameCreatedMessage extends AbstractUserMessage {
 	
 	@JsonCreator
 	public GameCreatedMessage(
-			@JsonProperty("playerId") String playerId, 
+			@JsonProperty("userId") String userId, 
 			@JsonProperty("game") Game game) {
-		super(playerId);
+		super(userId);
 		this.game = game;
 	}
 

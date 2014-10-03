@@ -8,9 +8,12 @@ import fr.lyrgard.hexScape.model.model3d.TileTexture;
 
 public class TileService {
 
-	private static final TileService INSTANCE = new TileService();
+	private static TileService INSTANCE;
 
-	public static TileService getInstance() {
+	public static synchronized TileService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new TileService();
+		}
 		return INSTANCE;
 	}
 

@@ -157,7 +157,7 @@ public class MapManager {
 	public List<Tile> getTiles(int x, int y) {
 		List<Tile> results = new ArrayList<>();
 
-		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			java.util.Map<Integer, Tile> byY = byZ.get(y);
 			if (byY != null) {
 				Tile tile = byY.get(x);
@@ -254,7 +254,7 @@ public class MapManager {
 		
 		java.util.Map<Integer, List<Tile>> startZones = new HashMap<Integer, List<Tile>>();
 		
-		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
 					if (tile.isStartZone()) {
@@ -354,7 +354,7 @@ public class MapManager {
 		List<Vector3f> normals = new ArrayList<Vector3f>();
 		Queue<Tile> notAddedYetTiles = new LinkedList<>();
 
-		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
 					if (tile.getType() != TileType.INVISIBLE) {
@@ -413,7 +413,7 @@ public class MapManager {
 		List<Vector3f> normals = new ArrayList<Vector3f>();
 		Queue<Tile> notAddedYetTiles = new LinkedList<>();
 
-		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTiles().values()) {
+		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
 					if (tile.getType() == TileType.INVISIBLE) {

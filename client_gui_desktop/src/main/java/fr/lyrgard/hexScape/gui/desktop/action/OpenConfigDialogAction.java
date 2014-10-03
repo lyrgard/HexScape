@@ -6,7 +6,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import fr.lyrgard.hexScape.gui.desktop.components.config.ConfigDialog;
+import fr.lyrgard.hexScape.gui.desktop.view.home.config.ConfigDialog;
 
 public class OpenConfigDialogAction extends AbstractAction {
 

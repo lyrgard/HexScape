@@ -6,27 +6,24 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
-import fr.lyrgard.hexScape.gui.desktop.components.game.NewGameDialog;
+import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.CreateGameDialog;
 
 public class OpenNewGameDialogAction extends AbstractAction {
 
 	private static final long serialVersionUID = -6086863326964887467L;
 	private static final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/addGame.png"));
-
-	private boolean muliplayer;
 	
 	private Component parent;
 	
-	public OpenNewGameDialogAction(boolean muliplayer, Component parent) {
+	public OpenNewGameDialogAction(Component parent) {
 		super("Create new game", icon);
-		this.muliplayer = muliplayer;
 		this.parent = parent;
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		NewGameDialog newGameDialog = new NewGameDialog(muliplayer, parent);
-		newGameDialog.setModal(true);
-		newGameDialog.setVisible(true);
+		CreateGameDialog createGameDialog = new CreateGameDialog(parent);
+		createGameDialog.setModal(true);
+		createGameDialog.setVisible(true);
 	}
 
 }

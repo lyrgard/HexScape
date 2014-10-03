@@ -11,18 +11,20 @@ public class PlaceMarkerMessage extends AbstractMarkerMessage {
 	
 	private int number;
 	
+	private boolean stackable;
+	
 	@JsonCreator
 	public PlaceMarkerMessage(
-			@JsonProperty("playerId") String playerId, 
-			@JsonProperty("gameId") String gameId, 
 			@JsonProperty("cardId") String cardId, 
 			@JsonProperty("markerTypeId") String markerTypeId, 
 			@JsonProperty("number") int number,
-			@JsonProperty("hiddenMarkerTypeId") String hiddenMarkerTypeId) {
-		super(playerId, gameId, cardId, null);
+			@JsonProperty("hiddenMarkerTypeId") String hiddenMarkerTypeId,
+			@JsonProperty("stackable") boolean stackable) {
+		super(cardId, null);
 		this.markerTypeId = markerTypeId;
 		this.hiddenMarkerTypeId = hiddenMarkerTypeId;
 		this.number = number;
+		this.stackable = stackable;
 	}
 
 
@@ -45,6 +47,12 @@ public class PlaceMarkerMessage extends AbstractMarkerMessage {
 
 	public void setHiddenMarkerTypeId(String hiddenMarkerTypeId) {
 		this.hiddenMarkerTypeId = hiddenMarkerTypeId;
+	}
+
+
+
+	public boolean isStackable() {
+		return stackable;
 	}
 
 	

@@ -12,15 +12,15 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
-import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
-import fr.lyrgard.hexScape.gui.desktop.components.menuComponent.ActionMenu;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
+import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
+import fr.lyrgard.hexScape.gui.desktop.view.game.leftPanel.LeftPanel;
+import fr.lyrgard.hexScape.gui.desktop.view.game.rightPanel.RightPanel;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
-import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class GameView extends AbstractView {
 
@@ -28,6 +28,8 @@ public class GameView extends AbstractView {
 	
 	//private JButton leaveGameButton;
 
+	private String currentGameId;
+	
 	public GameView(final View3d view3d) {
 //		setLayout(new BorderLayout());
 //		final JPanel leftPanel = new LeftPanel();
@@ -53,11 +55,9 @@ public class GameView extends AbstractView {
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
 		final String gameId = message.getGameId();
 		
-		Player player = Universe.getInstance().getPlayersByIds().get(HexScapeCore.getInstance().getPlayerId());
-		
-		if (player != null && player.getGameId() != null && gameId.equals(player.getGameId())) {
-		
-			DisplayMapMessage displayMap = new DisplayMapMessage(gameId);
+		if (gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+			this.currentGameId = gameId;
+			DisplayMapMessage displayMap = new DisplayMapMessage(gameId, true);
 			CoreMessageBus.post(displayMap);
 			EventQueue.invokeLater(new Runnable() {
 
@@ -71,8 +71,10 @@ public class GameView extends AbstractView {
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {
 		String playerId = message.getPlayerId();
+		String gameId = message.getGameId();
 		
-		if (HexScapeCore.getInstance().getPlayerId().equals(playerId)) {
+		if (gameId.equals(currentGameId) && CurrentUserInfo.getInstance().getPlayer() == null) {
+			// Current game && the player is null == the current user left the game
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -93,6 +95,7 @@ public class GameView extends AbstractView {
 		view3d.setSize(new Dimension(50, 50));
 		//view3d.setPreferredSize(new Dimension(200, 200));
 		add(view3d, "cell 1 1, grow, push");
+		System.out.println("GAME VIEW TAKES 3D");
 	}
 
 }

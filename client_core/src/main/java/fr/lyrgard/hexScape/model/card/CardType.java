@@ -13,6 +13,10 @@ public class CardType {
 	private List<String> figureNames = new ArrayList<>();
 	
 	private File folder;
+	
+	private String iconPath;
+	
+	private String imagePath;
 
 	public String getId() {
 		return id;
@@ -40,6 +44,22 @@ public class CardType {
 
 	public void setFolder(File folder) {
 		this.folder = folder;
+	}
+
+	public String getIconPath() {
+		return iconPath;
+	}
+
+	public void setIconPath(String iconPath) {
+		this.iconPath = iconPath;
+	}
+
+	public String getImagePath() {
+		return imagePath;
+	}
+
+	public void setImagePath(String imagePath) {
+		this.imagePath = imagePath;
 	}
 
 }

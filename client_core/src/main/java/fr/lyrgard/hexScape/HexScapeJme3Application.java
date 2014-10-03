@@ -19,8 +19,10 @@ import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
+import fr.lyrgard.hexScape.message.CoreReady;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.TitleScreen;
 import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
@@ -103,6 +105,7 @@ public class HexScapeJme3Application extends SimpleApplication {
         displayTitleScreen();
         
         //rotatingAroundCameraAppState.setRotateAroundNode(TitleScreen.getInstance().getSpatial());
+        GuiMessageBus.post(new CoreReady());
 	}
 
 	public MapManager getScene() {
@@ -152,7 +155,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rotatingAroundCameraAppState.setEnabled(false);
 			pointOfViewCameraAppState.setEnabled(true);
 			pointOfViewCameraAppState.setPiece(piece);
-			GuiMessageBus.post(new LookingFromPieceMessage(HexScapeCore.getInstance().getPlayerId(), piece.getPiece().getId()));
+			GuiMessageBus.post(new LookingFromPieceMessage(CurrentUserInfo.getInstance().getPlayerId(), piece.getPiece().getId()));
 		}
 	}
 	
@@ -162,7 +165,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			pointOfViewCameraAppState.setEnabled(false);
 			rotatingAroundCameraAppState.setEnabled(true);
 			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
-			GuiMessageBus.post(new LookingFromAboveMessage(HexScapeCore.getInstance().getPlayerId()));
+			GuiMessageBus.post(new LookingFromAboveMessage(CurrentUserInfo.getInstance().getPlayerId()));
 		}
 	}
 

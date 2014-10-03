@@ -4,15 +4,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 
 public class SelectMarkerService {
 
-	private static final SelectMarkerService INSTANCE = new SelectMarkerService();
+	private static SelectMarkerService INSTANCE;
 	
-	public static SelectMarkerService getInstance() {
+	public static synchronized SelectMarkerService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new SelectMarkerService();
+		}
 		return INSTANCE;
 	}
 	
@@ -24,11 +29,15 @@ public class SelectMarkerService {
 	public SelectMarker getSelectMarker(String playerId) {
 		SelectMarker selectMarker = markerByPlayerIds.get(playerId);
 		if (selectMarker == null) {
-			Player player = Universe.getInstance().getPlayersByIds().get(playerId);
-			
-			if (player != null) {
-				selectMarker = new SelectMarker(player.getColor());
-				markerByPlayerIds.put(playerId, selectMarker);
+			Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
+
+			if (game != null) {
+				Player player = game.getPlayer(playerId);
+
+				if (player != null) {
+					selectMarker = new SelectMarker(player.getColor());
+					markerByPlayerIds.put(playerId, selectMarker);
+				}
 			}
 		}
 		

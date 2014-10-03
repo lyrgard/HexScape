@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.TreeMap;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Map {
@@ -16,23 +17,22 @@ public class Map {
 	@JsonCreator
 	public Map(
 			@JsonProperty("name") String name,
-			@JsonProperty("tiles") java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, Tile>>> tiles,
+			@JsonProperty("tiles") List<Tile> tiles,
 			@JsonProperty("decors") List<Decor> decors) {
 		this.name = name;
 		this.decors = decors;
-		
-		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : tiles.values()) {
-			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
-				for (Tile tile : byY.values()) {
-					addTile(tile.getType(), tile.getX(), tile.getY(), tile.getZ(), tile.isStartZone(), tile.getStartZoneNumber());
-				}
-			}
+
+		for (Tile tile : tiles) {
+			addTile(tile.getType(), tile.getX(), tile.getY(), tile.getZ(), tile.isStartZone(), tile.getStartZoneNumber());
 		}
 	}
 	
 	private String name;
 	
-	private java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, Tile>>> tiles = new TreeMap<Integer, java.util.Map<Integer,java.util.Map<Integer,Tile>>>();
+	@JsonIgnore
+	private java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, Tile>>> tilesMap = new TreeMap<Integer, java.util.Map<Integer,java.util.Map<Integer,Tile>>>();
+	
+	private List<Tile> tiles = new ArrayList<>();
 	
 	private List<Decor> decors = new ArrayList<>();
 	
@@ -45,17 +45,23 @@ public class Map {
 		this.name = name;
 	}
 
-	public java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, Tile>>> getTiles() {
-		return tiles;
+	@JsonIgnore
+	public java.util.Map<Integer, java.util.Map<Integer, java.util.Map<Integer, Tile>>> getTilesMap() {
+		return tilesMap;
 	}
 
 	public List<Decor> getDecors() {
 		return decors;
 	}
 	
+	public List<Tile> getTiles() {
+		return tiles;
+	}
+	
+	@JsonIgnore
 	public Tile getTile(int x, int y, int z) {
 		Tile tile = null;
-		java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ = tiles.get(z);
+		java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ = tilesMap.get(z);
 		if (byZ != null) {
 			java.util.Map<Integer, Tile> byY = byZ.get(y);
 			if (byY != null) {
@@ -65,11 +71,14 @@ public class Map {
 		return tile;
 	}
 	
+	@JsonIgnore
 	public void addTile(TileType type, int x, int y, int z, boolean startZone, int startZoneNumber) {
 
 		Tile tile = new Tile(type, x, y, z, startZone, startZoneNumber);
-
+		
 		setTile(tile);
+		
+		tiles.add(tile);
 
 		Tile newNeighbour;
 
@@ -131,14 +140,15 @@ public class Map {
 		}
 	}
 	
+	@JsonIgnore
 	private void setTile(Tile tile) {
 		int x = tile.getX();
 		int y = tile.getY();
 		int z = tile.getZ();
-		java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ = tiles.get(z);
+		java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ = tilesMap.get(z);
 		if (byZ == null) {
 			byZ = new HashMap<Integer, java.util.Map<Integer,Tile>>();
-			tiles.put(z, byZ);
+			tilesMap.put(z, byZ);
 		}
 		java.util.Map<Integer, Tile> byY = byZ.get(y);
 		if (byY == null) {

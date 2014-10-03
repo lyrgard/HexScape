@@ -7,9 +7,9 @@ import java.util.Map;
 
 import com.jme3.scene.Spatial;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.model3d.ExternalModel;
 import fr.lyrgard.hexScape.model.model3d.loader.AseModelLoader;
 import fr.lyrgard.hexScape.model.model3d.loader.ModelLoader;
@@ -17,10 +17,13 @@ import fr.lyrgard.hexScape.model.model3d.loader.ObjModelLoader;
 
 public class ExternalModelService {
 	
-	private static ExternalModelService instance = new ExternalModelService();
+	private static ExternalModelService INSTANCE;
 	
-	public static ExternalModelService getInstance() {
-		return instance;
+	public static synchronized ExternalModelService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new ExternalModelService();
+		}
+		return INSTANCE;
 	}
 	
 	private Map<String, ExternalModel> models = new HashMap<String, ExternalModel>();
@@ -45,7 +48,7 @@ public class ExternalModelService {
 			
 		}
 		if (model == null) {
-			GuiMessageBus.post(new ErrorMessage(HexScapeCore.getInstance().getPlayerId(), "Unable to load the 3d object \"" + modelId + "\""));
+			GuiMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "Unable to load the 3d object \"" + modelId + "\""));
 			return null;
 		}
 		Spatial result = model.getNewInstance();

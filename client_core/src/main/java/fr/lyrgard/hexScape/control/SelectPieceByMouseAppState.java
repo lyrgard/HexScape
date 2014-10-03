@@ -16,6 +16,7 @@ import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexScape.service.SelectMarkerService;
@@ -71,7 +72,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 			cancelSelection();
 			selectedPiece = piece;
 
-			piece.select(HexScapeCore.getInstance().getPlayerId());
+			piece.select(CurrentUserInfo.getInstance().getPlayerId());
 
 //			BoundingBox boundingBox = (BoundingBox)selectedPiece.getSpatial().getWorldBound();
 //
@@ -87,7 +88,7 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	public void cancelSelection() {
 		if (selectedPiece != null) {
 			//selectedPiece.getSpatial().removeLight(selectedLigth);
-			selectedPiece.unselect(HexScapeCore.getInstance().getPlayerId());
+			selectedPiece.unselect(CurrentUserInfo.getInstance().getPlayerId());
 		}
 		//rootNode.detachChild(selectMarker);
 		selectedPiece = null;

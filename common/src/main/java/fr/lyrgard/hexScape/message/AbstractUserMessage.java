@@ -1,20 +1,20 @@
 package fr.lyrgard.hexScape.message;
- 
-public abstract class AbstractUserMessage extends AbstractMessage{
-	
-	private String playerId;
-	
 
+public class AbstractUserMessage extends AbstractMessage {
 
-	public AbstractUserMessage(String playerId) {
-		this.playerId = playerId;
+	private String userId;
+	
+	public AbstractUserMessage(String userId) {
+		this.userId = userId;
 	}
 
-	public String getPlayerId() {
-		return playerId;
+	public String getUserId() {
+		return userId;
 	}
-	
-	public void setPlayerId(String playerId) {
-		this.playerId = playerId;
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
+
+
 }

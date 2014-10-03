@@ -6,7 +6,6 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ImageIcon;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.PlaceMarkerMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
@@ -36,15 +35,13 @@ public class AddMarkerToCardAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		String playerId = HexScapeCore.getInstance().getPlayerId();
-		String gameId = HexScapeCore.getInstance().getGameId();
 		String hiddenMarkerTypeId = null;
 		PlaceMarkerMessage message = null;
 		if (hiddenMarkerType != null) {
 			hiddenMarkerTypeId = hiddenMarkerType.getId();
-			message = new PlaceMarkerMessage(playerId, gameId, card.getId(), hiddenMarkerTypeId, 1, markerType.getId());
+			message = new PlaceMarkerMessage(card.getId(), hiddenMarkerTypeId, 1, markerType.getId(), false);
 		} else {
-			message = new PlaceMarkerMessage(playerId, gameId, card.getId(), markerType.getId(), 1, hiddenMarkerTypeId);
+			message = new PlaceMarkerMessage(card.getId(), markerType.getId(), 1, null, false);
 		}
 		
 		

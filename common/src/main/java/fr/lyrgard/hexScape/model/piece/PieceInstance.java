@@ -1,5 +1,9 @@
 package fr.lyrgard.hexScape.model.piece;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.map.Direction;
 
@@ -7,6 +11,7 @@ public class PieceInstance {
 	
 	private String id;
 	
+	@JsonIgnore
 	private CardInstance card;
 
 	private int x;
@@ -23,6 +28,22 @@ public class PieceInstance {
 		this.id = id;
 		this.modelId= modelId; 
 		this.card = card;
+	}
+	
+	@JsonCreator
+	public PieceInstance(
+			@JsonProperty("id") String id, 
+			@JsonProperty("modelId") String modelId, 
+			@JsonProperty("direction") Direction direction, 
+			@JsonProperty("x") int x, 
+			@JsonProperty("y") int y, 
+			@JsonProperty("z") int z) {
+		this.id = id;
+		this.modelId= modelId; 
+		this.direction = direction;
+		this.x = x;
+		this.y = y;
+		this.z = z;
 	}
 
 	public int getX() {
@@ -68,7 +89,13 @@ public class PieceInstance {
 		this.id = id;
 	}
 
+	@JsonIgnore
 	public CardInstance getCard() {
 		return card;
+	}
+
+	@JsonIgnore
+	public void setCard(CardInstance card) {
+		this.card = card;
 	}
 }

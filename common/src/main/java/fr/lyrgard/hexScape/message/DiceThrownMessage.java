@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class DiceThrownMessage extends AbstractUserMessage {
+public class DiceThrownMessage extends AbstractPlayerMessage {
 
 	private String diceTypeId;
 	

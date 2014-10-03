@@ -13,8 +13,8 @@ import com.jme3.system.JmeCanvasContext;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.components.game.View3d;
 import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
+import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 
 
@@ -71,7 +71,7 @@ public class HexScapeDesktopGui {
 
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 	        public void run() {
-	        	DisconnectFromServerMessage message = new DisconnectFromServerMessage(HexScapeCore.getInstance().getPlayerId());
+	        	DisconnectFromServerMessage message = new DisconnectFromServerMessage();
 	        	CoreMessageBus.post(message);
 	        }
 	    }, "Disconnect from server"));

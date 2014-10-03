@@ -9,6 +9,7 @@ import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 
 
@@ -51,13 +52,13 @@ public class ServerNetwork {
 		socketsById.remove(playerId);
 	}
 
-	public void sendMessageToPlayer(AbstractMessage message, String playerId) {
-		ServerWebSocket socket = socketsById.get(playerId);
+	public void sendMessageToUser(AbstractMessage message, String userId) {
+		ServerWebSocket socket = socketsById.get(userId);
 		if (socket != null) {
 			socket.send(message);
-			System.out.println("Sent message " + message.getClass() + " to player " + playerId);
+			//System.out.println("Sent message " + message.getClass() + " to player " + playerId);
 		} else {
-			System.out.println("Wanted to send message " + message.getClass() + " to player " + playerId + " but no socket found");
+			System.out.println("Wanted to send message " + message.getClass() + " to user " + userId + " but no socket found");
 		}
 	}
 	
@@ -65,19 +66,19 @@ public class ServerNetwork {
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 		
 		if (room != null) {
-			for (Player player : room.getPlayers()) {
-				sendMessageToPlayer(message, player.getId());
+			for (User user : room.getUsers()) {
+				sendMessageToUser(message, user.getId());
 			}
 		}
 	}
 	
-	public void sendMessageToRoomExceptPlayer(AbstractMessage message, String roomId, String playerId) {
+	public void sendMessageToRoomExceptUser(AbstractMessage message, String roomId, String userId) {
 		Room room = Universe.getInstance().getRoomsByRoomIds().get(roomId);
 		
 		if (room != null) {
-			for (Player player : room.getPlayers()) {
-				if (!playerId.equals(player.getId())) {
-					sendMessageToPlayer(message, player.getId());
+			for (User user : room.getUsers()) {
+				if (!userId.equals(user.getId())) {
+					sendMessageToUser(message, user.getId());
 				}
 			}
 		}
@@ -87,26 +88,27 @@ public class ServerNetwork {
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (game != null) {
-			for (String playerId : game.getPlayersIds()) {
-				sendMessageToPlayer(message, playerId);
+			for (Player player : game.getPlayers()) {
+				if (player.getUserId() != null) 
+				sendMessageToUser(message, player.getUserId());
 			}
-			for (String playerId : game.getObserversIds()) {
-				sendMessageToPlayer(message, playerId);
+			for (String userId : game.getObserversIds()) {
+				sendMessageToUser(message, userId);
 			}
 		}
 	}
 	
-	public void sendMessageToGameExceptPlayer(AbstractMessage message, String gameId, String playerId) {
+	public void sendMessageToGameExceptUser(AbstractMessage message, String gameId, String userId) {
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (game != null) {
-			for (String otherPlayerId : game.getPlayersIds()) {
-				if (!otherPlayerId.equals(playerId)) {
-					sendMessageToPlayer(message, otherPlayerId);
+			for (Player otherPlayer : game.getPlayers()) {
+				if (otherPlayer.getUserId() != null && !otherPlayer.getUserId().equals(userId)) {
+					sendMessageToUser(message, otherPlayer.getUserId());
 				}
 			}
-			for (String otherPlayerId : game.getObserversIds()) {
-				sendMessageToPlayer(message, otherPlayerId);
+			for (String otherUserId : game.getObserversIds()) {
+				sendMessageToUser(message, otherUserId);
 			}
 		}
 	}

@@ -11,9 +11,14 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.LoadMapMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.game.Game;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
+import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.MapManager;
+import fr.lyrgard.hexScape.service.PieceManager;
 
 public class MapMessageListener extends AbstractMessageListener {
 	
@@ -31,13 +36,12 @@ public class MapMessageListener extends AbstractMessageListener {
 
 
 	@Subscribe public void onLoadMapMessage(LoadMapMessage message) {
-		final String playerId = message.getPlayerId();
 		final File file = message.getMapFile();
 		
 		MapManager mapManager = MapManager.fromFile(file);
 		
 		if (mapManager != null) {
-			CoreMessageBus.post(new MapLoadedMessage(playerId, mapManager.getMap()));
+			CoreMessageBus.post(new MapLoadedMessage(CurrentUserInfo.getInstance().getId(), mapManager.getMap()));
 		}
 	}
 	
@@ -47,8 +51,9 @@ public class MapMessageListener extends AbstractMessageListener {
 	
 	@Subscribe public void onDisplayMap(DisplayMapMessage message) {
 		String gameId = message.getGameId();
+		final boolean displayFigures = message.isDisplayFigures();
 
-		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		final Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		if (game != null && game.getMap() != null) {
 
 			final MapManager mapManager = new MapManager(game.getMap());
@@ -61,6 +66,20 @@ public class MapMessageListener extends AbstractMessageListener {
 					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(mapManager);
 
 					HexScapeCore.getInstance().setMapManager(mapManager);
+					
+					if (displayFigures) {
+						for (Player player : game.getPlayers()) {
+							if (player.getArmy() != null) {
+								for (CardInstance card : player.getArmy().getCards()) {
+									for (PieceInstance piece : card.getPieces()) {
+										final PieceManager pieceManager = new PieceManager(piece);
+										pieceManager.rotate(piece.getDirection());
+										mapManager.placePiece(pieceManager, piece.getX(), piece.getY(), piece.getZ(), piece.getDirection());
+									}
+								}
+							}
+						}
+					}
 
 					return null;
 				}

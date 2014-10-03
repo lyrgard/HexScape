@@ -4,8 +4,11 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.message.MessagePostedMessage;
-import fr.lyrgard.hexScape.message.PostMessageMessage;
+import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
+import fr.lyrgard.hexScape.message.PostGameMessageMessage;
+import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
+import fr.lyrgard.hexScape.message.PostRoomMessageMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class ChatMessageListener extends AbstractMessageListener {
 
@@ -22,16 +25,25 @@ public class ChatMessageListener extends AbstractMessageListener {
 	}
 	
 	
-	@Subscribe public void onPostMessageMessage(PostMessageMessage message) {
+	@Subscribe public void onPostMessageMessage(PostRoomMessageMessage message) {
 		// Just bounce back the message
-		String playerId = message.getPlayerId();
-		String gameId = message.getGameId();
+		String userId = message.getUserId();
 		String roomId = message.getRoomId();
 		String messageContent = message.getMessage();
-		sendMessage(new MessagePostedMessage(playerId, messageContent, roomId, gameId));
+		sendMessage(new RoomMessagePostedMessage(userId, messageContent, roomId));
 	}
 	
-	@Subscribe public void onMessagePosted(MessagePostedMessage message) {
+	@Subscribe public void onMessagePosted(RoomMessagePostedMessage message) {
+		GuiMessageBus.post(message);
+	}
+	
+	@Subscribe public void onPostMessageMessage(PostGameMessageMessage message) {
+		// Just bounce back the message
+		String messageContent = message.getMessage();
+		sendMessage(new GameMessagePostedMessage(CurrentUserInfo.getInstance().getPlayerId(), messageContent));
+	}
+	
+	@Subscribe public void onMessagePosted(GameMessagePostedMessage message) {
 		GuiMessageBus.post(message);
 	}
 }

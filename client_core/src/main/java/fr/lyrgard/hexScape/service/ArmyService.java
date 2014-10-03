@@ -8,7 +8,6 @@ import java.io.IOException;
 
 import org.apache.commons.lang.StringUtils;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.card.Army;
@@ -17,17 +16,19 @@ import fr.lyrgard.hexScape.model.card.CardType;
 
 public class ArmyService {
 	
-	private static final ArmyService INSTANCE = new ArmyService();
+	private static ArmyService INSTANCE;
 	
-	public static ArmyService getInstance() {
+	public static synchronized ArmyService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new ArmyService();
+		}
 		return INSTANCE;
 	}
 	
 	private ArmyService() {
 	}
 	
-	public Army loadArmy(File armyFile) {
-		String playerId = HexScapeCore.getInstance().getPlayerId();
+	public Army loadArmy(String playerId, File armyFile) {
 		Army army = null;
 		BufferedReader br = null;
 		try {
@@ -77,7 +78,7 @@ public class ArmyService {
 				} else {
 					String cardInstanceId = playerId + "-" + i; 
 					CardInstance cardInstance = new CardInstance(cardInstanceId, cardType.getId(), number);
-					army.getCardsById().put(cardInstance.getId(), cardInstance);
+					army.getCards().add(cardInstance);
 					i++;
 				}
 				

@@ -4,9 +4,12 @@ import fr.lyrgard.hexScape.model.player.ColorEnum;
 
 public class ColorService {
 
-	private static final ColorService INSTANCE = new ColorService();
+	private static ColorService INSTANCE;
 	
-	public static ColorService getInstance() {
+	public static synchronized ColorService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new ColorService();
+		}
 		return INSTANCE;
 	}
 	
@@ -17,7 +20,7 @@ public class ColorService {
 	
 	public ColorEnum getNextColorThatIsNot(ColorEnum color) {
 		nextOrdinal();
-		if (currentOrdinal == color.ordinal()) {
+		if (color != null && currentOrdinal == color.ordinal()) {
 			nextOrdinal();
 		}
 		return ColorEnum.values()[currentOrdinal];

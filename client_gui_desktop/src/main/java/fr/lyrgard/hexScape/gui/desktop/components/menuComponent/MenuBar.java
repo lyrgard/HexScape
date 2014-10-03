@@ -19,7 +19,6 @@ public class MenuBar extends JMenuBar {
 		JMenuItem loadMapMenuItem = new JMenuItem(new ChooseMapAction(getTopLevelAncestor()));
 		fileMenu.add(loadMapMenuItem);
 		
-		JMenuItem loadArmyMenuItem = new JMenuItem(new ChooseArmyAction(getTopLevelAncestor()));
-		fileMenu.add(loadArmyMenuItem);
+	
 	}
 }

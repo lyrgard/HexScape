@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
@@ -21,9 +20,14 @@ public class CardService {
 	
 	private static final String cardPropertiesFilename = "card.properties";
 	
-	private static final CardService INSTANCE = new CardService();
+	private static final String[] IMAGE_TYPES = {"jpg", "jpeg", "bmp", "png"};
 	
-	public static CardService getInstance() {
+	private static CardService INSTANCE;
+	
+	public static synchronized CardService getInstance() {
+		if (INSTANCE == null) {
+			INSTANCE = new CardService();
+		}
 		return INSTANCE;
 	}
 	
@@ -32,7 +36,7 @@ public class CardService {
 	private List<File> getCardFolders() {
 		List<File> folders = new ArrayList<File>();
 		File commonFolder = new File(AssetService.COMMON_ASSET_FOLDER, CARDS_FOLDER_NAME);
-		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, HexScapeCore.getInstance().getGameName()), CARDS_FOLDER_NAME);
+		File gameFolder = new File(new File(AssetService.ASSET_FOLDER, ConfigurationService.getInstance().getGameFolder()), CARDS_FOLDER_NAME);
 		folders.add(commonFolder);
 		folders.add(gameFolder);
 		return folders;
@@ -64,6 +68,8 @@ public class CardService {
 								card.setId(id);
 								card.setName(cardProperties.getProperty(NAME));
 								card.setFolder(folder);
+								card.setIconPath(getImagePath(folder, "icon"));
+								card.setImagePath(getImagePath(folder, "card"));
 								String figures3d = cardProperties.getProperty(FIGURES_3D);
 								String[] figures = figures3d.split(",");
 								for (String figureName : figures) {
@@ -81,6 +87,16 @@ public class CardService {
 			}
 		}
 		return cardInventory;
+	}
+	
+	private String getImagePath(File folder, String name) {
+		for (String extension : IMAGE_TYPES) {
+			File file = new File(folder, name + "." + extension);
+			if (file.exists() && file.isFile() && file.canRead()) {
+				return file.getAbsolutePath();
+			}
+		}
+		return null;
 	}
 
 	public CardType getCardByPieceId(String pieceId) {

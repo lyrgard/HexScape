@@ -6,8 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UserIdAllocatedMessage extends AbstractUserMessage {
 
 	@JsonCreator
-	public UserIdAllocatedMessage(@JsonProperty("playerId") String playerId) {
-		super(playerId);
+	public UserIdAllocatedMessage(@JsonProperty("userId") String userId) {
+		super(userId);
 	}
 
 }
