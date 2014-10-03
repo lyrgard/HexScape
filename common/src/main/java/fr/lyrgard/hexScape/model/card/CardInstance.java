@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.model.card;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -54,10 +55,17 @@ public class CardInstance {
 	
 	public void addMarker(MarkerInstance marker) {
 		if (marker instanceof StackableMarkerInstance) {
-			for (MarkerInstance markerOnCard : getMarkers()) {
+			Iterator<MarkerInstance> it = getMarkers().iterator();
+			while (it.hasNext()) {
+				MarkerInstance markerOnCard = it.next();
 				if (markerOnCard.getMarkerDefinitionId().equals(marker.getMarkerDefinitionId())) {
 					// a marker of this type is already on the card. Add "number" to it
-					((StackableMarkerInstance)markerOnCard).setNumber(((StackableMarkerInstance)markerOnCard).getNumber() + number);				
+					int newNumber =  ((StackableMarkerInstance)markerOnCard).getNumber() + ((StackableMarkerInstance)marker).getNumber();
+					if (newNumber <= 0) {
+						it.remove();
+					} else {
+						((StackableMarkerInstance)markerOnCard).setNumber(newNumber);
+					}
 					return;
 				}
 			}

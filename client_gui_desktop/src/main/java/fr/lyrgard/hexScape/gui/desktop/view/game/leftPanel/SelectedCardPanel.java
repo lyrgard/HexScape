@@ -22,11 +22,9 @@ import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
-import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.CardService;
 
 public class SelectedCardPanel extends JPanel {
@@ -89,17 +87,10 @@ public class SelectedCardPanel extends JPanel {
 					Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
 
 					if (game != null) {
-						Player player = game.getPlayer(playerId);
-						if (player != null && player.getArmy() != null) {
-							for (CardInstance cardInstance : player.getArmy().getCards()) {
-								PieceInstance piece = cardInstance.getPiece(pieceId);
-								if (piece != null && piece.getCard() != null) {
-									if (cardInstance != null) {
-										CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardInstance.getCardTypeId());
-										displayCard(card);
-									}
-								}
-							}
+						PieceInstance piece = game.getPiece(pieceId);
+						if (piece != null && piece.getCard() != null) {
+							CardType card = CardService.getInstance().getCardInventory().getCardsById().get(piece.getCard().getCardTypeId());
+							displayCard(card);
 						}
 					}
 				}

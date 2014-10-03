@@ -12,6 +12,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.map.Map;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
 
 public class Game {
@@ -72,6 +73,20 @@ public class Game {
 				CardInstance card = player.getArmy().getCard(cardInstanceId);
 				if (card != null) {
 					return card;
+				}
+			}
+		}
+		return null;
+	}
+	
+	public PieceInstance getPiece(String pieceId) {
+		for (Player player : getPlayers()) {
+			if (player.getArmy() != null) {
+				for (CardInstance card : player.getArmy().getCards()) {
+					PieceInstance piece = card.getPiece(pieceId);
+					if (piece != null) {
+						return piece;
+					}
 				}
 			}
 		}

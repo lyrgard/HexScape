@@ -99,54 +99,67 @@ public class SelectedGamePanel extends JPanel {
 
 	@Subscribe public void gameSelected(GameSelectedMessage message) {
 
-		game = message.getGame();
+		if (message.getGame() == null) {
+			game = null;
+			EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					setVisible(false);
+				}
+			});
+		} else {
+			if (game == null || !game.getId().equals(message.getGame().getId())) {
+				game = message.getGame();
+				EventQueue.invokeLater(new Runnable() {
 
-		EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						View3d view3d = HexScapeFrame.getInstance().getView3d();
+						view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
+						add(view3d, BorderLayout.CENTER);
 
-			public void run() {
-				View3d view3d = HexScapeFrame.getInstance().getView3d();
-				view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
-				add(view3d, BorderLayout.CENTER);
+						DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), false);
+						CoreMessageBus.post(displayMapMessage);
 
-				DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), false);
-				CoreMessageBus.post(displayMapMessage);
+						gameTitle.setText(getTitle());
 
-				gameTitle.setText(getTitle());
+						playerListModel.removeAllPlayers();
+						Collection<Player> freePlayers = game.getFreePlayers();
+						boolean canJoin = !freePlayers.isEmpty();
+						boolean canStart = false;
+						for (Player player : game.getPlayers()) {
+							if (player != null) {
+								playerListModel.addPlayer(player);
+							}
+							if (game.getId().equals(CurrentUserInfo.getInstance().getGameId()) && player.getId().equals(CurrentUserInfo.getInstance().getPlayerId())) {
+								canJoin = false;
+								canStart = !game.isStarted();
+							}
+						}
+						if (canJoin) {
+							if (CurrentUserInfo.getInstance().getGameId() != null) {
+								canJoin = false;
+							}
+						}
 
-				playerListModel.removeAllPlayers();
-				Collection<Player> freePlayers = game.getFreePlayers();
-				boolean canJoin = !freePlayers.isEmpty();
-				boolean canStart = false;
-				for (Player player : game.getPlayers()) {
-					if (player != null) {
-						playerListModel.addPlayer(player);
+
+						if (canJoin) {
+							joinButton.setAction(new JoinGameAction(game.getId()));
+						}
+						joinButton.setVisible(canJoin);
+						if (canStart) {
+							startButton.setAction(new StartGameAction(game.getId()));
+							leaveButton.setAction(new LeaveGameAction());
+						}
+						startButton.setVisible(canStart);
+						leaveButton.setVisible(canStart);
+
+						setVisible(true);
 					}
-					if (game.getId().equals(CurrentUserInfo.getInstance().getGameId()) && player.getId().equals(CurrentUserInfo.getInstance().getPlayerId())) {
-						canJoin = false;
-						canStart = !game.isStarted();
-					}
-				}
-				if (canJoin) {
-					if (CurrentUserInfo.getInstance().getGameId() != null) {
-						canJoin = false;
-					}
-				}
-
-
-				if (canJoin) {
-					joinButton.setAction(new JoinGameAction(game.getId()));
-				}
-				joinButton.setVisible(canJoin);
-				if (canStart) {
-					startButton.setAction(new StartGameAction(game.getId()));
-					leaveButton.setAction(new LeaveGameAction());
-				}
-				startButton.setVisible(canStart);
-				leaveButton.setVisible(canStart);
-
-				setVisible(true);
+				});
 			}
-		});
+		}
+		
+	
+		
 	}
 
 	private String getTitle() {

@@ -26,6 +26,7 @@ import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -34,6 +35,8 @@ public class GameListPanel extends JPanel{
 	private static final long serialVersionUID = 1506378477490002770L;
 	
 	private GameListModel gameListModel;
+	
+	private JList<Game> gameList;
 	
 	public GameListPanel() {
 		setLayout(new BorderLayout());
@@ -44,7 +47,7 @@ public class GameListPanel extends JPanel{
 		add(title, BorderLayout.PAGE_START);
 		
 		gameListModel = new GameListModel();
-		final JList<Game> gameList = new JList<Game>(gameListModel); 
+		gameList = new JList<Game>(gameListModel); 
 		gameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		gameList.setLayoutOrientation(JList.VERTICAL);
 		gameList.setVisibleRowCount(0);
@@ -86,13 +89,22 @@ public class GameListPanel extends JPanel{
 	}
 	
 	@Subscribe public void onGameCreated(GameCreatedMessage message) {
-		final Game game = message.getGame();
+		final Game newGame = message.getGame();
+		final String userId = message.getUserId();
 
-		if (game != null) {
+		if (newGame != null) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
+					Game selectedGame = gameList.getSelectedValue();
 					gameListModel.redraw();
+					if (CurrentUserInfo.getInstance().getId().equals(userId)) {
+						gameList.setSelectedValue(newGame, true);
+					} else {
+						if (selectedGame != null) {
+							gameList.setSelectedValue(selectedGame, true);
+						}
+					}
 				}
 			});
 		}
@@ -105,7 +117,17 @@ public class GameListPanel extends JPanel{
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
+					Game game = gameList.getSelectedValue();
+					boolean gameSelectedEnded = game != null && game.getId().equals(gameId);
+					if (gameSelectedEnded) {
+						gameList.clearSelection();
+						GuiMessageBus.post(new GameSelectedMessage(null));
+					}
 					gameListModel.redraw();
+					
+					if (!gameSelectedEnded && game != null) {
+						gameList.setSelectedValue(game, true);
+					}
 				}
 			});
 		}
@@ -115,7 +137,11 @@ public class GameListPanel extends JPanel{
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
+				Game game = gameList.getSelectedValue();
 				gameListModel.redraw();
+				if (game != null) {
+					gameList.setSelectedValue(game, true);
+				}
 			}
 		});
 	}
@@ -124,7 +150,11 @@ public class GameListPanel extends JPanel{
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
+				Game game = gameList.getSelectedValue();
 				gameListModel.redraw();
+				if (game != null) {
+					gameList.setSelectedValue(game, true);
+				}
 			}
 		});
 	}
@@ -133,7 +163,11 @@ public class GameListPanel extends JPanel{
 		EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
+				Game game = gameList.getSelectedValue();
 				gameListModel.redraw();
+				if (game != null) {
+					gameList.setSelectedValue(game, true);
+				}
 			}
 		});
 	}
