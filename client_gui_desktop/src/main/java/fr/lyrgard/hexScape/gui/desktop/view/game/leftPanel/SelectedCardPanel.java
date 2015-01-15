@@ -81,7 +81,7 @@ public class SelectedCardPanel extends JPanel {
 		final String playerId = message.getPlayerId();
 		final String pieceId = message.getPieceId();
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -103,7 +103,7 @@ public class SelectedCardPanel extends JPanel {
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
 		final String playerId = message.getPlayerId();
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {

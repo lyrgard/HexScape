@@ -1,6 +1,6 @@
 package fr.lyrgard.hexScape.io.virtualScape.bean;
 
-public class VirtualScapeTile {
+public class VirtualScapePiece {
 	private int type;
 	private double version;
 	private int rotation;
@@ -11,6 +11,8 @@ public class VirtualScapeTile {
 	private String glyphName;
 	private String startName;
 	private int color;
+	
+	private boolean tile;
 	
 	
 
@@ -92,5 +94,13 @@ public class VirtualScapeTile {
 
 	public void setColorf(int color) {
 		this.color = color;
+	}
+
+	public boolean isTile() {
+		return tile;
+	}
+
+	public void setTile(boolean tile) {
+		this.tile = tile;
 	}
 }

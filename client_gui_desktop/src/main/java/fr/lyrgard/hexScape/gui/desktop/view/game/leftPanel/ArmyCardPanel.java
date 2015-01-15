@@ -41,6 +41,7 @@ import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.service.CardService;
 import fr.lyrgard.hexScape.service.MarkerService;
 
@@ -60,6 +61,8 @@ public class ArmyCardPanel extends JPanel {
 	private JPanel markerPanel;
 
 	public ArmyCardPanel(final CardInstance card, String playerId) {
+		User user = CurrentUserInfo.getInstance();
+		
 		this.card = card;
 
 		setLayout(new BorderLayout());
@@ -89,20 +92,26 @@ public class ArmyCardPanel extends JPanel {
 		add(buttonPanel, BorderLayout.PAGE_END);
 		
 		figureNumbersLabel = new JLabel();
+		
+		
 		addFigureButton = new JButton();
 		
 		selectNextPiece();
-		addFigureButton.setAlignmentX(24);
-		buttonPanel.add(addFigureButton);
-		buttonPanel.add(figureNumbersLabel);
-		if (card.getPieceLeftToPlace().size() == 0) {
-			addFigureButton.setEnabled(false);
+		
+		if (user.isPlayingGame()) {
+			addFigureButton.setAlignmentX(24);
+			buttonPanel.add(addFigureButton);
+			if (card.getPieceLeftToPlace().size() == 0) {
+				addFigureButton.setEnabled(false);
+			}
 		}
+		buttonPanel.add(figureNumbersLabel);
+		
 
 		JLabel imageLabel = new JLabel(imageIcon);
 		add(imageLabel, BorderLayout.LINE_END);
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (user.isPlayingGame() && user.getPlayerId().equals(playerId)) {
 			imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
 		}
 		imageLabel.addMouseListener(new MouseAdapter() {

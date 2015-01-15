@@ -46,11 +46,16 @@ public class ServerMessageListener {
 				if (user.getGame() != null) {
 					Game game = user.getGame();
 					Player player = game.getPlayerByUserId(userId);
-					player.setUserId(null);
-					user.setGame(null);
-					user.setPlayer(null);
+					String playerId = null;
 					
-					GameLeftMessage returnMessage2 = new GameLeftMessage(user.getId(), game.getId());
+					if (player != null) {
+						player.setUserId(null);
+						user.setGame(null);
+						user.setPlayer(null);
+						playerId = player.getId();
+					}
+					
+					GameLeftMessage returnMessage2 = new GameLeftMessage(user.getId(), playerId, game.getId());
 					ServerNetwork.getInstance().sendMessageToRoomExceptUser(returnMessage2, room.getId(), user.getId());
 
 					if (game.getFreePlayers().size() == game.getPlayers().size()) {

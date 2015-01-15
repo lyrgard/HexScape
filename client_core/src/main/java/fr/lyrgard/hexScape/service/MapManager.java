@@ -38,7 +38,6 @@ import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Decor;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.Tile;
-import fr.lyrgard.hexScape.model.map.TileType;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
@@ -135,8 +134,8 @@ public class MapManager {
 		}
 	}
 
-	public void addTile(TileType type, int x, int y, int z, boolean startZone, int startZoneNumber) {
-		map.addTile(type, x, y, z, startZone, startZoneNumber);
+	public void addTile(int x, int y, int z, boolean halfSize, int topTexture, int sideTexture, boolean visible, boolean startZone, int startZoneNumber) {
+		map.addTile(x, y, z, halfSize, topTexture, sideTexture, visible, startZone, startZoneNumber);
 	}
 
 	public Tile getNearestTile(int x, int y, int z) {
@@ -163,7 +162,7 @@ public class MapManager {
 				Tile tile = byY.get(x);
 				if (tile != null) {
 					Tile topNeighbours = tile.getNeighbours().get(Direction.TOP);
-					if (topNeighbours == null || topNeighbours.getType() == TileType.INVISIBLE) {
+					if (topNeighbours == null || !topNeighbours.isVisible()) {
 						// if the tile doesn't have a tile on top of it, we add it
 						results.add(tile);
 					}
@@ -293,7 +292,7 @@ public class MapManager {
 						Tile neighbours = tile.getNeighbours().get(dir);
 						if (neighbours == null || !neighbours.isStartZone()) {
 							int firstIndex = vertices.size();
-							vertices.addAll(TileMesh.getEdgeVertices(dir, tile.getType(), x3d, y3d, z3d));
+							vertices.addAll(TileMesh.getEdgeVertices(dir, tile.isHalfSize(), x3d, y3d, z3d));
 							indexes.addAll(TileMesh.getEdgeIndex(firstIndex));
 						}
 					}
@@ -347,6 +346,8 @@ public class MapManager {
 
 	private Spatial getMapSpatial() {
 		Mesh mapMesh = new Mesh();
+		
+		Texture tileTexture = TextureService.getInstance().getTileTexture();
 
 		List<Vector3f> vertices = new ArrayList<Vector3f>();
 		List<Vector2f> texCoord = new ArrayList<Vector2f>();
@@ -357,7 +358,7 @@ public class MapManager {
 		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
-					if (tile.getType() != TileType.INVISIBLE) {
+					if (tile.isVisible()) {
 						notAddedYetTiles.add(tile);
 					}
 				}
@@ -387,7 +388,6 @@ public class MapManager {
 
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 
-		Texture tileTexture = TextureService.getInstance().getTileTexture();
 		tileTexture.setMinFilter(MinFilter.BilinearNoMipMaps);
 
 		Material mat = new Material(assetManager, 
@@ -416,7 +416,7 @@ public class MapManager {
 		for (java.util.Map<Integer, java.util.Map<Integer, Tile>> byZ : map.getTilesMap().values()) {
 			for (java.util.Map<Integer, Tile> byY : byZ.values()) {
 				for (Tile tile : byY.values()) {
-					if (tile.getType() == TileType.INVISIBLE) {
+					if (!tile.isVisible()) {
 						notAddedYetTiles.add(tile);
 					}
 				}
@@ -466,7 +466,7 @@ public class MapManager {
 	private void addTileToMesh(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, float currentX, float currentY, float currentZ) {
 		for (Direction dir : Direction.values()) {
 			Tile neighboor = tile.getNeighbours().get(dir);
-			if (neighboor == null || neighboor.getType() == TileType.INVISIBLE || TileService.getInstance().isHalfTile(neighboor.getType())) {
+			if (neighboor == null || !neighboor.isVisible() || neighboor.isHalfSize()) {
 				addTileDirectionToMesh(tile, vertices, texCoord, indexes, normals, currentX, currentY, currentZ, dir);
 			}
 		}
@@ -474,9 +474,9 @@ public class MapManager {
 
 	private void addTileDirectionToMesh(Tile tile, List<Vector3f> vertices, List<Vector2f> texCoord, List<Integer> indexes, List<Vector3f> normals, float currentX, float currentY, float currentZ, Direction dir) {
 		int firstIndex = vertices.size();
-		vertices.addAll(TileMesh.getVertices(dir, tile.getType(), currentX, currentY, currentZ));
+		vertices.addAll(TileMesh.getVertices(dir, tile.isHalfSize(), currentX, currentY, currentZ));
 		if (texCoord != null) {
-			texCoord.addAll(TileMesh.getTexCoord(dir, tile.getType()));
+			texCoord.addAll(TileMesh.getTexCoord(dir, tile.getTopTexture(), tile.getSideTexture()));
 		}
 		indexes.addAll(TileMesh.getIndex(dir, firstIndex));
 		normals.addAll(TileMesh.getNormals(dir));

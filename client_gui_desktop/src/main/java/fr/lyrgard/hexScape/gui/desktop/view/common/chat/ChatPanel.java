@@ -115,7 +115,7 @@ public class ChatPanel extends JPanel{
 	}
 
 	public void addMessage(Player player, String line) {
-		addMessage(player.getName(), player.getColor().getColor(), line);
+		addMessage(player.getDisplayName(), player.getColor().getColor(), line);
 	}
 	
 	public void addMessage(User user, String line) {

@@ -16,6 +16,8 @@ import fr.lyrgard.hexScape.model.card.CardType;
 
 public class ArmyService {
 	
+	
+	
 	private static ArmyService INSTANCE;
 	
 	public static synchronized ArmyService getInstance() {

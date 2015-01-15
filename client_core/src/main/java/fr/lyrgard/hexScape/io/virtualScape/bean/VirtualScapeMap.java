@@ -18,7 +18,7 @@ public class VirtualScapeMap {
 	private boolean printStartAreaAsLevel;
 	private int tileNumer;
 	
-	private List<VirtualScapeTile> tiles;
+	private List<VirtualScapePiece> tiles;
 
 	public double getVersion() {
 		return version;
@@ -116,9 +116,9 @@ public class VirtualScapeMap {
 		this.tileNumer = tileNumer;
 	}
 
-	public List<VirtualScapeTile> getTiles() {
+	public List<VirtualScapePiece> getTiles() {
 		if (tiles == null) {
-			tiles = new ArrayList<VirtualScapeTile>();
+			tiles = new ArrayList<VirtualScapePiece>();
 		}
 		return tiles;
 	}

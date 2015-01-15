@@ -37,6 +37,7 @@ import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.service.CardService;
 import fr.lyrgard.hexScape.service.DiceService;
 import fr.lyrgard.hexScape.service.MarkerService;
@@ -63,7 +64,7 @@ public class RightPanel extends JPanel {
 //		
 //		Player player = Universe.getInstance().getPlayersByIds().get(playerId);
 //		if (player != null) {
-//			chatPanel.addPlayerAction(player, player.getName() + " added " + modelId + " to the map");
+//			chatPanel.addPlayerAction(player, player.getDisplayName() + " added " + modelId + " to the map");
 //		}
 	}
 	
@@ -77,7 +78,7 @@ public class RightPanel extends JPanel {
 //				if (owner.getPiecesById().containsKey(pieceId)) {
 //					PieceInstance piece = owner.getPiecesById().get(pieceId);
 //					if (piece != null) {
-//						chatPanel.addPlayerAction(player, player.getName() + " moved " + piece.getModelId());
+//						chatPanel.addPlayerAction(player, player.getDisplayName() + " moved " + piece.getModelId());
 //					}
 //				}
 //			}
@@ -98,7 +99,7 @@ public class RightPanel extends JPanel {
 						for (CardInstance card : player.getArmy().getCards()) {
 							PieceInstance piece = card.getPiece(pieceId);
 							if (piece != null) {
-								chatPanel.addPlayerAction(player, player.getName() + " removed " + piece.getModelId() + " from the map");
+								chatPanel.addPlayerAction(player, player.getDisplayName() + " removed " + piece.getModelId() + " from the map");
 								return;
 							}
 						}
@@ -172,7 +173,7 @@ public class RightPanel extends JPanel {
 				CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
 
 				if (card != null) {
-					chatPanel.addPlayerAction(player, "player " + player.getName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
+					chatPanel.addPlayerAction(player, "player " + player.getDisplayName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
 					return;
 				}
 			}
@@ -201,7 +202,7 @@ public class RightPanel extends JPanel {
 									MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
 
 									if (markerDefinition != null) {
-										chatPanel.addPlayerAction(player, "player " + player.getName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
+										chatPanel.addPlayerAction(player, "player " + player.getDisplayName() + " removed " + number + " " + markerDefinition.getName() + " from " + cardType.getName());
 										return;
 									}
 								}
@@ -235,7 +236,7 @@ public class RightPanel extends JPanel {
 									MarkerDefinition markerDefinition = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
 
 									if (markerDefinition != null) {
-										chatPanel.addPlayerAction(player, "player " + player.getName() + " revealed " + markerDefinition.getName() + " on " + cardType.getName());
+										chatPanel.addPlayerAction(player, "player " + player.getDisplayName() + " revealed " + markerDefinition.getName() + " on " + cardType.getName());
 										return;
 									}
 								}
@@ -249,14 +250,17 @@ public class RightPanel extends JPanel {
 	
 	@Subscribe public void onChatMessage(GameMessagePostedMessage message) {
 		Game game = CurrentUserInfo.getInstance().getGame();
-		String playerId = message.getPlayerId();
+		String userId = message.getUserId();
 		String messageContent = message.getMessage();
 		
 
-		if (game != null) {
-			Player player = game.getPlayer(playerId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		if (game != null && user != null) {
+			Player player = game.getPlayerByUserId(userId);
 			if (player != null) {
 				chatPanel.addMessage(player, messageContent);
+			} else {
+				chatPanel.addMessage(user, messageContent);
 			}
 		}
 	}
@@ -277,11 +281,11 @@ public class RightPanel extends JPanel {
 					// The current user left the game
 					chatPanel.clearText();
 				} else {
-					if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+					if (playerId != null && gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
 						Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
 						if (game != null) {
 							Player player = game.getPlayer(playerId);
-							chatPanel.addPlayerAction(player, "player " + player.getName() + " left the game");
+							chatPanel.addPlayerAction(player, player.getDisplayName() + " left the game");
 						}
 					}
 				}

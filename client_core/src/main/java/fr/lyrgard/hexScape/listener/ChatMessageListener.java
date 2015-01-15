@@ -40,7 +40,7 @@ public class ChatMessageListener extends AbstractMessageListener {
 	@Subscribe public void onPostMessageMessage(PostGameMessageMessage message) {
 		// Just bounce back the message
 		String messageContent = message.getMessage();
-		sendMessage(new GameMessagePostedMessage(CurrentUserInfo.getInstance().getPlayerId(), messageContent));
+		sendMessage(new GameMessagePostedMessage(CurrentUserInfo.getInstance().getId(), messageContent));
 	}
 	
 	@Subscribe public void onMessagePosted(GameMessagePostedMessage message) {

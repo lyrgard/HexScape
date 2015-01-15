@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class GameMessagePostedMessage extends AbstractMessage {
 
-	private String playerId;
+	private String userId;
 	
 	private String message;
 	
 	@JsonCreator
 	public GameMessagePostedMessage(
-			@JsonProperty("playerId") String playerId,
+			@JsonProperty("userId") String userId,
 			@JsonProperty("message") String message) {
-		this.playerId = playerId;
+		this.userId = userId;
 		this.message = message;
 	}
 
@@ -21,7 +21,9 @@ public class GameMessagePostedMessage extends AbstractMessage {
 		return message;
 	}
 
-	public String getPlayerId() {
-		return playerId;
+	public String getUserId() {
+		return userId;
 	}
+
+	
 }

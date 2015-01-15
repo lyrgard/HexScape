@@ -1,0 +1,12 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl White_Rook
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.057850 0.057850 0.057850
+Ni -1.000000
+d 1.000000
+illum 2
+map_Kd WhiteRook.png

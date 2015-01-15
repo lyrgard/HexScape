@@ -23,7 +23,7 @@ public class Map {
 		this.decors = decors;
 
 		for (Tile tile : tiles) {
-			addTile(tile.getType(), tile.getX(), tile.getY(), tile.getZ(), tile.isStartZone(), tile.getStartZoneNumber());
+			addTile(tile.getX(), tile.getY(), tile.getZ(), tile.isHalfSize(), tile.getTopTexture(), tile.getSideTexture(), tile.isVisible(), tile.isStartZone(), tile.getStartZoneNumber());
 		}
 	}
 	
@@ -72,9 +72,9 @@ public class Map {
 	}
 	
 	@JsonIgnore
-	public void addTile(TileType type, int x, int y, int z, boolean startZone, int startZoneNumber) {
+	public void addTile(int x, int y, int z, boolean halfSize, int topTexture, int sideTexture, boolean visible, boolean startZone, int startZoneNumber) {
 
-		Tile tile = new Tile(type, x, y, z, startZone, startZoneNumber);
+		Tile tile = new Tile(x, y, z, halfSize, topTexture, sideTexture, visible, startZone, startZoneNumber);
 		
 		setTile(tile);
 		

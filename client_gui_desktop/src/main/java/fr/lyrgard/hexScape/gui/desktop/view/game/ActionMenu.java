@@ -58,7 +58,7 @@ public class ActionMenu extends JPanel {
 		String playerId = message.getPlayerId();
 		selectedPieceId = pieceId; 
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -73,7 +73,7 @@ public class ActionMenu extends JPanel {
 		String playerId = message.getPlayerId();
 		selectedPieceId = null;
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -87,7 +87,7 @@ public class ActionMenu extends JPanel {
 		String playerId = message.getPlayerId();
 		selectedPieceId = null;
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -102,7 +102,7 @@ public class ActionMenu extends JPanel {
 		String pieceId = message.getPieceId();
 		selectedPieceId = pieceId;
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
@@ -116,7 +116,7 @@ public class ActionMenu extends JPanel {
 	@Subscribe public void onLookingFromAbove(LookingFromAboveMessage message) {
 		String playerId = message.getPlayerId();
 
-		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {

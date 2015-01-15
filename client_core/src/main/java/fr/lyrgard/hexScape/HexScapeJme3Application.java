@@ -18,7 +18,9 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
+import fr.lyrgard.hexScape.control.SelectMarkerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
+import fr.lyrgard.hexScape.control.View3dControlState;
 import fr.lyrgard.hexScape.message.CoreReady;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
@@ -31,6 +33,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	private MapManager scene;
 	
+	private PieceManager pieceLookedAt;
+	
 	private RotatingAroundCameraAppState rotatingAroundCameraAppState = new RotatingAroundCameraAppState();
 	
 	private PointOfViewCameraAppState pointOfViewCameraAppState = new PointOfViewCameraAppState();
@@ -38,6 +42,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	private PieceControlerAppState pieceControlerAppState = new PieceControlerAppState();
 	
 	private TitleMenuButtonsAppState titleMenuButtonsAppState = new TitleMenuButtonsAppState();
+	
+	private SelectMarkerAppState selectMarkerAppState = new SelectMarkerAppState();
 	
 	PointLight haloLight;
 	
@@ -49,9 +55,11 @@ public class HexScapeJme3Application extends SimpleApplication {
 		stateManager.attach(pieceControlerAppState);
 		stateManager.attach(titleMenuButtonsAppState);
 		stateManager.attach(pointOfViewCameraAppState);
+		stateManager.attach(selectMarkerAppState);
 		pieceControlerAppState.setEnabled(false);
 		rotatingAroundCameraAppState.setEnabled(false);
 		pointOfViewCameraAppState.setEnabled(false);
+		selectMarkerAppState.setEnabled(false);
 	}
 
 	@Override
@@ -112,19 +120,56 @@ public class HexScapeJme3Application extends SimpleApplication {
 		return scene;
 	}
 	
+	public void setControlState(View3dControlState state) {
+		switch(state) {
+		case TITLE_SCREEN:
+			pointOfViewCameraAppState.setEnabled(false);
+			pieceControlerAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(false);
+			selectMarkerAppState.setEnabled(false);
+			
+			titleMenuButtonsAppState.setEnabled(true);
+			cam.setLocation(new Vector3f(0, 100, 0));
+			cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
+			break;
+		case SHOW_MAP_OBSERVE:
+			pointOfViewCameraAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(false);
+			pieceControlerAppState.setEnabled(false);
+			
+			rotatingAroundCameraAppState.setEnabled(true);
+			selectMarkerAppState.setEnabled(true);
+			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			break;
+		case SHOW_MAP_PLAYING:
+			pointOfViewCameraAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(false);
+			
+			pieceControlerAppState.setEnabled(true);
+			selectMarkerAppState.setEnabled(true);
+			rotatingAroundCameraAppState.setEnabled(true);
+			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			break;
+		case SHOW_PIECE_VIEW:
+			titleMenuButtonsAppState.setEnabled(false);
+			pieceControlerAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(false);
+			
+			pointOfViewCameraAppState.setEnabled(true);
+			selectMarkerAppState.setEnabled(true);
+			pointOfViewCameraAppState.setPiece(pieceLookedAt);
+			break;
+		}
+	}
+	
 	public void displayTitleScreen() {
 		
 		if (this.scene != null) {
 			rootNode.detachChild(this.scene.getSpatial());
 			scene = null;
 		}
-		//rootNode.detachChild(Sky.getInstance().getSpatial());
+		setControlState(View3dControlState.TITLE_SCREEN);
 		
-		titleMenuButtonsAppState.setEnabled(true);
-		pieceControlerAppState.setEnabled(false);
-		rotatingAroundCameraAppState.setEnabled(false);
-		cam.setLocation(new Vector3f(0, 100, 0));
-		cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
 		rootNode.attachChild(TitleScreen.getInstance().getSpatial());
 	}
 
@@ -140,10 +185,11 @@ public class HexScapeJme3Application extends SimpleApplication {
 		if (scene != null) {
 			rootNode.attachChild(scene.getSpatial());
 			//rootNode.attachChild(Sky.getInstance().getSpatial());
-			titleMenuButtonsAppState.setEnabled(false);
-			pieceControlerAppState.setEnabled(true);
-			rotatingAroundCameraAppState.setEnabled(true);
-			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			if (CurrentUserInfo.getInstance().isPlayingGame()) {
+				setControlState(View3dControlState.SHOW_MAP_PLAYING);
+			} else {
+				setControlState(View3dControlState.SHOW_MAP_OBSERVE);
+			}
 		} else {
 			rotatingAroundCameraAppState.setRotateAroundNode(null);
 		}
@@ -151,20 +197,24 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	public void lookThroughEyesOf(PieceManager piece) {
 		if (piece != null) {
-			pieceControlerAppState.setEnabled(false);
-			rotatingAroundCameraAppState.setEnabled(false);
-			pointOfViewCameraAppState.setEnabled(true);
-			pointOfViewCameraAppState.setPiece(piece);
+			pieceLookedAt = piece;
+			
+			setControlState(View3dControlState.SHOW_PIECE_VIEW);
+			
 			GuiMessageBus.post(new LookingFromPieceMessage(CurrentUserInfo.getInstance().getPlayerId(), piece.getPiece().getId()));
 		}
 	}
 	
 	public void lookAtTheMap() {
 		if (scene != null) {
-			pieceControlerAppState.setEnabled(true);
-			pointOfViewCameraAppState.setEnabled(false);
-			rotatingAroundCameraAppState.setEnabled(true);
-			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			pieceLookedAt = null;
+			
+			if (CurrentUserInfo.getInstance().isPlayingGame()) {
+				setControlState(View3dControlState.SHOW_MAP_PLAYING);
+			} else {
+				setControlState(View3dControlState.SHOW_MAP_OBSERVE);
+			}
+			
 			GuiMessageBus.post(new LookingFromAboveMessage(CurrentUserInfo.getInstance().getPlayerId()));
 		}
 	}

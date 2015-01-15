@@ -27,6 +27,4 @@ public class ConnectToServerAction extends AbstractAction {
 		CoreMessageBus.post(message);
 	}
 	
-	
-	
 }

@@ -1,4 +1,4 @@
-package fr.lyrgard.hexScape.gui.desktop.jme3Swing;
+package fr.lyrgard.hexScape.gui.desktop.technical;
 
 import com.jme3.cursors.plugins.JmeCursor;
 import com.jme3.input.MouseInput;

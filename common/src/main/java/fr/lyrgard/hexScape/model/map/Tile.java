@@ -8,8 +8,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Tile {
-
-	private TileType type;
 	
 	private int x,y,z;
 	
@@ -17,18 +15,32 @@ public class Tile {
 	
 	private int startZoneNumber;
 	
+	private boolean halfSize;
+	
+	private int topTexture;
+	
+	private int sideTexture;
+	
+	private boolean visible;
+	
 	@JsonCreator
 	public Tile(
-			@JsonProperty("type") TileType type, 
 			@JsonProperty("x") int x, 
 			@JsonProperty("y") int y , 
 			@JsonProperty("z") int z,
+			@JsonProperty("halfSize") boolean halfSize,
+			@JsonProperty("topTexture") int topTexture , 
+			@JsonProperty("sideTexture") int sideTexture,
+			@JsonProperty("visible") boolean visible,
 			@JsonProperty("startZone") boolean startZone , 
 			@JsonProperty("startZoneNumber") int startZoneNumber) {
-		this.type = type;
 		this.x = x;
 		this.y = y;
 		this.z = z;
+		this.halfSize = halfSize;
+		this.topTexture = topTexture;
+		this.sideTexture = sideTexture;
+		this.visible = visible;
 		this.startZone = startZone;
 		this.startZoneNumber = startZoneNumber;
 	}
@@ -41,13 +53,6 @@ public class Tile {
 		return neighbours;
 	}
 
-	public TileType getType() {
-		return type;
-	}
-
-	public void setType(TileType type) {
-		this.type = type;
-	}
 
 	public int getX() {
 		return x;
@@ -73,36 +78,7 @@ public class Tile {
 		this.z = z;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		result = prime * result + x;
-		result = prime * result + y;
-		result = prime * result + z;
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Tile other = (Tile) obj;
-		if (type != other.type)
-			return false;
-		if (x != other.x)
-			return false;
-		if (y != other.y)
-			return false;
-		if (z != other.z)
-			return false;
-		return true;
-	}
+	
 
 	public boolean isStartZone() {
 		return startZone;
@@ -118,6 +94,76 @@ public class Tile {
 
 	public void setStartZoneNumber(int startZoneNumber) {
 		this.startZoneNumber = startZoneNumber;
+	}
+
+	public boolean isHalfSize() {
+		return halfSize;
+	}
+
+	public void setHalfSize(boolean halfSize) {
+		this.halfSize = halfSize;
+	}
+
+
+	public int getTopTexture() {
+		return topTexture;
+	}
+
+
+	public void setTopTexture(int topTexture) {
+		this.topTexture = topTexture;
+	}
+
+
+	public int getSideTexture() {
+		return sideTexture;
+	}
+
+
+	public void setSideTexture(int sideTexture) {
+		this.sideTexture = sideTexture;
+	}
+
+	public boolean isVisible() {
+		return visible;
+	}
+
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (visible ? 1231 : 1237);
+		result = prime * result + x;
+		result = prime * result + y;
+		result = prime * result + z;
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Tile other = (Tile) obj;
+		if (visible != other.visible)
+			return false;
+		if (x != other.x)
+			return false;
+		if (y != other.y)
+			return false;
+		if (z != other.z)
+			return false;
+		return true;
 	}
 	
 	

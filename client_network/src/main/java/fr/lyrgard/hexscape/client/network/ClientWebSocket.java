@@ -7,8 +7,11 @@ import java.util.concurrent.TimeUnit;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketClose;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -21,12 +24,16 @@ import fr.lyrgard.hexScape.model.player.User;
 
 @WebSocket
 public class ClientWebSocket {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientWebSocket.class);
 
 	private final CountDownLatch closeLatch;
 
 	private User user;
 
 	private Session session;
+	
+	private HeartBeatGenerator heartBeatGenerator = new HeartBeatGenerator();
 
 	public ClientWebSocket(User user) {
 		super();
@@ -40,19 +47,22 @@ public class ClientWebSocket {
 
 	@OnWebSocketClose
 	public void onClose(int statusCode, String reason) {
-		System.out.printf("Connection closed: %d - %s%n", statusCode, reason);
+		LOGGER.info("Connection closed: %d - %s%n", statusCode, reason);
+		heartBeatGenerator.stop();
 		this.session = null;
 		this.closeLatch.countDown();
 	}
 
 	@OnWebSocketConnect
 	public void onConnect(Session session) {
-		System.out.printf("Got connect: %s%n", session);
+		LOGGER.info("Got connect: %s%n", session);
 		this.session = session;
 		try {
 			send(new UserInformationMessage(user.getName(), user.getColor()));
+			
+			new Thread(heartBeatGenerator).start();
 		} catch (Throwable t) {
-			t.printStackTrace();
+			LOGGER.error("Error on seding to websocket", t);
 		}
 	}
 
@@ -60,7 +70,7 @@ public class ClientWebSocket {
 	public void onMessage(String msg) {
 		try {
 			AbstractMessage message = MessageJsonMapper.getInstance().fromJson(msg);
-			System.out.println("received message " + message.getClass() + " from server");
+			LOGGER.debug("received message " + message.getClass() + " from server");
 			CoreMessageBus.post(message);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
@@ -70,12 +80,18 @@ public class ClientWebSocket {
 			e.printStackTrace();
 		}
 	}
+	
+	@OnWebSocketError
+	public void onError(Throwable t) {
+		LOGGER.error("Error on websocket", t);
+	}
 
 	public Session getSession() {
 		return session;
 	}
 
 
+	
 	public void send(AbstractMessage message) {
 		try {
 			session.getRemote().sendString(MessageJsonMapper.getInstance().toJson(message));

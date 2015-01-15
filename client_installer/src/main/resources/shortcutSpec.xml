@@ -1,0 +1,19 @@
+<shortcuts>
+  <skipIfNotSupported/>
+  <programGroup defaultName="HexScape"
+                location="applications"/>
+  <shortcut
+    name="HexScape"
+    target="$INSTALL_PATH\HexScape.jar"
+    commandLine=""
+    workingDirectory="$INSTALL_PATH"
+    description="This starts HexScape"
+    iconIndex="0"
+    initialState="maximized"
+    programGroup="yes"
+    desktop="yes"
+    startup="no">
+
+    <createForPack name="pack.core"/>
+  </shortcut>
+</shortcuts>

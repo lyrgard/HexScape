@@ -15,6 +15,7 @@ import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
@@ -25,6 +26,7 @@ import fr.lyrgard.hexScape.message.LeaveRoomMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
 import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
+import fr.lyrgard.hexScape.message.ObserveGameMessage;
 import fr.lyrgard.hexScape.message.PostGameMessageMessage;
 import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
@@ -62,6 +64,7 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 		@Type(value = GameJoinedMessage.class, name = "GameJoinedMessage"),
 		@Type(value = GameLeftMessage.class, name = "GameLeftMessage"),
 		@Type(value = GameMessagePostedMessage.class, name = "GameMessagePostedMessage"),
+		@Type(value = GameObservedMessage.class, name = "GameObservedMessage"),
 		@Type(value = GameStartedMessage.class, name = "GameStartedMessage"),
 		@Type(value = HeartBeatMessage.class, name = "HeartBeatMessage"),
 		@Type(value = InfoMessage.class, name = "InfoMessage"),
@@ -76,6 +79,7 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 	    @Type(value = RoomMessagePostedMessage.class, name = "MessagePostedMessage"),
 	    @Type(value = PlaceMarkerMessage.class, name = "PlaceMarkerMessage"),
 	    @Type(value = UserJoinedRoomMessage.class, name = "PlayerJoinedRoomMessage"),
+	    @Type(value = ObserveGameMessage.class, name = "ObserveGameMessage"),
 	    @Type(value = PieceMovedMessage.class, name = "PieceMovedMessage"),
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),

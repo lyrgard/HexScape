@@ -27,5 +27,6 @@
 		<module>../client_gui_desktop</module>
 		<module>../server_network</module>
 		<module>../server_core</module>
+		<module>../client_installer</module>
 	</modules>
 </project>

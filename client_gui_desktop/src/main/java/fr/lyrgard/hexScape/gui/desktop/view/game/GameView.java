@@ -19,6 +19,7 @@ import fr.lyrgard.hexScape.gui.desktop.view.game.leftPanel.LeftPanel;
 import fr.lyrgard.hexScape.gui.desktop.view.game.rightPanel.RightPanel;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
@@ -53,6 +54,23 @@ public class GameView extends AbstractView {
 	}
 	
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
+		final String gameId = message.getGameId();
+		
+		if (gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+			this.currentGameId = gameId;
+			DisplayMapMessage displayMap = new DisplayMapMessage(gameId, true);
+			CoreMessageBus.post(displayMap);
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					//leaveGameButton.setAction(new LeaveGameAction(gameId));
+					HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+				}
+			});
+		}
+	}
+	
+	@Subscribe public void onGameObserved(GameObservedMessage message) {
 		final String gameId = message.getGameId();
 		
 		if (gameId.equals(CurrentUserInfo.getInstance().getGameId())) {

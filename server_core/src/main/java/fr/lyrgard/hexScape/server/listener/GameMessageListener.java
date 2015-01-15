@@ -2,9 +2,6 @@ package fr.lyrgard.hexScape.server.listener;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -16,9 +13,11 @@ import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.LeaveGameMessage;
+import fr.lyrgard.hexScape.message.ObserveGameMessage;
 import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.IdGenerator;
@@ -117,6 +116,26 @@ public class GameMessageListener {
 		}
 	}
 	
+	@Subscribe public void onObserveGame(ObserveGameMessage message) {
+		String userId = message.getSessionUserId();
+		String gameId = message.getGameId();
+		
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		
+		if (user != null && game != null && user.getRoom() != null ) {
+			if (game.isStarted()) {
+				user.setGame(game);
+				game.getObserversIds().add(userId);
+				GameObservedMessage resultMessage = new GameObservedMessage(user.getId(), gameId);
+				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
+			} else {
+				ErrorMessage resultMessage = new ErrorMessage(user.getId(), "Unable to observe the game : the game has not started yet");
+				ServerNetwork.getInstance().sendMessageToUser(resultMessage, user.getId());
+			}
+		}
+	}
+	
 	@Subscribe public void onJoinGame(JoinGameMessage message) {
 		String userId = message.getSessionUserId();
 		String gameId = message.getGameId();
@@ -170,12 +189,19 @@ public class GameMessageListener {
 
 			if (game != null) {
 				
-				Player player = user.getPlayer();
-				player.setUserId(null);
-				user.setPlayer(null);
+				String playerId = null;
+				if (user.getPlayer() != null && game.getPlayers().contains(user.getPlayer())) {
+					Player player = user.getPlayer();
+					playerId = player.getId();
+					player.setUserId(null);
+					user.setPlayer(null);
+					
+				} else if (game.getObserversIds().contains(userId)) {
+					game.getObserversIds().remove(userId);
+				}
 				user.setGame(null);
 
-				GameLeftMessage resultMessage = new GameLeftMessage(player.getId(), game.getId());
+				GameLeftMessage resultMessage = new GameLeftMessage(user.getId(), playerId, game.getId());
 				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
 
 				if (game.getFreePlayers().size() == game.getPlayers().size()) {
@@ -191,11 +217,12 @@ public class GameMessageListener {
 	
 	@Subscribe public void onMessagePosted(GameMessagePostedMessage message) {
 		String userId = message.getSessionUserId();
+		String messageContent = message.getMessage();
 		
 		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
 		if (user != null && user.getGameId() != null) {
-			ServerNetwork.getInstance().sendMessageToGame(message, user.getGameId());
+			ServerNetwork.getInstance().sendMessageToGame(new GameMessagePostedMessage(userId, messageContent), user.getGameId());
 		}
 	}
 	

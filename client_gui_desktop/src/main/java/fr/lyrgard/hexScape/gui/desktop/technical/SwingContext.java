@@ -1,4 +1,4 @@
-package fr.lyrgard.hexScape.gui.desktop.jme3Swing;
+package fr.lyrgard.hexScape.gui.desktop.technical;
 
 import java.awt.Component;
 

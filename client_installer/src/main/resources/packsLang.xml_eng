@@ -1,0 +1,7 @@
+<langpack>
+    <str id="pack.core" txt="Main Application"/>
+    <str id="pack.core.description" txt="A description of my main application package"/>
+    <str id="pack.lience" txt="Main Application"/>
+    <str id="pack.lience.description" txt="A description of my main application package"/>
+    
+</langpack>

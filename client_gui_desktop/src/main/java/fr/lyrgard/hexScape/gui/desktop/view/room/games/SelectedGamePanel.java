@@ -26,6 +26,7 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.JoinGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.LeaveGameAction;
+import fr.lyrgard.hexScape.gui.desktop.action.ObserveGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.StartGameAction;
 import fr.lyrgard.hexScape.gui.desktop.message.GameSelectedMessage;
 import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
@@ -51,12 +52,14 @@ public class SelectedGamePanel extends JPanel {
 	private JLabel gameTitle = new JLabel();
 
 	private Game game;
-
+	
 	private JButton joinButton;
 
 	private JButton startButton;
 	
 	private JButton leaveButton;
+
+	private JButton observeButton;
 
 	public SelectedGamePanel() {
 
@@ -89,6 +92,9 @@ public class SelectedGamePanel extends JPanel {
 		
 		leaveButton = new JButton("Leave");
 		buttonPanel.add(leaveButton);
+		
+		observeButton = new JButton("Observe");
+		buttonPanel.add(observeButton);
 		
 		setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -129,6 +135,8 @@ public class SelectedGamePanel extends JPanel {
 						Collection<Player> freePlayers = game.getFreePlayers();
 						boolean canJoin = !freePlayers.isEmpty();
 						boolean canStart = false;
+						boolean isInTheGame = false;
+						boolean canObserve = false;
 						for (Player player : game.getPlayers()) {
 							if (player != null) {
 								playerListModel.addPlayer(player);
@@ -136,6 +144,7 @@ public class SelectedGamePanel extends JPanel {
 							if (game.getId().equals(CurrentUserInfo.getInstance().getGameId()) && player.getId().equals(CurrentUserInfo.getInstance().getPlayerId())) {
 								canJoin = false;
 								canStart = !game.isStarted();
+								isInTheGame = true;
 							}
 						}
 						if (canJoin) {
@@ -143,6 +152,7 @@ public class SelectedGamePanel extends JPanel {
 								canJoin = false;
 							}
 						}
+						canObserve = !isInTheGame && game.isStarted();
 
 
 						if (canJoin) {
@@ -155,6 +165,10 @@ public class SelectedGamePanel extends JPanel {
 						}
 						startButton.setVisible(canStart);
 						leaveButton.setVisible(canStart);
+						if (canObserve) {
+							observeButton.setAction(new ObserveGameAction(game.getId()));
+						}
+						observeButton.setVisible(canObserve);
 
 						setVisible(true);
 					}

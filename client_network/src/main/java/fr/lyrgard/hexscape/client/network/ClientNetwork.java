@@ -5,6 +5,8 @@ import java.net.URI;
 
 import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
 import org.eclipse.jetty.websocket.client.WebSocketClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -12,9 +14,9 @@ import fr.lyrgard.hexScape.model.player.User;
 
 public class ClientNetwork {
 	
-	private static final ClientNetwork INSTANCE = new ClientNetwork();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ClientNetwork.class);
 	
-	private HeartBeatGenerator heartBeatGenerator = new HeartBeatGenerator();
+	private static final ClientNetwork INSTANCE = new ClientNetwork();
 	
 	public static ClientNetwork getInstance() {
 		return INSTANCE;
@@ -30,6 +32,7 @@ public class ClientNetwork {
 		if (socket == null) {
 			String destUri = "ws://" + url;
 			client = new WebSocketClient();
+			
 			client.getPolicy().setMaxTextMessageSize(1000000);
 			socket = new ClientWebSocket(user);
 			try {
@@ -37,9 +40,8 @@ public class ClientNetwork {
 				URI echoUri = new URI(destUri);
 				ClientUpgradeRequest request = new ClientUpgradeRequest();
 				client.connect(socket, echoUri, request);
-				System.out.printf("Connecting to : %s%n", echoUri);
+				LOGGER.info("Connecting to : %s%n", echoUri);
 				
-				new Thread(heartBeatGenerator).start();
 			} catch (Throwable t) {
 				t.printStackTrace();
 				client = null;
@@ -49,7 +51,6 @@ public class ClientNetwork {
 	
 	public void disconnect() {
 		if (socket != null) {
-			heartBeatGenerator.stop();
 			try {
 				client.stop();
 			} catch (Exception e) {

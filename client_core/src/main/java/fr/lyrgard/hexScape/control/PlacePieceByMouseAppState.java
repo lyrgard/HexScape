@@ -18,7 +18,6 @@ import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
 import fr.lyrgard.hexScape.service.PieceManager;
-import fr.lyrgard.hexScape.service.TileService;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class PlacePieceByMouseAppState extends AbstractAppState {
@@ -89,7 +88,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 				if (nearestTile != null) {
 					Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
 
-					if (TileService.getInstance().isHalfTile(nearestTile.getType())) {
+					if (nearestTile.isHalfSize()) {
 						spacePos.y += TileMesh.HEX_SIZE_Y / 2;
 					} else {
 						spacePos.y += TileMesh.HEX_SIZE_Y;

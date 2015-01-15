@@ -50,7 +50,7 @@ public class PieceManager {
 		if (nearestTile != null) {
 			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(nearestTile.getX(), nearestTile.getY(), nearestTile.getZ());
 
-			if (TileService.getInstance().isHalfTile(nearestTile.getType())) {
+			if (nearestTile.isHalfSize()) {
 				spacePos.y += TileMesh.HEX_SIZE_Y / 2;
 			} else {
 				spacePos.y += TileMesh.HEX_SIZE_Y;

@@ -26,6 +26,12 @@
 			<artifactId>javax-websocket-client-impl</artifactId>
 			<version>9.2.0.v20140526</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.7</version>
+		</dependency>
 	</dependencies>
 
 </project>

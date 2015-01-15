@@ -13,7 +13,7 @@ import com.jme3.system.JmeCanvasContext;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
+import fr.lyrgard.hexScape.gui.desktop.technical.SwingContext;
 import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 

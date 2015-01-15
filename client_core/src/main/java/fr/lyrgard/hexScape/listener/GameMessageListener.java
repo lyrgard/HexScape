@@ -12,9 +12,11 @@ import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.JoinGameMessage;
 import fr.lyrgard.hexScape.message.LeaveGameMessage;
+import fr.lyrgard.hexScape.message.ObserveGameMessage;
 import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.message.StartGameMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
@@ -114,6 +116,39 @@ private static GameMessageListener instance;
 		}
 	}
 	
+	@Subscribe public void onObserveGame(ObserveGameMessage message) {
+		if (HexScapeCore.getInstance().isOnline()) {
+			ClientNetwork.getInstance().send(message);
+		} else {
+			String userId = message.getUserId();
+			String gameId = message.getGameId();
+			GameObservedMessage resultMessage = new GameObservedMessage(userId, gameId);
+			CoreMessageBus.post(resultMessage);
+		}
+	}
+	
+	@Subscribe public void onGameObserved(GameObservedMessage message) {
+		String userId = message.getUserId();
+		String gameId = message.getGameId();
+		
+		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		
+		if (game != null && user != null) {
+			user.setGame(game);
+			GuiMessageBus.post(message);
+			
+			if (HexScapeCore.getInstance().isOnline()) {
+				if (CurrentUserInfo.getInstance().getId().equals(userId)) {
+					if (game.isStarted()) {
+						GuiMessageBus.post(new GameStartedMessage(userId, game.getId()));
+					}
+				}
+			}
+		}
+	}
+	
 	@Subscribe public void onGameEnded(GameEndedMessage message) {
 		String gameId = message.getGameId();
 		
@@ -194,7 +229,7 @@ private static GameMessageListener instance;
 			ClientNetwork.getInstance().send(message);
 		} else {
 			User user = CurrentUserInfo.getInstance();
-			GameLeftMessage resultMessage = new GameLeftMessage(user.getPlayerId(), user.getGameId());
+			GameLeftMessage resultMessage = new GameLeftMessage(user.getId(), user.getPlayerId(), user.getGameId());
 			CoreMessageBus.post(resultMessage);
 			
 			GameEndedMessage resultMessage2 = new GameEndedMessage(user.getGameId());
@@ -203,23 +238,27 @@ private static GameMessageListener instance;
 	}
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		String userId = message.getUserId();
 		String gameId = message.getGameId();
 		String playerId = message.getPlayerId();
 		
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (game != null) {
-			Player player = game.getPlayer(playerId);
+			if (playerId == null) {
+				game.getObserversIds().remove(userId);
+			} else {
+				Player player = game.getPlayer(playerId);
 
-			if (player != null && player.getUserId() != null) {
-				User user = Universe.getInstance().getUsersByIds().get(player.getUserId());
+				if (player != null && player.getUserId() != null) {
+					User user = Universe.getInstance().getUsersByIds().get(player.getUserId());
 
-				user.setGame(null);
-				user.setPlayer(null);
-				player.setUserId(null);
-
-				GuiMessageBus.post(message);
+					user.setGame(null);
+					user.setPlayer(null);
+					player.setUserId(null);
+				}
 			}
+			GuiMessageBus.post(message);		
 		}
 	}
 }

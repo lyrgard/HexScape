@@ -7,9 +7,8 @@ import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 
 import fr.lyrgard.hexScape.model.map.Direction;
-import fr.lyrgard.hexScape.model.map.TileType;
 import fr.lyrgard.hexScape.service.DirectionService;
-import fr.lyrgard.hexScape.service.TileService;
+import fr.lyrgard.hexScape.service.TextureService;
 
 public class TileMesh {
 
@@ -69,10 +68,10 @@ public class TileMesh {
 	static final float bottom = 0;
 	static final float top = HEX_SIZE_Y;
 
-	public static List<Vector3f> getVertices(Direction direction, TileType tileType, float currentX, float currentY, float currentZ) {
+	public static List<Vector3f> getVertices(Direction direction, boolean halfSize, float currentX, float currentY, float currentZ) {
 
 		float tileTop = top;
-		if (TileService.getInstance().isHalfTile(tileType)) {
+		if (halfSize) {
 			tileTop /= 2;
 		}
 
@@ -129,17 +128,17 @@ public class TileMesh {
 		return vertices;
 	}
 
-	public static List<Vector2f> getTexCoord(Direction direction, TileType type) {
+	public static List<Vector2f> getTexCoord(Direction direction, int topTexture, int sideTexture) {
 
 		List<Vector2f> texCoord = new ArrayList<Vector2f>();
 		switch (direction) {
 		case TOP:			
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(0.5f,0));
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(1,0.25f));
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(1,0.75f));
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(0.5f,1));
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(0,0.75f));
-			texCoord.add(TileService.getInstance().getTopTexture(type).getCoord(0,0.25f));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 0.5f,0));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 1,0.25f));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 1,0.75f));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 0.5f,1));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 0,0.75f));
+			texCoord.add(TextureService.getInstance().getCoord(topTexture, 0,0.25f));
 			break;
 		case BOTTOM:
 			// nothing to do here
@@ -150,10 +149,10 @@ public class TileMesh {
 		case SOUTH_WEST:
 		case WEST:
 		case NORTH_WEST:
-			texCoord.add(TileService.getInstance().getSideTexture(type).getCoord(1,0));
-			texCoord.add(TileService.getInstance().getSideTexture(type).getCoord(0,0));
-			texCoord.add(TileService.getInstance().getSideTexture(type).getCoord(1,1));
-			texCoord.add(TileService.getInstance().getSideTexture(type).getCoord(0,1));
+			texCoord.add(TextureService.getInstance().getCoord(sideTexture, 1,0));
+			texCoord.add(TextureService.getInstance().getCoord(sideTexture, 0,0));
+			texCoord.add(TextureService.getInstance().getCoord(sideTexture, 1,1));
+			texCoord.add(TextureService.getInstance().getCoord(sideTexture, 0,1));
 			break;
 		}
 		return texCoord;
@@ -265,11 +264,11 @@ public class TileMesh {
 	}
 
 
-	public static List<Vector3f> getEdgeVertices(Direction direction, TileType tileType, float currentX, float currentY, float currentZ) {
+	public static List<Vector3f> getEdgeVertices(Direction direction, boolean halfSize, float currentX, float currentY, float currentZ) {
 
 		
 		float tileTop = top;
-		if (TileService.getInstance().isHalfTile(tileType)) {
+		if (halfSize) {
 			tileTop /= 2;
 		}
 		tileTop += 0.01f;

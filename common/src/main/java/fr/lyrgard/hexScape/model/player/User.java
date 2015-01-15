@@ -11,7 +11,7 @@ public class User {
 	
 	private String name;
 	
-	private ColorEnum color;
+	private ColorEnum color = ColorEnum.BLUE;
 	
 	@JsonIgnore
 	private Room room;
@@ -46,6 +46,15 @@ public class User {
 			return room.getId();
 		} else {
 			return null;
+		}
+	}
+	
+	@JsonIgnore
+	public boolean isPlayingGame() {
+		if (game != null && player != null) {
+			return game.getPlayers().contains(player);
+		} else {
+			return false;
 		}
 	}
 

@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>fr.lyrgard.hexscape</groupId>
+		<artifactId>hexscape</artifactId>
+		<version>1.1.0-beta</version>
+	</parent>
+	<artifactId>hexscape_client_installer</artifactId>
+
+	<packaging>izpack-jar</packaging>
+
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- Installer variables -->
+		<staging.dir>${project.build.directory}/staging</staging.dir>
+		<info.appName>HexScape</info.appName>
+		<info.appsubpath>HexScape</info.appsubpath>
+		<izpack.dir.app>${basedir}/src/main/izpack</izpack.dir.app>
+		<staging.dir.app>${staging.dir}/appfiles</staging.dir.app>
+	</properties>
+
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${staging.dir.app}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/resources</directory>
+								</resource>
+							</resources>
+							<includeEmptyDirs>true</includeEmptyDirs>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.9</version>
+				<executions>
+					<execution>
+						<id>copy</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>hexscape_client_gui_desktop</artifactId>
+									<version>${project.version}</version>
+									<classifier>executable</classifier>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${staging.dir.app}</outputDirectory>
+									<destFileName>HexScape.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<outputDirectory>some-other-place</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.izpack</groupId>
+				<artifactId>izpack-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<baseDir>${staging.dir.app}</baseDir>
+					<installFile>${izpack.dir.app}/install.xml</installFile>
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<finalName>${project.build.finalName}</finalName>
+					<enableOverrideArtifact>true</enableOverrideArtifact>
+					<mkdirs>true</mkdirs>
+					<autoIncludeUrl>false</autoIncludeUrl>
+					<autoIncludeDevelopers>false</autoIncludeDevelopers>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+
+	<dependencies>
+
+	</dependencies>
+</project>

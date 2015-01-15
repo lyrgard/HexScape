@@ -9,7 +9,7 @@ import java.awt.event.MouseEvent;
 import javax.swing.JPanel;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.gui.desktop.jme3Swing.SwingContext;
+import fr.lyrgard.hexScape.gui.desktop.technical.SwingContext;
 
 public class View3d extends JPanel {
 

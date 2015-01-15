@@ -61,8 +61,6 @@ public class MapMessageListener extends AbstractMessageListener {
 			HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
 
 				public Void call() throws Exception {
-					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
-
 					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(mapManager);
 
 					HexScapeCore.getInstance().setMapManager(mapManager);

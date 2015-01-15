@@ -12,17 +12,17 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.io.virtualScape.bean.TileType;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeDecorType;
 import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeMap;
-import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapeTile;
+import fr.lyrgard.hexScape.io.virtualScape.bean.VirtualScapePiece;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.map.Decor;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.Tile;
-import fr.lyrgard.hexScape.model.map.TileType;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class VirtualScapeMapReader {
@@ -55,7 +55,7 @@ public class VirtualScapeMapReader {
 		virtualScapeMap.setPrintStartAreaAsLevel(bB.getInt() != 0);
 		virtualScapeMap.setTileNumer(bB.getInt());
 		for (int i = 0; i < virtualScapeMap.getTileNumer(); i++) {
-			VirtualScapeTile tile = new VirtualScapeTile();
+			VirtualScapePiece tile = new VirtualScapePiece();
 			tile.setType(bB.getInt());
 			tile.setVersion(bB.getDouble());
 			tile.setRotation(bB.getInt());
@@ -86,6 +86,8 @@ public class VirtualScapeMapReader {
 			return readMap(bytes, mapFile.getName());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -126,12 +128,12 @@ public class VirtualScapeMapReader {
 		Map map = new Map();
 		MapManager mapManager = new MapManager(map);
 
-		java.util.Map<Integer, List<VirtualScapeTile>> tilesByHeight = new HashMap<Integer, List<VirtualScapeTile>>();
+		java.util.Map<Integer, List<VirtualScapePiece>> tilesByHeight = new HashMap<Integer, List<VirtualScapePiece>>();
 		int maxHeight = 0;
-		for (VirtualScapeTile tile : virtualScapeMap.getTiles()) {
-			List<VirtualScapeTile> tiles = tilesByHeight.get(tile.getPosZ());
+		for (VirtualScapePiece tile : virtualScapeMap.getTiles()) {
+			List<VirtualScapePiece> tiles = tilesByHeight.get(tile.getPosZ());
 			if (tiles == null) {
-				tiles = new ArrayList<VirtualScapeTile>();
+				tiles = new ArrayList<VirtualScapePiece>();
 				tilesByHeight.put(tile.getPosZ(), tiles);
 			}
 			tiles.add(tile);
@@ -141,20 +143,20 @@ public class VirtualScapeMapReader {
 			}
 		}
 		
-		List<VirtualScapeTile> decors = new ArrayList<>();
-		List<VirtualScapeTile> startZones = new ArrayList<>();
+		List<VirtualScapePiece> decors = new ArrayList<>();
+		List<VirtualScapePiece> startZones = new ArrayList<>();
 		for (int z = 0; z <= maxHeight; z++) {
-			List<VirtualScapeTile> tiles = tilesByHeight.get(z);
-			if (tiles != null) {
-				for (VirtualScapeTile tile : tiles) {
-					if (tile.getType() == 15001) {
-						tile.setPosZ(z);
-						startZones.add(tile);
-					} else if (getTileType(tile) != null) {
-						addTileToMap(tile, z, mapManager);
+			List<VirtualScapePiece> pieces = tilesByHeight.get(z);
+			if (pieces != null) {
+				for (VirtualScapePiece piece : pieces) {
+					if (piece.getType() == 15001) {
+						piece.setPosZ(z);
+						startZones.add(piece);
+					} else if (getTileType(piece) != null) {
+						addTileToMap(piece, z, mapManager);
 					} else {
-						tile.setPosZ(z);
-						decors.add(tile);
+						piece.setPosZ(z);
+						decors.add(piece);
 					}
 				}
 				
@@ -162,7 +164,7 @@ public class VirtualScapeMapReader {
 			
 		}
 		
-		for (VirtualScapeTile decor : decors) {
+		for (VirtualScapePiece decor : decors) {
 			addDecorToMap(decor, mapManager);
 		}
 		addStartZonesToMap(startZones, mapManager);
@@ -176,7 +178,7 @@ public class VirtualScapeMapReader {
 	}
 	
 
-	private void addDecorToMap(VirtualScapeTile decor, MapManager mapManager) {
+	private void addDecorToMap(VirtualScapePiece decor, MapManager mapManager) {
 		int x = convertCoordX(decor);
 		int y = convertCoordY(decor);
 		VirtualScapeDecorType type = getDecorType(decor);
@@ -216,12 +218,12 @@ public class VirtualScapeMapReader {
 		}
 	}
 	
-	private void addStartZonesToMap(List<VirtualScapeTile> startZones, MapManager mapManager) {
+	private void addStartZonesToMap(List<VirtualScapePiece> startZones, MapManager mapManager) {
 		
-		java.util.Map<Integer, List<VirtualScapeTile>> map = new HashMap<>();
+		java.util.Map<Integer, List<VirtualScapePiece>> map = new HashMap<>();
 		
-		for (VirtualScapeTile startZone : startZones) {
-			List<VirtualScapeTile> list = map.get(startZone.getColor());
+		for (VirtualScapePiece startZone : startZones) {
+			List<VirtualScapePiece> list = map.get(startZone.getColor());
 			if (list == null) {
 				list = new ArrayList<>();
 				map.put(startZone.getColor(), list);
@@ -230,20 +232,22 @@ public class VirtualScapeMapReader {
 		}
 		
 		int i = 0;
-		for (List<VirtualScapeTile> list : map.values()) {
-			for (VirtualScapeTile startZone : list) {
+		for (List<VirtualScapePiece> list : map.values()) {
+			for (VirtualScapePiece startZone : list) {
 				int x = convertCoordX(startZone);
 				int y = convertCoordY(startZone);
 				Tile tile = mapManager.getNearestTile(x, y, startZone.getPosZ());
-				tile.setStartZone(true);
-				tile.setStartZoneNumber(i);
+				if (tile != null) {
+					tile.setStartZone(true);
+					tile.setStartZoneNumber(i);
+				}
 			}
 			i++;
 		}
 	}
 
 
-	private void addTileToMap(VirtualScapeTile tile, int z ,MapManager mapManager) {
+	private void addTileToMap(VirtualScapePiece tile, int z ,MapManager mapManager) {
 		
 		int tileNumber = tile.getType() % 1000;
 		int rotation = tile.getRotation();
@@ -260,29 +264,29 @@ public class VirtualScapeMapReader {
 	private void addSingleTilesToMap(MapManager mapManager, int tileNumber, int rotation, TileType tileType, int x, int y, int z) {
 		switch (tileNumber) {
 		case 1:
-			mapManager.addTile(tileType, x, y, z, false, 0);
+			mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 			break;
 		case 2:
 			if (tileType == TileType.WATER || tileType == TileType.SHADOW) {
 				// Somehow Virtualscape has shadow and water tiles "2", that are in fact normal single tiles
-				mapManager.addTile(tileType, x, y, z, false, 0);	
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);	
 				break;
 			}
 			switch (rotation) {
 			case 0:
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -291,16 +295,16 @@ public class VirtualScapeMapReader {
 			case 0:
 			case 2:
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
 			case 3:
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -308,24 +312,24 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -333,27 +337,27 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x+3, y, z, false, 0);
-				mapManager.addTile(tileType, x+4, y, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -361,30 +365,30 @@ public class VirtualScapeMapReader {
 			switch (rotation) {
 			case 0:
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-2, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -392,298 +396,298 @@ public class VirtualScapeMapReader {
 			if (tileType == TileType.ROAD) {
 				switch (rotation) {
 				case 0:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y, z, false, 0);
-					mapManager.addTile(tileType, x+2, y, z, false, 0);
-					mapManager.addTile(tileType, x+3, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+3, y-1, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				case 1:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-					mapManager.addTile(tileType, x+3, y-3, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				case 2:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y, z, false, 0);
-					mapManager.addTile(tileType, x, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-3, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				case 3:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y, z, false, 0);
-					mapManager.addTile(tileType, x+2, y, z, false, 0);
-					mapManager.addTile(tileType, x, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+3, y-1, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				case 4:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+3, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+3, y-3, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				case 5:
-					mapManager.addTile(tileType, x, y, z, false, 0);
-					mapManager.addTile(tileType, x, y-1, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-					mapManager.addTile(tileType, x, y-2, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-					mapManager.addTile(tileType, x, y-3, z, false, 0);
-					mapManager.addTile(tileType, x+1, y-3, z, false, 0);
+					mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+					mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 					break;
 				}
 				break;
 			} else {
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 			}
 			break;
 		case 9:
 			switch (rotation) {
 			case 0:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x+3, y, z, false, 0);
-				mapManager.addTile(tileType, x+4, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x+3, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-1, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
 		case 24:
 			switch (rotation) {
 			case 0:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+7, y-5, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+7, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 1:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x-2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-7, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-7, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 2:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-4, z, false, 0);
-				mapManager.addTile(tileType, x, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-5, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 3:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x+3, y, z, false, 0);
-				mapManager.addTile(tileType, x+4, y, z, false, 0);
-				mapManager.addTile(tileType, x+5, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+7, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+6, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+7, y-5, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+7, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+6, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+7, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 4:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+5, y-5, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+4, y-6, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-7, z, false, 0);
-				mapManager.addTile(tileType, x+3, y-7, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+5, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+4, y-6, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-7, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+3, y-7, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			case 5:
-				mapManager.addTile(tileType, x, y, z, false, 0);
-				mapManager.addTile(tileType, x+1, y, z, false, 0);
-				mapManager.addTile(tileType, x+2, y, z, false, 0);
-				mapManager.addTile(tileType, x-3, y-1, z, false, 0);
-				mapManager.addTile(tileType, x-2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-1, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-1, z, false, 0);
-				mapManager.addTile(tileType, x-3, y-2, z, false, 0);
-				mapManager.addTile(tileType, x-2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-2, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-2, z, false, 0);
-				mapManager.addTile(tileType, x-2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x-1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-3, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-3, z, false, 0);
-				mapManager.addTile(tileType, x, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+1, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-4, z, false, 0);
-				mapManager.addTile(tileType, x+2, y-5, z, false, 0);
+				mapManager.addTile(x, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-3, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-1, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-3, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-2, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x-1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-3, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+1, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-4, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
+				mapManager.addTile(x+2, y-5, z, tileType.isHalfSize(), tileType.getTopTexture(), tileType.getSideTexture(), tileType.isVisible(), false, 0);
 				break;
 			}
 			break;
@@ -694,17 +698,17 @@ public class VirtualScapeMapReader {
 
 	
 
-	private int convertCoordX(VirtualScapeTile tile) {
+	private int convertCoordX(VirtualScapePiece tile) {
 		return tile.getPosX() + (tile.getPosY() + 1)/2;
 	}
 
 
-	private int convertCoordY(VirtualScapeTile tile) {
+	private int convertCoordY(VirtualScapePiece tile) {
 		return -tile.getPosY();
 	}
 
 
-	private TileType getTileType(VirtualScapeTile tile) {
+	private TileType getTileType(VirtualScapePiece tile) {
 		int tileFamily = tile.getType() / 1000;
 		TileType tileType = null;
 		switch (tileFamily) {
@@ -765,7 +769,7 @@ public class VirtualScapeMapReader {
 		return tileType;
 	}
 	
-	private VirtualScapeDecorType getDecorType(VirtualScapeTile tile) {
+	private VirtualScapeDecorType getDecorType(VirtualScapePiece tile) {
 		
 		VirtualScapeDecorType decorType;
 		switch (tile.getType()) {
@@ -869,7 +873,7 @@ public class VirtualScapeMapReader {
 		return decorType;
 	}
 	
-	private Direction getDirection(VirtualScapeTile tile) {
+	private Direction getDirection(VirtualScapePiece tile) {
 		Direction direction;
 		switch (tile.getRotation()) {
 		case 0:
