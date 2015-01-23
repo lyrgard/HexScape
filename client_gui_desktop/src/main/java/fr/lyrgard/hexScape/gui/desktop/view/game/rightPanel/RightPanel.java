@@ -16,6 +16,7 @@ import fr.lyrgard.hexScape.message.DiceThrownMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameMessagePostedMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.MapLoadedMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
@@ -48,12 +49,14 @@ public class RightPanel extends JPanel {
 
 	private ChatPanel chatPanel;
 	
+	private DiceTabbedPane dicePanel = new DiceTabbedPane();
+	
 	public RightPanel() {
 		setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 		
 		chatPanel = new ChatPanel(null, null);
 		add(chatPanel);
-		add(new DiceTabbedPane());
+		add(dicePanel);
 		
 		GuiMessageBus.register(this);
 	}
@@ -266,8 +269,37 @@ public class RightPanel extends JPanel {
 	}
 	
 	@Subscribe public void onGameStarted(GameStartedMessage message) {
-		String gameId = message.getGameId();
-		chatPanel.setGameId(gameId);
+		final String gameId = message.getGameId();
+
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+					Game game = CurrentUserInfo.getInstance().getGame();
+					if (game != null) {
+						chatPanel.setGameId(gameId);
+						dicePanel.setVisible(true);
+					}
+				}
+			}
+		});
+	}
+	
+	@Subscribe public void onGameObserved(GameObservedMessage message) {
+		final String gameId = message.getGameId();
+
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				if (gameId != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+					Game game = CurrentUserInfo.getInstance().getGame();
+					if (game != null) {
+						chatPanel.setGameId(gameId);
+						dicePanel.setVisible(false);
+					}
+				}
+			}
+		});
 	}
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {

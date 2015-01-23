@@ -27,9 +27,10 @@ public class UserListModel extends AbstractListModel<User> {
 	}
 	
 	public void setUsers(Collection<User> users) {
+		int oldSize = users.size();
 		this.users = new ArrayList<User>(users);
 		Collections.sort(this.users, comparator);
-		fireContentsChanged(this, 0, users.size());
+		fireContentsChanged(this, 0, Math.max(oldSize, users.size()));
 	}
 	
 	public void removeUser(User user) {

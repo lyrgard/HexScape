@@ -142,7 +142,7 @@ private static GameMessageListener instance;
 			if (HexScapeCore.getInstance().isOnline()) {
 				if (CurrentUserInfo.getInstance().getId().equals(userId)) {
 					if (game.isStarted()) {
-						GuiMessageBus.post(new GameStartedMessage(userId, game.getId()));
+						GuiMessageBus.post(new GameObservedMessage(userId, game.getId()));
 					}
 				}
 			}

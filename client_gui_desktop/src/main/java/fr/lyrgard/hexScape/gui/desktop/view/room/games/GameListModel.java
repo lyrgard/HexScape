@@ -31,9 +31,10 @@ public class GameListModel extends AbstractListModel<Game> {
 	}
 	
 	private void setGames(Collection<Game> games) {
+		int oldSize = games.size();
 		this.games = new ArrayList<Game>(games);
 		Collections.sort(this.games, comparator);
-		fireContentsChanged(this, 0, games.size());
+		fireContentsChanged(this, 0, Math.max(oldSize, games.size()));
 	}
 	
 	public void redraw() {

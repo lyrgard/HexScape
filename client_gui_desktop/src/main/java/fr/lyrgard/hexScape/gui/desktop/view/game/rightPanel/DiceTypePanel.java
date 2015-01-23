@@ -1,5 +1,6 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game.rightPanel;
 
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -7,8 +8,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.components.GradientButton;
 import fr.lyrgard.hexScape.message.ThrowDiceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.dice.DiceType;
@@ -24,10 +27,14 @@ public class DiceTypePanel extends JPanel {
 		
 		for (int i = 1; i <= diceType.getMaxNumberThrown(); i++) {
 			final int number = i;
-			JButton rollDiceButton = new JButton(Integer.toString(number));
+			
+			Color color1 = Color.WHITE;
+			Color color2 = Color.GRAY;
 			if (diceType.getBackgroundColor() != null) {
-				rollDiceButton.setBackground(diceType.getBackgroundColor());
+				color2 = diceType.getBackgroundColor();
 			}
+			
+			JButton rollDiceButton = new GradientButton(Integer.toString(number), color1, color2);
 			if (diceType.getForegroundColor() != null) {
 				rollDiceButton.setForeground(diceType.getForegroundColor());
 			}

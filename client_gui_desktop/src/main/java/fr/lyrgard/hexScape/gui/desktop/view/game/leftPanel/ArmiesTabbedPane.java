@@ -13,6 +13,7 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
+import fr.lyrgard.hexScape.message.GameObservedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
@@ -63,17 +64,25 @@ public class ArmiesTabbedPane extends JTabbedPane {
 	@Subscribe public void onGameStart(GameStartedMessage message) {
 		String gameId = message.getGameId();
 		
-		removeAll();
-		armyPanelByPlayerIds.clear();
-		tabIndexByPlayerId.clear();
+		reload(gameId);
+	}
+	
+	@Subscribe public void onGameObserved(GameObservedMessage message) {
+		String gameId = message.getGameId();
 		
+		reload(gameId);
+	}
+	
+	public void reload(String gameId) {
 		final Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		
 		if (game != null && gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
 			EventQueue.invokeLater(new Runnable() {
 
 				public void run() {
-					
+					removeAll();
+					armyPanelByPlayerIds.clear();
+					tabIndexByPlayerId.clear();
 					
 					Player currentPlayer = game.getPlayer(CurrentUserInfo.getInstance().getPlayerId());
 					if (currentPlayer != null) {

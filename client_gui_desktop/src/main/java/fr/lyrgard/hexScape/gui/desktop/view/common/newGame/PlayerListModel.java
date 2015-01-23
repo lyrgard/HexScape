@@ -37,9 +37,10 @@ public class PlayerListModel extends AbstractListModel<Player> {
 	}
 	
 	public void setPlayers(Collection<Player> players) {
+		int oldSize = players.size();
 		this.players = new ArrayList<Player>(players);
 		Collections.sort(this.players, comparator);
-		fireContentsChanged(this, 0, players.size());
+		fireContentsChanged(this, 0, Math.max(oldSize, players.size()));
 	}
 	
 	public void removePlayer(Player player) {

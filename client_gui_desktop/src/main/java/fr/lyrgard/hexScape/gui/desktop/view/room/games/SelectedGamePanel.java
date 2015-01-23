@@ -22,14 +22,12 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.JoinGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.LeaveGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.ObserveGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.StartGameAction;
 import fr.lyrgard.hexScape.gui.desktop.message.GameSelectedMessage;
-import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.PlayerCellRenderer;
 import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.PlayerListModel;
 import fr.lyrgard.hexScape.gui.desktop.view.room.ActivateOnlineService;
@@ -229,6 +227,7 @@ public class SelectedGamePanel extends JPanel {
 							startButton.setVisible(true);
 							leaveButton.setAction(new LeaveGameAction());
 							leaveButton.setVisible(true);
+							observeButton.setVisible(false);
 							
 						} else {
 							if (game.getFreePlayers().isEmpty()) {
@@ -260,6 +259,11 @@ public class SelectedGamePanel extends JPanel {
 							leaveButton.setVisible(false);
 
 							gameTitle.setText(getTitle());
+							
+							if (CurrentUserInfo.getInstance().getGameId() == null) {
+								observeButton.setAction(new ObserveGameAction(gameId));
+								observeButton.setVisible(true);
+							}
 						}
 					}
 				});

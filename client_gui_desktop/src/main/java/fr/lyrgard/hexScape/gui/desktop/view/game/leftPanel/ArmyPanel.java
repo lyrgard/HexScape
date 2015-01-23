@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseArmyAction;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 
@@ -27,7 +28,9 @@ public class ArmyPanel extends JScrollPane {
 		setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
 		setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
 		
-		armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor(), playerId)));
+		if (CurrentUserInfo.getInstance().isPlayingGame()) {
+			armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor(), playerId)));
+		}
 	}
 	
 	public ArmyPanel(String playerId, Army army) {

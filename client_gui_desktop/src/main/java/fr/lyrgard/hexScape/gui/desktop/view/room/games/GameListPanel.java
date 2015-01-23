@@ -119,7 +119,7 @@ public class GameListPanel extends JPanel{
 				public void run() {
 					Game game = gameList.getSelectedValue();
 					boolean gameSelectedEnded = game != null && game.getId().equals(gameId);
-					if (gameSelectedEnded) {
+					if (gameSelectedEnded || gameListModel.getSize() == 0) {
 						gameList.clearSelection();
 						GuiMessageBus.post(new GameSelectedMessage(null));
 					}
