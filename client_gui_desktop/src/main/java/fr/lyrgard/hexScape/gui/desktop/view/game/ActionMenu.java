@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game;
 
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -9,7 +10,9 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.LookAtMapAction;
+import fr.lyrgard.hexScape.gui.desktop.action.LookFreelyAction;
 import fr.lyrgard.hexScape.gui.desktop.action.LookFromPieceAction;
+import fr.lyrgard.hexScape.message.LookingFreelyMessage;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
@@ -26,16 +29,21 @@ public class ActionMenu extends JPanel {
 	//final private JButton placePiece = new JButton();
 	final private JButton lookAtPointOfView = new JButton();
 	final private JButton lookAtMap = new JButton(new LookAtMapAction());
+	final private JButton lookFreely = new JButton(new LookFreelyAction());
 	
 	private String selectedPieceId;
 	
 	public ActionMenu() {
+		setLayout(new FlowLayout());
+		
 		lookAtPointOfView.setVisible(false);
 		lookAtMap.setVisible(false);
+		lookFreely.setVisible(true);
 		
 		
 		add(lookAtPointOfView);
 		add(lookAtMap);
+		add(lookFreely);
 		
 		GuiMessageBus.register(this);
 	}
@@ -108,6 +116,7 @@ public class ActionMenu extends JPanel {
 				public void run() {
 					lookAtPointOfView.setVisible(false);
 					lookAtMap.setVisible(true);
+					lookFreely.setVisible(true);
 				}
 			});
 		}
@@ -125,6 +134,25 @@ public class ActionMenu extends JPanel {
 						lookAtPointOfView.setVisible(true);
 					}
 					lookAtMap.setVisible(false);
+					lookFreely.setVisible(true);
+				}
+			});
+		}
+	}
+	
+	@Subscribe public void onLookingFreely(LookingFreelyMessage message) {
+		String playerId = message.getPlayerId();
+
+		if (playerId != null && playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
+			EventQueue.invokeLater(new Runnable() {
+
+				public void run() {
+					if (selectedPieceId != null) {
+						new LookFromPieceAction(selectedPieceId);
+						lookAtPointOfView.setVisible(true);
+					}
+					lookAtMap.setVisible(true);
+					lookFreely.setVisible(false);
 				}
 			});
 		}

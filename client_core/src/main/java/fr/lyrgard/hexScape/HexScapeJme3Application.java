@@ -15,6 +15,7 @@ import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.camera.FlyByCameraAppState;
 import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
@@ -22,6 +23,7 @@ import fr.lyrgard.hexScape.control.SelectMarkerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
 import fr.lyrgard.hexScape.control.View3dControlState;
 import fr.lyrgard.hexScape.message.CoreReady;
+import fr.lyrgard.hexScape.message.LookingFreelyMessage;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
@@ -38,6 +40,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	private RotatingAroundCameraAppState rotatingAroundCameraAppState = new RotatingAroundCameraAppState();
 	
 	private PointOfViewCameraAppState pointOfViewCameraAppState = new PointOfViewCameraAppState();
+	
+	private FlyByCameraAppState flyByCameraAppState = new FlyByCameraAppState();
 	
 	private PieceControlerAppState pieceControlerAppState = new PieceControlerAppState();
 	
@@ -56,10 +60,13 @@ public class HexScapeJme3Application extends SimpleApplication {
 		stateManager.attach(titleMenuButtonsAppState);
 		stateManager.attach(pointOfViewCameraAppState);
 		stateManager.attach(selectMarkerAppState);
+		stateManager.attach(flyByCameraAppState);
+		
 		pieceControlerAppState.setEnabled(false);
 		rotatingAroundCameraAppState.setEnabled(false);
 		pointOfViewCameraAppState.setEnabled(false);
 		selectMarkerAppState.setEnabled(false);
+		flyByCameraAppState.setEnabled(false);
 	}
 
 	@Override
@@ -127,6 +134,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			pieceControlerAppState.setEnabled(false);
 			rotatingAroundCameraAppState.setEnabled(false);
 			selectMarkerAppState.setEnabled(false);
+			flyByCameraAppState.setEnabled(false);
 			
 			titleMenuButtonsAppState.setEnabled(true);
 			cam.setLocation(new Vector3f(0, 100, 0));
@@ -136,6 +144,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			pointOfViewCameraAppState.setEnabled(false);
 			titleMenuButtonsAppState.setEnabled(false);
 			pieceControlerAppState.setEnabled(false);
+			flyByCameraAppState.setEnabled(false);
 			
 			rotatingAroundCameraAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
@@ -144,6 +153,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		case SHOW_MAP_PLAYING:
 			pointOfViewCameraAppState.setEnabled(false);
 			titleMenuButtonsAppState.setEnabled(false);
+			flyByCameraAppState.setEnabled(false);
 			
 			pieceControlerAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
@@ -154,10 +164,22 @@ public class HexScapeJme3Application extends SimpleApplication {
 			titleMenuButtonsAppState.setEnabled(false);
 			pieceControlerAppState.setEnabled(false);
 			rotatingAroundCameraAppState.setEnabled(false);
+			flyByCameraAppState.setEnabled(false);
 			
 			pointOfViewCameraAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
 			pointOfViewCameraAppState.setPiece(pieceLookedAt);
+			break;
+		case FREE_MOVING:
+			pointOfViewCameraAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(false);
+			
+			pieceControlerAppState.setEnabled(true);
+			selectMarkerAppState.setEnabled(true);
+			flyByCameraAppState.setEnabled(true);
+			break;
+		default:
 			break;
 		}
 	}
@@ -216,6 +238,13 @@ public class HexScapeJme3Application extends SimpleApplication {
 			}
 			
 			GuiMessageBus.post(new LookingFromAboveMessage(CurrentUserInfo.getInstance().getPlayerId()));
+		}
+	}
+	
+	public void lookFreely() {
+		if (scene != null) {
+			setControlState(View3dControlState.FREE_MOVING);
+			GuiMessageBus.post(new LookingFreelyMessage(CurrentUserInfo.getInstance().getPlayerId()));
 		}
 	}
 

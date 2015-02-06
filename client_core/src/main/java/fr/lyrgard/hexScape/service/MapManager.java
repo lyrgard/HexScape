@@ -27,11 +27,13 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MinFilter;
 import com.jme3.util.BufferUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.io.virtualScape.VirtualScapeMapReader;
 import fr.lyrgard.hexScape.model.map.Direction;
@@ -67,6 +69,8 @@ public class MapManager {
 		this.map = map;
 		sceneNode = new Node("sceneNode");
 		selectablePieceNode = new Node("selectablePiece");
+		
+		
 
 		sceneNode.attachChild(selectablePieceNode);
 	}
@@ -243,6 +247,14 @@ public class MapManager {
 		if (startZones != null) {
 			mapNode.attachChild(startZones);
 		}
+		
+//		Box b = new Box(50, 10, 1); // create cube shape
+//        Geometry geom = new Geometry("Box", b);  // create cube geometry from the shape
+//        Material mat = new Material(HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(),
+//          "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
+//        mat.setColor("Color", ColorRGBA.Red);   // set color of material to blue
+//        geom.setMaterial(mat);                   // set the cube's material
+//        mapNode.attachChild(geom);       
 	}
 
 	private Node getStartZones() {

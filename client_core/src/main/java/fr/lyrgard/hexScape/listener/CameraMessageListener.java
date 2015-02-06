@@ -4,6 +4,7 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.message.LookFreelyMessage;
 import fr.lyrgard.hexScape.message.LookFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookFromPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
@@ -44,4 +45,15 @@ public class CameraMessageListener extends AbstractMessageListener {
 			HexScapeCore.getInstance().getHexScapeJme3Application().lookAtTheMap();
 		}
 	}
+	
+	@Subscribe
+	public void onLookFreely(LookFreelyMessage message) {
+		String playerId = message.getPlayerId();
+		
+		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
+			HexScapeCore.getInstance().getHexScapeJme3Application().lookFreely();
+		}
+	}
+	
+	
 }
