@@ -1,5 +1,7 @@
 package fr.lyrgard.hexScape;
 
+import java.io.File;
+
 import fr.lyrgard.hexScape.listener.ArmyMessageListener;
 import fr.lyrgard.hexScape.listener.CameraMessageListener;
 import fr.lyrgard.hexScape.listener.ChatMessageListener;
@@ -20,6 +22,8 @@ import fr.lyrgard.hexScape.service.ConfigurationService;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class HexScapeCore {
+	
+	public static final File APP_DATA_FOLDER = new File(System.getProperty("user.home") + "/.hexscape");
 
 	private static HexScapeCore instance = new HexScapeCore();
 	

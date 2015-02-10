@@ -26,7 +26,7 @@ public class ObjModelLoader extends AbstractModelLoader {
 	public ExternalModel load(String name) {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		
-		Spatial model = assetManager.loadModel(getObjFile(name).getPath().replaceAll("\\\\", "/"));
+		Spatial model = assetManager.loadModel(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(getObjFile(name).toURI()).getPath().replaceAll("\\\\", "/"));
 		
 		if (model instanceof Geometry) {
 			normalizeMaterial((Geometry)model, assetManager);

@@ -72,7 +72,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {
 		
-		assetManager.registerLocator("", FileLocator.class);
+		assetManager.registerLocator(HexScapeCore.APP_DATA_FOLDER.getAbsolutePath(), FileLocator.class);
 		
 		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
 		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );

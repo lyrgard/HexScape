@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.player.User;
 
@@ -17,7 +18,7 @@ public class ConfigurationService {
 	
 	public static final String DEFAULT_GAME_NAME = "DEFAULT_GAME_NAME";
 	
-	private static final String CONFIG_FILENAME = "config.properties";
+	private static final File CONFIG_FILE = new File(HexScapeCore.APP_DATA_FOLDER, "config.properties");
 	
 	private static final String USER_NAME_KEY = "user.name";
 	//private static final String USER_COLOR_KEY = "user.color";
@@ -39,8 +40,7 @@ public class ConfigurationService {
 	
 	private ConfigurationService() {
 		
-		File file = new File(CONFIG_FILENAME);
-		if (!file.exists()) {
+		if (!CONFIG_FILE.exists()) {
 			initConfig();
 		} else {
 			loadProperties();
@@ -49,6 +49,10 @@ public class ConfigurationService {
 	}
 	
 	private void initConfig() {
+		if (!HexScapeCore.APP_DATA_FOLDER.exists()) {
+			HexScapeCore.APP_DATA_FOLDER.mkdir();
+		}
+		
 		properties = new Properties();
 		// set the properties value
 		setUserName("Player");
@@ -77,7 +81,7 @@ public class ConfigurationService {
 		InputStream input = null;
 		try {
 			 
-			input = new FileInputStream(CONFIG_FILENAME);
+			input = new FileInputStream(CONFIG_FILE.getAbsolutePath());
 	 
 			// load a properties file
 			properties.load(input);
@@ -137,7 +141,7 @@ public class ConfigurationService {
 		 
 		try {
 	 
-			output = new FileOutputStream(CONFIG_FILENAME);
+			output = new FileOutputStream(CONFIG_FILE.getAbsolutePath());
 	 
 			// save properties to project root folder
 			properties.store(output, null);

@@ -48,10 +48,10 @@ public class TextureService  {
 		BufferedImage bimg = null;
 		try {
 			if (gameFile.exists() && gameFile.isFile() && gameFile.canRead()) {
-				tileTexture = assetManager.loadTexture(gameFile.getPath());
+				tileTexture = assetManager.loadTexture(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(gameFile.toURI()).getPath());
 				bimg = ImageIO.read(new File(gameFile.getPath()));
 			} else if (commonFile.exists() && commonFile.isFile() && commonFile.canRead()) {
-				tileTexture = assetManager.loadTexture(commonFile.getPath());
+				tileTexture = assetManager.loadTexture(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(commonFile.toURI()).getPath());
 				bimg = ImageIO.read(new File(gameFile.getPath()));
 			} else {
 				String resourceLocation = "model/texture/defaultTileTexture.bmp";

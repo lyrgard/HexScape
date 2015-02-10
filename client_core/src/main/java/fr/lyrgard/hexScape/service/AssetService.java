@@ -16,7 +16,8 @@ import fr.lyrgard.hexScape.model.TitleScreen;
 
 public class AssetService {
 
-	public static final File ASSET_FOLDER = new File("asset");
+	
+	public static final File ASSET_FOLDER = new File(HexScapeCore.APP_DATA_FOLDER, "asset");
 	
 	public static final File COMMON_ASSET_FOLDER = new File(ASSET_FOLDER, "common");  
 	
