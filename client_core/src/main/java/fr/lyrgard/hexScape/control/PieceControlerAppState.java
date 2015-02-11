@@ -27,6 +27,7 @@ import fr.lyrgard.hexScape.service.PieceManager;
 public class PieceControlerAppState extends AbstractAppState implements ActionListener {
 
 	private static final String CLICK_MAPPING = "ControlerAppState_click";
+	private static final String CTRL_MAPPING = "ControlerAppState_ctrl";
 	private static final String CANCEL_MAPPING = "ControlerAppState_cancel";
 	private static final String DELETE_MAPPING = "ControlerAppState_delete";
 	private static final String POV_MAPPING = "ControlerAppState_pov";
@@ -37,6 +38,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 	private SelectPieceByMouseAppState selectPieceByMouseAppState = new SelectPieceByMouseAppState();
 	
 	private State currentState = State.WAITING;
+	
+	private boolean ctrlKeyPressed = false;
 	
 	private InputManager inputManager;
 	
@@ -57,12 +60,13 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 		
 		inputManager.addMapping(CLICK_MAPPING, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
 		inputManager.addMapping(CANCEL_MAPPING, new KeyTrigger(KeyInput.KEY_ESCAPE));
+		inputManager.addMapping(CTRL_MAPPING, new KeyTrigger(KeyInput.KEY_LCONTROL), new KeyTrigger(KeyInput.KEY_RCONTROL));
 		inputManager.addMapping(DELETE_MAPPING, new KeyTrigger(KeyInput.KEY_DELETE));
 		inputManager.addMapping(POV_MAPPING, new KeyTrigger(KeyInput.KEY_P));
 		inputManager.addMapping(MOUSE_WHEEL_UP_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
 		inputManager.addMapping(MOUSE_WHEEL_DOWN_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
 	
-		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, POV_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING);
+		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, POV_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING, CTRL_MAPPING);
 	}
 	
 	public void beginAddingPiece(PieceManager piece) {
@@ -114,9 +118,16 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				changeStateTo(State.SELECTING_PIECE);
 				break;
 			case SELECTING_PIECE:
-				changeStateTo(State.SELECTING_PIECE);
-				if (keyPressed && selectPieceByMouseAppState.getSelectedPiece() == selectPieceByMouseAppState.getPieceUnderMouse()) {
-					changeStateTo(State.MOVING_PIECE);
+				if (keyPressed) {
+					piece = selectPieceByMouseAppState.getPieceUnderMouse();
+					if (ctrlKeyPressed && selectPieceByMouseAppState.getSelectedPiece() != piece) {
+						selectPieceByMouseAppState.secondarySelectPiece();
+					} else {
+						changeStateTo(State.SELECTING_PIECE);
+						if (selectPieceByMouseAppState.getSelectedPiece() == piece) {
+							changeStateTo(State.MOVING_PIECE);
+						}
+					}
 				}
 				break;
 			}
@@ -195,6 +206,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 			if (currentState == State.SELECTING_PIECE) {
 				HexScapeCore.getInstance().getHexScapeJme3Application().lookThroughEyesOf(selectPieceByMouseAppState.getSelectedPiece());
 			}
+		} else if (name.equals(CTRL_MAPPING)) {
+			ctrlKeyPressed = keyPressed;
 		}
 	}
 	

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.SecondarySelectMarker;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
@@ -42,6 +43,21 @@ public class SelectMarkerService {
 		}
 		
 		return selectMarker;
+	}
+	
+	public SecondarySelectMarker getNewSecondarySelectMarker(String playerId) {
+		SecondarySelectMarker secondarySelectMarker = null;
+		Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
+
+		if (game != null) {
+			Player player = game.getPlayer(playerId);
+
+			if (player != null) {
+				secondarySelectMarker = new SecondarySelectMarker(player.getColor());
+			}
+		}
+
+		return secondarySelectMarker;
 	}
 	
 	public Collection<SelectMarker> getSelectMarkers() {

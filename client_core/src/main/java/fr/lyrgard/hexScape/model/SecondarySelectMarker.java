@@ -1,8 +1,5 @@
 package fr.lyrgard.hexScape.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.jme3.math.Vector2f;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.queue.RenderQueue.Bucket;
@@ -16,7 +13,7 @@ import com.jme3.util.BufferUtils;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
 import fr.lyrgard.hexScape.model.player.ColorEnum;
 
-public class SelectMarker implements Displayable {
+public class SecondarySelectMarker implements Displayable {
 	
 	private static Mesh mesh;
 	
@@ -33,22 +30,16 @@ public class SelectMarker implements Displayable {
 		mesh.updateBound();
 	}
 	
-	private List<SecondarySelectMarker> secondarySelectMarkers = new ArrayList<SecondarySelectMarker>();
-	
-	public SelectMarker(ColorEnum color) {
+	public SecondarySelectMarker(ColorEnum color) {
 		geometry = new Geometry("selectCross", mesh);
 		geometry.setQueueBucket(Bucket.Translucent);  
 		geometry.setShadowMode(ShadowMode.Off);
-		geometry.setMaterial(SelectMarkerMaterialFactory.getMaterial(true, color));
+		geometry.setMaterial(SelectMarkerMaterialFactory.getMaterial(false, color));
 	}
 	
 	@Override
 	public Spatial getSpatial() {
 		return geometry;
-	}
-
-	public List<SecondarySelectMarker> getSecondarySelectMarkers() {
-		return secondarySelectMarkers;
 	}
 
 }

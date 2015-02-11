@@ -6,6 +6,7 @@ import com.jme3.app.state.AbstractAppState;
 import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
 
+import fr.lyrgard.hexScape.model.SecondarySelectMarker;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.service.SelectMarkerService;
 
@@ -32,6 +33,12 @@ public class SelectMarkerAppState extends AbstractAppState {
 			localTranslation.y = selectMarkerYOffset + selectMarkerYVariation * FastMath.sin(thisMarkerTime);
 			selectMarker.getSpatial().setLocalTranslation(localTranslation);
 			selectMarker.getSpatial().getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
+			for (SecondarySelectMarker secondarySelectMarker : selectMarker.getSecondarySelectMarkers()) {
+				localTranslation = secondarySelectMarker.getSpatial().getLocalTranslation();
+				localTranslation.y = selectMarkerYOffset + selectMarkerYVariation * FastMath.sin(thisMarkerTime);
+				secondarySelectMarker.getSpatial().setLocalTranslation(localTranslation);
+				secondarySelectMarker.getSpatial().getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
+			}
 			i++;
 		}
 	}

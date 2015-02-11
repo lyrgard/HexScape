@@ -832,7 +832,7 @@ public class AseModelLoader extends AbstractModelLoader {
 			Material mat = new Material(assetManager, 
 					"Common/MatDefs/Light/Lighting.j3md");
 			
-			Texture TileTexture = assetManager.loadTexture(getTextureFile(mainObjectName, name).getPath());
+			Texture TileTexture = assetManager.loadTexture(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(getTextureFile(mainObjectName, name).toURI()).getPath());
 			TileTexture.setWrap(WrapMode.Repeat);
 			mat.setTexture("DiffuseMap", TileTexture);
 			mat.setBoolean("UseMaterialColors",true);    

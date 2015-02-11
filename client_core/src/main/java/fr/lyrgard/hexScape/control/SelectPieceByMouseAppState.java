@@ -58,21 +58,28 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 		return success;
 	}
 	
+	public boolean secondarySelectPiece() {
+		boolean success = false;
+		PieceManager piece = getPieceUnderMouse();
+		if (piece != null && selectedPiece != piece) {
+			secondarySelectPiece(piece);
+			success = true;
+		}
+		return success;
+	}
+	
 	public void selectPiece(PieceManager piece) {
 		if (piece != null) {
 			cancelSelection();
 			selectedPiece = piece;
 
 			piece.select(CurrentUserInfo.getInstance().getPlayerId());
-
-//			BoundingBox boundingBox = (BoundingBox)selectedPiece.getSpatial().getWorldBound();
-//
-//			Vector3f spacePos = CoordinateUtils.toSpaceCoordinate(piece.getPiece().getX(), piece.getPiece().getY(), piece.getPiece().getZ());
-//			selectMarkerY = boundingBox.getCenter().y - boundingBox.getYExtent() + selectMarkerYOffset;
-//			spacePos.y = selectMarkerY;
-//			selectMarker.setLocalTranslation(spacePos);
-//
-//			rootNode.attachChild(selectMarker);
+		}
+	}
+	
+	public void secondarySelectPiece(PieceManager piece) {
+		if (piece != null) {
+			piece.switchSecondarySelect(CurrentUserInfo.getInstance().getPlayerId());
 		}
 	}
 	

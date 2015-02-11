@@ -1,11 +1,14 @@
 package fr.lyrgard.hexScape.service;
 
+import java.util.Iterator;
+
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.model.SecondarySelectMarker;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Tile;
@@ -72,6 +75,34 @@ public class PieceManager {
 	}
 	
 	public void unselect(String playerId) {
-		pieceNode.detachChild(SelectMarkerService.getInstance().getSelectMarker(playerId).getSpatial());
+		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
+		pieceNode.detachChild(selectMarker.getSpatial());
+		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
+		while (it.hasNext()) {
+			SecondarySelectMarker secondarySelectMarker = it.next();
+			secondarySelectMarker.getSpatial().removeFromParent();
+			it.remove();
+		}
+	}
+	
+	public void switchSecondarySelect(String playerId) {
+		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
+		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
+		boolean secondarySelectMarkerFound = false;
+		while (it.hasNext()) {
+			SecondarySelectMarker secondarySelectMarker = it.next();
+			if (pieceNode.hasChild(secondarySelectMarker.getSpatial())) {
+				secondarySelectMarkerFound = true;
+				pieceNode.detachChild(secondarySelectMarker.getSpatial());
+				it.remove();
+				break;
+			}
+		}
+		if (!secondarySelectMarkerFound) {
+			SecondarySelectMarker secondarySelectMarker = SelectMarkerService.getInstance().getNewSecondarySelectMarker(playerId);
+			selectMarker.getSecondarySelectMarkers().add(secondarySelectMarker);
+			pieceNode.attachChild(secondarySelectMarker.getSpatial());
+			secondarySelectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+		}
 	}
 }
