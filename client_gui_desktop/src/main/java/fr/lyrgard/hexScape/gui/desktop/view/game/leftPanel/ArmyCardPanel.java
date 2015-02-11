@@ -214,6 +214,7 @@ public class ArmyCardPanel extends JPanel {
 				String numberString = Integer.toString(number);
 				imageLabel.setText(numberString);
 				imageLabel.setIconTextGap(1);
+				imageLabel.addMouseListener(new PopMenuClickListener(new StackableMarkerMenu(card, (StackableMarkerInstance)marker)));
 				break;
 			case REVEALABLE:
 				markerIcon = new ImageIcon(markerDefinition.getImage().getAbsolutePath());

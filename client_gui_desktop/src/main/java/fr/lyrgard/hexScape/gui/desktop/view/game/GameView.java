@@ -44,7 +44,7 @@ public class GameView extends AbstractView {
 				));
 		
 		add(new LeftPanel(), "span 1 2, grow");
-		add(new ActionMenu());
+		add(new ActionMenu(), "grow");
 		add(new RightPanel(), "span 1 2, grow");
 		
 		
