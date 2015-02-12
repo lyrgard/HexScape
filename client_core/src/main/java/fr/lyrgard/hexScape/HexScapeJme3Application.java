@@ -77,7 +77,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		float aspect = (float)cam.getWidth() / (float)cam.getHeight();
 		cam.setFrustumPerspective( 45f, aspect, 0.1f, cam.getFrustumFar() );
 		
-		rotatingAroundCameraAppState.setRotateAroundNode(null);
+		rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		
 		DirectionalLight sun = new DirectionalLight();
 		sun.setColor(ColorRGBA.White.mult(0.5f));
@@ -148,7 +148,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			
 			rotatingAroundCameraAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
-			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial(), true);
 			break;
 		case SHOW_MAP_PLAYING:
 			pointOfViewCameraAppState.setEnabled(false);
@@ -158,16 +158,16 @@ public class HexScapeJme3Application extends SimpleApplication {
 			pieceControlerAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
 			rotatingAroundCameraAppState.setEnabled(true);
-			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial());
+			rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial(), false);
 			break;
 		case SHOW_PIECE_VIEW:
 			titleMenuButtonsAppState.setEnabled(false);
-			pieceControlerAppState.setEnabled(false);
 			rotatingAroundCameraAppState.setEnabled(false);
 			flyByCameraAppState.setEnabled(false);
 			
 			pointOfViewCameraAppState.setEnabled(true);
 			selectMarkerAppState.setEnabled(true);
+			pieceControlerAppState.setEnabled(true);
 			pointOfViewCameraAppState.setPiece(pieceLookedAt);
 			break;
 		case FREE_MOVING:
@@ -208,12 +208,14 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rootNode.attachChild(scene.getSpatial());
 			//rootNode.attachChild(Sky.getInstance().getSpatial());
 			if (CurrentUserInfo.getInstance().isPlayingGame()) {
+				// reset camera position
+				rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial(), true);
 				setControlState(View3dControlState.SHOW_MAP_PLAYING);
 			} else {
 				setControlState(View3dControlState.SHOW_MAP_OBSERVE);
 			}
 		} else {
-			rotatingAroundCameraAppState.setRotateAroundNode(null);
+			rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		}
 	}
 	

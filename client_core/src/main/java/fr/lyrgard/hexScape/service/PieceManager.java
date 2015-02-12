@@ -21,6 +21,8 @@ public class PieceManager {
 	private PieceInstance piece;
 	
 	private Node pieceNode;
+	
+	private Spatial pieceModelSpatial;
 
 	public PieceManager(PieceInstance piece) {
 		super();
@@ -36,7 +38,8 @@ public class PieceManager {
 	public Spatial getSpatial() {
 		if (pieceNode == null) {
 			pieceNode = new Node();
-			pieceNode.attachChild(ExternalModelService.getInstance().getModel(piece.getModelId()));
+			pieceModelSpatial = ExternalModelService.getInstance().getModel(piece.getModelId());
+			pieceNode.attachChild(pieceModelSpatial);
 		}
 		return pieceNode;
 	}
@@ -45,7 +48,7 @@ public class PieceManager {
 		getPiece().setDirection(direction);
 		
 		float angle = DirectionService.getInstance().getAngle(direction);
-		getSpatial().setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+		pieceModelSpatial.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
 	}
 	
 	public void moveTo(int x, int y, int z, Direction direction) {
@@ -85,7 +88,7 @@ public class PieceManager {
 		}
 	}
 	
-	public void switchSecondarySelect(String playerId) {
+	public void switchSecondarySelect(String playerId, PieceManager selectedPiece) {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
 		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
 		boolean secondarySelectMarkerFound = false;
@@ -99,7 +102,7 @@ public class PieceManager {
 			}
 		}
 		if (!secondarySelectMarkerFound) {
-			SecondarySelectMarker secondarySelectMarker = SelectMarkerService.getInstance().getNewSecondarySelectMarker(playerId);
+			SecondarySelectMarker secondarySelectMarker = SelectMarkerService.getInstance().getNewSecondarySelectMarker(playerId, selectedPiece, this);
 			selectMarker.getSecondarySelectMarkers().add(secondarySelectMarker);
 			pieceNode.attachChild(secondarySelectMarker.getSpatial());
 			secondarySelectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);

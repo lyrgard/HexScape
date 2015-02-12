@@ -25,7 +25,7 @@ public class RotatingAroundCameraAppState extends AbstractAppState {
 				this.rotatingAroundCamera.registerWithInput(app.getInputManager());
 			}
 			if (rotateAroundNode != null) {
-				rotatingAroundCamera.setRotateAroundNode(rotateAroundNode);
+				rotatingAroundCamera.setRotateAroundNode(rotateAroundNode, true);
 			}
 		}
 	}
@@ -47,10 +47,10 @@ public class RotatingAroundCameraAppState extends AbstractAppState {
 		super.setEnabled(enabled);
 	}
 
-	public void setRotateAroundNode(Spatial rotateAroundNode) {
+	public void setRotateAroundNode(Spatial rotateAroundNode, boolean resetPosition) {
 		this.rotateAroundNode = rotateAroundNode;
 		if (rotatingAroundCamera != null) {
-			rotatingAroundCamera.setRotateAroundNode(rotateAroundNode);
+			rotatingAroundCamera.setRotateAroundNode(rotateAroundNode, resetPosition);
 		} 
 	}
 }

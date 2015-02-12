@@ -22,6 +22,8 @@ public class SelectMarkerMaterialFactory {
 	
 	private static Map<ColorEnum, Material> secondarySelectMarkerMaterialByColor = new HashMap<ColorEnum, Material>();
 	
+	private static Map<ColorEnum, Material> linkMaterialByColor = new HashMap<ColorEnum, Material>();
+	
 	static {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		selectTileTexture = assetManager.loadTexture("model/texture/select_cross_white.png");
@@ -67,5 +69,25 @@ public class SelectMarkerMaterialFactory {
 		return material;
 	}
 	
+	
+	static Material getLinkMaterial(ColorEnum colorEnum) {
+		Map<ColorEnum, Material> mapToSearch = linkMaterialByColor;
+		
+		Material material = mapToSearch.get(colorEnum);
+		if (material != null) {
+			return material;
+		}
+		
+		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
+		
+		ColorRGBA color = new ColorRGBA(colorEnum.getColor().getRed()/256f, colorEnum.getColor().getGreen()/256f, colorEnum.getColor().getBlue()/256f, 1);
+		
+		material = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md"); 
+		material.setColor("Color", color); 
+		
+		mapToSearch.put(colorEnum, material);
+		
+		return material;
+	}
 	
 }

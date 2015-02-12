@@ -43,20 +43,17 @@ public class PieceMessageListener {
 		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
 		if (user.getGame() != null && user.getPlayer() != null) {
-			for (Player owner : user.getGame().getPlayers()) {
-				if (owner.getArmy() != null) {
-					CardInstance card = owner.getArmy().getCard(cardId);
-					if (card != null) {
-						PieceInstance pieceInstance = new PieceInstance(pieceId, modelId, card);
-						pieceInstance.setDirection(direction);
-						pieceInstance.setX(x);
-						pieceInstance.setY(y);
-						pieceInstance.setZ(z);
-						card.addPiece(pieceInstance);
-						ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
-						return;
-					}
-				}
+
+			CardInstance card = user.getGame().getCard(cardId);
+			if (card != null) {
+				PieceInstance pieceInstance = new PieceInstance(pieceId, modelId, card);
+				pieceInstance.setDirection(direction);
+				pieceInstance.setX(x);
+				pieceInstance.setY(y);
+				pieceInstance.setZ(z);
+				card.addPiece(pieceInstance);
+				ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+				return;
 			}
 		}
 	}

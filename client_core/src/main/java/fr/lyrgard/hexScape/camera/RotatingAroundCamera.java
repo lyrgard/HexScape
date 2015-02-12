@@ -139,17 +139,25 @@ public class RotatingAroundCamera implements AnalogListener {
 		return centerPos;
 	}
 
-	public void setRotateAroundNode(Spatial rotateAroundNode) {
+
+	public void setRotateAroundNode(Spatial rotateAroundNode, boolean resetPosition) {
 		if (rotateAroundNode != null) {
 			BoundingBox volume = (BoundingBox)rotateAroundNode.getWorldBound();
 			centerPos = volume.getCenter();
-			distance = (float)(Math.sqrt(4 * volume.getXExtent() * volume.getXExtent() +  4 * volume.getYExtent() * volume.getYExtent()));
+			
+			if (resetPosition) {
+				distance = (float)(Math.sqrt(4 * volume.getXExtent() * volume.getXExtent() +  4 * volume.getYExtent() * volume.getYExtent()));
+			} else {
+				distance = cam.getLocation().distance(centerPos);
+			}
 		} else {
 			centerPos = Vector3f.ZERO;
 			distance = 20f;
 		}
 		
-		cam.setLocation(centerPos.add(new Vector3f(1, 1, 0).normalize().mult(distance)));
+		if (resetPosition) {
+			cam.setLocation(centerPos.add(new Vector3f(1, 1, 0).normalize().mult(distance)));
+		}
 		cam.lookAt(centerPos, Vector3f.UNIT_Y);
 	}
 

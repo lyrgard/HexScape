@@ -60,9 +60,9 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	
 	public boolean secondarySelectPiece() {
 		boolean success = false;
-		PieceManager piece = getPieceUnderMouse();
-		if (piece != null && selectedPiece != piece) {
-			secondarySelectPiece(piece);
+		PieceManager pieceToSencondarySelect = getPieceUnderMouse();
+		if (pieceToSencondarySelect != null && selectedPiece != pieceToSencondarySelect) {
+			pieceToSencondarySelect.switchSecondarySelect(CurrentUserInfo.getInstance().getPlayerId(), selectedPiece);
 			success = true;
 		}
 		return success;
@@ -74,12 +74,6 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 			selectedPiece = piece;
 
 			piece.select(CurrentUserInfo.getInstance().getPlayerId());
-		}
-	}
-	
-	public void secondarySelectPiece(PieceManager piece) {
-		if (piece != null) {
-			piece.switchSecondarySelect(CurrentUserInfo.getInstance().getPlayerId());
 		}
 	}
 	

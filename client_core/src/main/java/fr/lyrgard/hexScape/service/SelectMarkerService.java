@@ -45,7 +45,7 @@ public class SelectMarkerService {
 		return selectMarker;
 	}
 	
-	public SecondarySelectMarker getNewSecondarySelectMarker(String playerId) {
+	public SecondarySelectMarker getNewSecondarySelectMarker(String playerId, PieceManager selectedPiece, PieceManager secondarySelectedPiece) {
 		SecondarySelectMarker secondarySelectMarker = null;
 		Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
 
@@ -53,7 +53,7 @@ public class SelectMarkerService {
 			Player player = game.getPlayer(playerId);
 
 			if (player != null) {
-				secondarySelectMarker = new SecondarySelectMarker(player.getColor());
+				secondarySelectMarker = new SecondarySelectMarker(player.getColor(), selectedPiece, secondarySelectedPiece);
 			}
 		}
 

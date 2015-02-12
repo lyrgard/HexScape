@@ -37,7 +37,7 @@ public class SelectMarkerAppState extends AbstractAppState {
 				localTranslation = secondarySelectMarker.getSpatial().getLocalTranslation();
 				localTranslation.y = selectMarkerYOffset + selectMarkerYVariation * FastMath.sin(thisMarkerTime);
 				secondarySelectMarker.getSpatial().setLocalTranslation(localTranslation);
-				secondarySelectMarker.getSpatial().getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
+				secondarySelectMarker.getRotatingSpatial().getLocalRotation().fromAngleAxis(selectMarkerRotation, Vector3f.UNIT_Y);
 			}
 			i++;
 		}

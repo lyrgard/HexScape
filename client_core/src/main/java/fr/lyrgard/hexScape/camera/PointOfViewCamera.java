@@ -112,7 +112,7 @@ public class PointOfViewCamera implements AnalogListener, ActionListener {
 		inputManager.addMapping(POVCAM_Mouse_Down, new MouseAxisTrigger(1, true));
 
 		// mouse only - zoom in/out with wheel, and rotate drag
-		inputManager.addMapping(POVCAM_RotateDrag, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
+		inputManager.addMapping(POVCAM_RotateDrag, new MouseButtonTrigger(MouseInput.BUTTON_RIGHT));
 
 		inputManager.addListener(this, mappings);
 		inputManager.setCursorVisible(dragToRotate);
