@@ -7,6 +7,8 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondarySelectedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondaryUnselectedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.model.Universe;
@@ -121,6 +123,26 @@ public class PieceMessageListener {
 	}
 	
 	@Subscribe public void onPieceUnselected(PieceUnselectedMessage message) {
+		String userId = message.getSessionUserId();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+		}
+	}
+	
+	@Subscribe public void onPieceSecondarySelected(PieceSecondarySelectedMessage message) {
+		String userId = message.getSessionUserId();
+
+		User user = Universe.getInstance().getUsersByIds().get(userId);
+		
+		if (user != null && user.getGame() != null && user.getPlayer() != null) {
+			ServerNetwork.getInstance().sendMessageToGameExceptUser(message, user.getGameId(), user.getId());
+		}
+	}
+	
+	@Subscribe public void onPieceSecondaryUnselected(PieceSecondaryUnselectedMessage message) {
 		String userId = message.getSessionUserId();
 
 		User user = Universe.getInstance().getUsersByIds().get(userId);

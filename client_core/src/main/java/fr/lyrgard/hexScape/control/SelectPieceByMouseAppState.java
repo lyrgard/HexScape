@@ -13,7 +13,11 @@ import com.jme3.renderer.Camera;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.io.virtualScape.bean.Vector3i;
+import fr.lyrgard.hexScape.message.AbstractMessage;
+import fr.lyrgard.hexScape.message.PieceSecondarySelectedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondaryUnselectedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.service.PieceManager;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
@@ -63,6 +67,13 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 		PieceManager pieceToSencondarySelect = getPieceUnderMouse();
 		if (pieceToSencondarySelect != null && selectedPiece != pieceToSencondarySelect) {
 			pieceToSencondarySelect.switchSecondarySelect(CurrentUserInfo.getInstance().getPlayerId(), selectedPiece);
+			AbstractMessage message;
+			if (pieceToSencondarySelect.isSecondarySelected()) {
+				message = new PieceSecondarySelectedMessage(CurrentUserInfo.getInstance().getPlayerId(), pieceToSencondarySelect.getPiece().getId(), selectedPiece.getPiece().getId());
+			} else {
+				message = new PieceSecondaryUnselectedMessage(CurrentUserInfo.getInstance().getPlayerId(), pieceToSencondarySelect.getPiece().getId(), selectedPiece.getPiece().getId());
+			}
+			CoreMessageBus.post(message);
 			success = true;
 		}
 		return success;

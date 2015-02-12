@@ -23,6 +23,8 @@ public class SecondarySelectMarker implements Displayable {
 	
 	private Geometry targetGeometry;
 	
+	private PieceManager secondarySelectedPiece;
+	
 	static {
 		targetMesh = new Mesh();
 		
@@ -36,6 +38,8 @@ public class SecondarySelectMarker implements Displayable {
 	
 	public SecondarySelectMarker(ColorEnum color, PieceManager selectedPiece, PieceManager secondarySelectedPiece) {
 		node = new Node();
+		
+		this.secondarySelectedPiece = secondarySelectedPiece;
 		
 		targetGeometry = new Geometry("selectCross", targetMesh);
 		targetGeometry.setQueueBucket(Bucket.Translucent);  
@@ -51,6 +55,10 @@ public class SecondarySelectMarker implements Displayable {
 		}
 	}
 	
+	public PieceManager getSecondarySelectedPiece() {
+		return secondarySelectedPiece;
+	}
+
 	@Override
 	public Spatial getSpatial() {
 		return node;

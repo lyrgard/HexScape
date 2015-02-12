@@ -11,6 +11,8 @@ import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.PieceMovedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondarySelectedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondaryUnselectedMessage;
 import fr.lyrgard.hexScape.message.PieceSelectedMessage;
 import fr.lyrgard.hexScape.message.PieceUnselectedMessage;
 import fr.lyrgard.hexScape.message.PlacePieceMessage;
@@ -197,7 +199,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 				ClientNetwork.getInstance().send(message);
 			}
 		} else {
-			// coming from another player, delete the piece
+			// coming from another player, select the piece
 			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
 
 			if (mapManager != null) {
@@ -227,7 +229,7 @@ public class PieceMessageListener extends AbstractMessageListener {
 				ClientNetwork.getInstance().send(message);
 			}
 		} else {
-			// coming from another player, delete the piece
+			// coming from another player, unselect the piece
 			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
 
 			if (mapManager != null) {
@@ -238,6 +240,70 @@ public class PieceMessageListener extends AbstractMessageListener {
 						@Override
 						public Void call() throws Exception {
 							pieceManager.unselect(playerId);
+							return null;
+						}
+					});
+				}
+			}			
+		}
+		GuiMessageBus.post(message);
+	}
+	
+	@Subscribe public void onPieceSecondarySelected(PieceSecondarySelectedMessage message) {
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		final String primarySelectedPieceId = message.getPrimarySelectedPieceId();
+		
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, select the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				final PieceManager primarySelectedPieceManager = mapManager.getPieceManagersByPieceIds().get(primarySelectedPieceId);
+				if (pieceManager != null && primarySelectedPieceManager != null && primarySelectedPieceManager.isSelected()) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.switchSecondarySelect(playerId, primarySelectedPieceManager);
+							return null;
+						}
+					});
+				}
+			}			
+		}
+		GuiMessageBus.post(message);
+	}
+	
+	@Subscribe public void onPieceSecondaryUnselected(PieceSecondaryUnselectedMessage message) {
+		final String playerId = message.getPlayerId();
+		final String pieceId = message.getPieceId();
+		final String primarySelectedPieceId = message.getPrimarySelectedPieceId();
+		
+		if (playerId.equals(CurrentUserInfo.getInstance().getPlayerId())) {
+			// coming from ourself, advertise the placement
+			if (HexScapeCore.getInstance().isOnline()) {
+				ClientNetwork.getInstance().send(message);
+			}
+		} else {
+			// coming from another player, unselect the piece
+			MapManager mapManager = HexScapeCore.getInstance().getMapManager();
+
+			if (mapManager != null) {
+				final PieceManager pieceManager = mapManager.getPieceManagersByPieceIds().get(pieceId);
+				final PieceManager primarySelectedPieceManager = mapManager.getPieceManagersByPieceIds().get(primarySelectedPieceId);
+				if (pieceManager != null && primarySelectedPieceManager != null && primarySelectedPieceManager.isSelected()) {
+					HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+						@Override
+						public Void call() throws Exception {
+							pieceManager.switchSecondarySelect(playerId, primarySelectedPieceManager);
 							return null;
 						}
 					});

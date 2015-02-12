@@ -27,6 +27,8 @@ import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
 import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.ObserveGameMessage;
+import fr.lyrgard.hexScape.message.PieceSecondarySelectedMessage;
+import fr.lyrgard.hexScape.message.PieceSecondaryUnselectedMessage;
 import fr.lyrgard.hexScape.message.PostGameMessageMessage;
 import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
@@ -83,6 +85,8 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 	    @Type(value = PieceMovedMessage.class, name = "PieceMovedMessage"),
 	    @Type(value = PiecePlacedMessage.class, name = "PiecePlacedMessage"),
 	    @Type(value = PieceRemovedMessage.class, name = "PieceRemovedMessage"),
+	    @Type(value = PieceSecondarySelectedMessage.class, name = "PieceSecondarySelectedMessage"),
+	    @Type(value = PieceSecondaryUnselectedMessage.class, name = "PieceSecondaryUnselectedMessage"),
 	    @Type(value = PieceSelectedMessage.class, name = "PieceSelectedMessage"),
 	    @Type(value = PieceUnselectedMessage.class, name = "PieceUnselectedMessage"),
 	    @Type(value = PostGameMessageMessage.class, name = "PostGameMessageMessage"),

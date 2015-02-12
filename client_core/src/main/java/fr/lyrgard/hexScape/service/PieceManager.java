@@ -23,6 +23,10 @@ public class PieceManager {
 	private Node pieceNode;
 	
 	private Spatial pieceModelSpatial;
+	
+	private boolean selected = false;
+	
+	private boolean secondarySelected = false;
 
 	public PieceManager(PieceInstance piece) {
 		super();
@@ -75,6 +79,7 @@ public class PieceManager {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
 		pieceNode.attachChild(selectMarker.getSpatial());
 		selectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+		selected = true;
 	}
 	
 	public void unselect(String playerId) {
@@ -83,11 +88,17 @@ public class PieceManager {
 		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
 		while (it.hasNext()) {
 			SecondarySelectMarker secondarySelectMarker = it.next();
-			secondarySelectMarker.getSpatial().removeFromParent();
-			it.remove();
+			secondarySelectMarker.getSecondarySelectedPiece().switchSecondarySelect(playerId, this);
 		}
+		selected = false;
 	}
 	
+	public boolean isSelected() {
+		return selected;
+	}
+
+
+
 	public void switchSecondarySelect(String playerId, PieceManager selectedPiece) {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
 		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
@@ -98,6 +109,7 @@ public class PieceManager {
 				secondarySelectMarkerFound = true;
 				pieceNode.detachChild(secondarySelectMarker.getSpatial());
 				it.remove();
+				secondarySelected = false;
 				break;
 			}
 		}
@@ -106,6 +118,15 @@ public class PieceManager {
 			selectMarker.getSecondarySelectMarkers().add(secondarySelectMarker);
 			pieceNode.attachChild(secondarySelectMarker.getSpatial());
 			secondarySelectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+			secondarySelected = true;
 		}
 	}
+
+
+
+	public boolean isSecondarySelected() {
+		return secondarySelected;
+	}
+	
+	
 }
