@@ -13,6 +13,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
@@ -29,6 +32,8 @@ import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.service.CardService;
 
 public class SelectedCardPanel extends JPanel {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(SelectedCardPanel.class);
 
 	private static final long serialVersionUID = 2391039578032412686L;
 
@@ -61,7 +66,7 @@ public class SelectedCardPanel extends JPanel {
 				image = ImageIO.read(new File(cardType.getImagePath()));
 				image = image.getScaledInstance(-1, 200, Image.SCALE_SMOOTH);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Error while reading image : " + cardType.getImagePath(), e);
 			}
 			buttonPanel.add(new JButton(new ShowCardAction(cardType)));
 

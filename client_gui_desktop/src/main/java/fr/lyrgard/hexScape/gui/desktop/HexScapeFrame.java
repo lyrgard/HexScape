@@ -12,11 +12,10 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
-
-
-
-
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
@@ -32,6 +31,8 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class HexScapeFrame extends JFrame {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(HexScapeFrame.class);
 
 	private static final long serialVersionUID = 7043232675085791117L;
 
@@ -62,7 +63,7 @@ public class HexScapeFrame extends JFrame {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error while loading Look And Feels Nimbus", e);
 		}
 
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -128,6 +129,7 @@ public class HexScapeFrame extends JFrame {
 				String messageContent = message.getMessage();
 				int messageType = JOptionPane.WARNING_MESSAGE;
 				String title = "Warning";
+				LOGGER.warn(messageContent);
 				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
 			}
 		});
@@ -140,6 +142,7 @@ public class HexScapeFrame extends JFrame {
 				String messageContent = message.getMessage();
 				int messageType = JOptionPane.ERROR_MESSAGE;
 				String title = "Error";
+				LOGGER.error(messageContent);
 				JOptionPane.showMessageDialog(null, messageContent, title, messageType);
 			}
 		});

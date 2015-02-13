@@ -88,7 +88,6 @@ public class GameView extends AbstractView {
 	}
 	
 	@Subscribe public void onGameLeft(GameLeftMessage message) {
-		String playerId = message.getPlayerId();
 		String gameId = message.getGameId();
 		
 		if (gameId.equals(currentGameId) && CurrentUserInfo.getInstance().getPlayer() == null) {

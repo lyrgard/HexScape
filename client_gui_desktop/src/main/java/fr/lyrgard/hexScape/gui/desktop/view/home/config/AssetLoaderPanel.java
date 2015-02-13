@@ -40,9 +40,11 @@ public class AssetLoaderPanel extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				if (assetFile != null) {
 					//progressBar.setVisible(true);
-					AssetService.getInstance().importAssets(assetFile);
+					boolean resultOk = AssetService.getInstance().importAssets(assetFile);
 					//progressBar.setVisible(false);
-					GuiMessageBus.post(new InfoMessage(CurrentUserInfo.getInstance().getId(), "Assets imported"));
+					if (resultOk) {
+						GuiMessageBus.post(new InfoMessage(CurrentUserInfo.getInstance().getId(), "Assets imported"));
+					}
 				}
 			}
 		});

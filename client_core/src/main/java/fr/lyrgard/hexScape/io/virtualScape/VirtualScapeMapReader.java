@@ -10,6 +10,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.io.virtualScape.bean.TileType;
@@ -26,6 +28,8 @@ import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.service.MapManager;
 
 public class VirtualScapeMapReader {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(VirtualScapeMapReader.class);
 	
 	public MapManager readMap(byte[] bytes, String name) {
 		ByteBuffer bB = null;
@@ -85,10 +89,9 @@ public class VirtualScapeMapReader {
 			byte[] bytes = Files.readAllBytes(mapFile.toPath());
 			return readMap(bytes, mapFile.getName());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error("Error while reading map " + mapFile.getAbsolutePath(), e);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error while reading map " + mapFile.getAbsolutePath(), e);
 		}
 		return null;
 	}

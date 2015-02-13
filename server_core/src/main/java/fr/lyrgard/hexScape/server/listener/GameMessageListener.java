@@ -2,6 +2,9 @@ package fr.lyrgard.hexScape.server.listener;
 
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -32,6 +35,8 @@ import fr.lyrgard.hexScape.server.service.GameService;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class GameMessageListener {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(GameMessageListener.class);
 
 	private static GameMessageListener instance;
 	
@@ -163,7 +168,7 @@ public class GameMessageListener {
 						ServerNetwork.getInstance().sendMessageToUser(resultMessage, userInRoom.getId());
 					}
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.error("Error reading map data from json", e);
 				}
 
 				

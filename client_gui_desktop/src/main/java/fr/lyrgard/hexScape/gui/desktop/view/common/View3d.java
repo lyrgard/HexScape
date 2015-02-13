@@ -3,13 +3,8 @@ package fr.lyrgard.hexScape.gui.desktop.view.common;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Component;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
-
-import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.gui.desktop.technical.SwingContext;
 
 public class View3d extends JPanel {
 

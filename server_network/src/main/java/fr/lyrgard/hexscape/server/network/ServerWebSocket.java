@@ -10,13 +10,14 @@ import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
 import org.eclipse.jetty.websocket.server.WebSocketHandler;
 import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
-import fr.lyrgard.hexScape.message.AbstractUserMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.HeartBeatMessage;
 import fr.lyrgard.hexScape.message.UserIdAllocatedMessage;
@@ -29,6 +30,8 @@ import fr.lyrgard.hexScape.model.player.User;
 
 @WebSocket
 public class ServerWebSocket extends WebSocketHandler {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ServerWebSocket.class);
 
 	private String userId;
 
@@ -80,11 +83,11 @@ public class ServerWebSocket extends WebSocketHandler {
 				CoreMessageBus.post(message);
 			}
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receiving message : " + msg, e);
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receiving message : " + msg, e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receiving message : " + msg, e);
 		}
 	}
 
@@ -99,7 +102,7 @@ public class ServerWebSocket extends WebSocketHandler {
 		try {
 			session.getRemote().sendString(MessageJsonMapper.getInstance().toJson(message));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while sending message : " + message, e);
 		}
 	}
 

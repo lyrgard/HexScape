@@ -12,6 +12,9 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.io.ByteStreams;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
@@ -27,17 +30,15 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MinFilter;
 import com.jme3.util.BufferUtils;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.io.virtualScape.VirtualScapeMapReader;
-import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Decor;
+import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Map;
 import fr.lyrgard.hexScape.model.map.Tile;
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
@@ -45,6 +46,8 @@ import fr.lyrgard.hexScape.model.player.ColorEnum;
 import fr.lyrgard.hexScape.utils.CoordinateUtils;
 
 public class MapManager {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(MapManager.class);
 
 	private static VirtualScapeMapReader mapReader = new VirtualScapeMapReader();
 
@@ -85,7 +88,7 @@ public class MapManager {
 			bytes = ByteStreams.toByteArray(stream);
 			return mapReader.readMap(bytes, "");
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while reading map", e);
 		}
 		return null;
 	}

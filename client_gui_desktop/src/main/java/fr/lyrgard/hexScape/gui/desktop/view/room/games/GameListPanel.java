@@ -28,7 +28,6 @@ import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.room.Room;
 
 public class GameListPanel extends JPanel{
 
@@ -78,7 +77,6 @@ public class GameListPanel extends JPanel{
 	}
 	
 	@Subscribe public void onRoomJoined(RoomJoinedMessage message) {
-		final Room room = message.getRoom();
 
 		EventQueue.invokeLater(new Runnable() {
 

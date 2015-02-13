@@ -73,11 +73,11 @@ public class ClientWebSocket {
 			LOGGER.debug("received message " + message.getClass() + " from server");
 			CoreMessageBus.post(message);
 		} catch (JsonParseException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receving message : " + msg, e);
 		} catch (JsonMappingException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receving message : " + msg, e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while receving message : " + msg, e);
 		}
 	}
 	
@@ -96,7 +96,7 @@ public class ClientWebSocket {
 		try {
 			session.getRemote().sendString(MessageJsonMapper.getInstance().toJson(message));
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while sending message : " + message, e);
 		}
 	}
 }

@@ -8,10 +8,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
 public class CardService {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(CardService.class);
 
 	private static final String CARDS_FOLDER_NAME = "cards";
 
@@ -78,7 +83,7 @@ public class CardService {
 								}
 								cardInventory.addCard(id, card, null);
 							} catch (IOException e) {
-								e.printStackTrace();
+								LOGGER.error("Error while reading card definition : " + cardPropertiesFile.getAbsolutePath(), e);
 							}
 
 						}

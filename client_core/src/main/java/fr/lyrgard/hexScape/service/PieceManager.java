@@ -1,15 +1,11 @@
 package fr.lyrgard.hexScape.service;
 
-import java.util.Iterator;
-import java.util.List;
-
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.HexScapeCore;
-import fr.lyrgard.hexScape.model.SecondarySelectMarker;
 import fr.lyrgard.hexScape.model.SelectMarker;
 import fr.lyrgard.hexScape.model.map.Direction;
 import fr.lyrgard.hexScape.model.map.Tile;

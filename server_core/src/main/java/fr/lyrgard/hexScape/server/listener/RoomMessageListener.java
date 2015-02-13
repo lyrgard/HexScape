@@ -2,16 +2,16 @@ package fr.lyrgard.hexScape.server.listener;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.JoinRoomMessage;
+import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
 import fr.lyrgard.hexScape.message.UserJoinedRoomMessage;
-import fr.lyrgard.hexScape.message.RoomJoinedMessage;
 import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.User;
@@ -21,6 +21,8 @@ import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 
 public class RoomMessageListener  {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(RoomMessageListener.class);
 
 	private static RoomMessageListener instance;
 	
@@ -58,7 +60,7 @@ public class RoomMessageListener  {
 				UserJoinedRoomMessage broadcastMessage = new UserJoinedRoomMessage(user.getId(), user.getName(), user.getColor(), roomId);
 				ServerNetwork.getInstance().sendMessageToRoomExceptUser(broadcastMessage, roomId, userId);
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Error while cloning room", e);
 			}
 			
 			

@@ -43,7 +43,7 @@ public class ClientNetwork {
 				LOGGER.info("Connecting to : %s%n", echoUri);
 				
 			} catch (Throwable t) {
-				t.printStackTrace();
+				LOGGER.error("Error while connecting to server", t);
 				client = null;
 			}
 		}
@@ -54,7 +54,7 @@ public class ClientNetwork {
 			try {
 				client.stop();
 			} catch (Exception e) {
-				e.printStackTrace();
+				LOGGER.error("Error while disconnecting from server", e);
 			}
 			socket = null;
 		}
@@ -66,7 +66,7 @@ public class ClientNetwork {
 				socket.getSession().getRemote().sendString(MessageJsonMapper.getInstance().toJson(message));
 				System.out.println("Sent message " + message.getClass() + " to server");
 			} catch (IOException e) {
-				e.printStackTrace();
+				LOGGER.error("Error while sending message to server : " + message, e);
 			}
 		}
 	}

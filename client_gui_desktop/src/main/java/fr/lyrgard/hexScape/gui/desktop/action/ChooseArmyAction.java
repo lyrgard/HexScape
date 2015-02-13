@@ -11,7 +11,6 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LoadArmyMessage;
-import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class ChooseArmyAction extends AbstractAction {
 

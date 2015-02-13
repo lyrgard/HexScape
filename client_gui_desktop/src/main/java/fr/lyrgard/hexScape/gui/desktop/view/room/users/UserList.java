@@ -5,7 +5,6 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 
-import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 
 public class UserList extends JScrollPane {

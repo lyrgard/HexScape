@@ -17,6 +17,9 @@ import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
@@ -29,6 +32,8 @@ import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 
 public class ChatPanel extends JPanel{
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ChatPanel.class);
 	
 	private static final long serialVersionUID = 1711726926387382729L;
 	
@@ -130,7 +135,7 @@ public class ChatPanel extends JPanel{
 			//The pane auto-scrolls with each new response added
 			textPane.setCaretPosition(text.getEndPosition().getOffset() - 1);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while wrinting on the chat : user = " + user + ", color = " + color + ", text = " + line, e);
 		}
 	}
 	
@@ -143,7 +148,7 @@ public class ChatPanel extends JPanel{
 			//The pane auto-scrolls with each new response added
 			textPane.setCaretPosition(text.getEndPosition().getOffset() - 1);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while wrinting action on the chat : action = " + line, e);
 		}
 	}
 	
@@ -154,7 +159,7 @@ public class ChatPanel extends JPanel{
 			//The pane auto-scrolls with each new response added
 			textPane.setCaretPosition(text.getEndPosition().getOffset() - 1);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while wrinting player action on the chat : player = " + player.getDisplayName() + ", action = " + line, e);
 		}
 	}
 	
@@ -173,7 +178,7 @@ public class ChatPanel extends JPanel{
 			//The pane auto-scrolls with each new response added
 			textPane.setCaretPosition(text.getEndPosition().getOffset() - 1);
 		} catch (BadLocationException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while wrinting dice roll on the chat : player = " + player.getDisplayName() + ", dice type = " + type.getId(), e);
 		}
 	}
 	

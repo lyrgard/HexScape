@@ -3,6 +3,9 @@ package fr.lyrgard.hexScape.service;
 import java.io.File;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jme3.asset.AssetManager;
 import com.jme3.asset.DesktopAssetManager;
 
@@ -15,6 +18,8 @@ import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.TitleScreen;
 
 public class AssetService {
+
+	 private final static Logger LOGGER = LoggerFactory.getLogger(AssetService.class);
 
 	
 	public static final File ASSET_FOLDER = new File(HexScapeCore.APP_DATA_FOLDER, "asset");
@@ -33,8 +38,8 @@ public class AssetService {
 	private AssetService() {
 	}
 
-	public void importAssets(File file) {
-
+	public boolean importAssets(File file) {
+		boolean resultOk = true;
 
 		try {
 			//create output directory is not exists
@@ -49,10 +54,12 @@ public class AssetService {
 				
 
 		} catch (ZipException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while extracting asset file", e);
 			GuiMessageBus.post(new ErrorMessage(CurrentUserInfo.getInstance().getPlayerId(), "An error occurred while trying to unzip " + file.getAbsolutePath()));
+			resultOk = false;
 		}
 
+		return resultOk;
 	}
 	
 	public void reloadAssets() {

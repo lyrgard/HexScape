@@ -7,6 +7,8 @@ import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.kohsuke.args4j.spi.IntOptionHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lyrgard.hexScape.model.ServerConstant;
 import fr.lyrgard.hexScape.model.Universe;
@@ -24,6 +26,8 @@ import fr.lyrgard.hexScape.server.service.RoomService;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
 public class HexScapeServer {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(HexScapeServer.class);
 
 	private static final HexScapeServer instance = new HexScapeServer();
 	
@@ -79,7 +83,7 @@ public class HexScapeServer {
 		try {
 			ServerNetwork.getInstance().start(port);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error while trying to start server with port : " + port, e);
 			System.exit(1);
 		}
 	}

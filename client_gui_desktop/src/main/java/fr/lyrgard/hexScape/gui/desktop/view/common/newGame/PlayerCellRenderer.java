@@ -6,9 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
-import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.player.Player;
-import fr.lyrgard.hexScape.model.player.User;
 
 public class PlayerCellRenderer extends JLabel implements ListCellRenderer<Player> {
 

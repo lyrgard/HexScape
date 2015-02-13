@@ -10,11 +10,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.player.User;
 
 public class ConfigurationService {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ConfigurationService.class);
 	
 	public static final String DEFAULT_GAME_NAME = "DEFAULT_GAME_NAME";
 	
@@ -86,14 +91,14 @@ public class ConfigurationService {
 			// load a properties file
 			properties.load(input);
 	 
-		} catch (IOException ex) {
-			ex.printStackTrace();
+		} catch (IOException e) {
+			LOGGER.error("Error while loading config : " + CONFIG_FILE.getAbsolutePath(), e);
 		} finally {
 			if (input != null) {
 				try {
 					input.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.error("Error while closing config after loading : " + CONFIG_FILE.getAbsolutePath(), e);
 				}
 			}
 		}
@@ -149,14 +154,14 @@ public class ConfigurationService {
 			User user = CurrentUserInfo.getInstance();
 			user.setName(getUserName());
 	 
-		} catch (IOException io) {
-			io.printStackTrace();
+		} catch (IOException e) {
+			LOGGER.error("Error while writing config : " + CONFIG_FILE.getAbsolutePath(), e);
 		} finally {
 			if (output != null) {
 				try {
 					output.close();
 				} catch (IOException e) {
-					e.printStackTrace();
+					LOGGER.error("Error while closing config after writing : " + CONFIG_FILE.getAbsolutePath(), e);
 				}
 			}	 
 		}

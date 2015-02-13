@@ -2,7 +2,6 @@ package fr.lyrgard.hexScape.service;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.model.GameRecord;
-import fr.lyrgard.hexScape.model.game.Game;
 
 public class GameRecorderService {
 

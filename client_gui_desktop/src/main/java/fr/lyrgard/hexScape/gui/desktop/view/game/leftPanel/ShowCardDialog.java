@@ -9,9 +9,14 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JDialog;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import fr.lyrgard.hexScape.model.card.CardType;
 
 public class ShowCardDialog extends JDialog {
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ShowCardDialog.class);
 
 	private static final long serialVersionUID = 4628708458934864119L;
 
@@ -38,7 +43,7 @@ public class ShowCardDialog extends JDialog {
 				setPreferredSize(new Dimension(width, height));
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
+			LOGGER.error("Error while reading card image : " + card.getImagePath(), e);
 		}
 	}
 	

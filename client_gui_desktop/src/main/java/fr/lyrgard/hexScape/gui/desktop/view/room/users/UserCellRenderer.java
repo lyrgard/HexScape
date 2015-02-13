@@ -12,9 +12,6 @@ import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 
 import fr.lyrgard.hexScape.gui.desktop.view.room.games.GameCellRenderer;
-import fr.lyrgard.hexScape.model.Universe;
-import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 
 public class UserCellRenderer extends JPanel implements ListCellRenderer<User> {

@@ -4,7 +4,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 
-import fr.lyrgard.hexScape.gui.desktop.action.ChooseArmyAction;
 import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
 
 public class MenuBar extends JMenuBar {

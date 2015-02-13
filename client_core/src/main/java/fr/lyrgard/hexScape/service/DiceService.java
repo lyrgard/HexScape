@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
@@ -25,7 +27,7 @@ import fr.lyrgard.hexScape.model.dice.DiceType;
 
 public class DiceService {
 	
-	
+	private final static Logger LOGGER = LoggerFactory.getLogger(DiceService.class);
 
 	public static synchronized DiceService getInstance() {
 		if (INSTANCE == null) {
@@ -128,7 +130,7 @@ public class DiceService {
 									type.getFaces().add(diceFace);
 								}
 							} catch (IOException e) {
-								e.printStackTrace();
+								LOGGER.error("Error while reading dice file : " + dicePropertiesFile.getAbsolutePath(), e);
 							}
 							File diceIconFile = new File(folder, dieIconFilename);
 							if (diceIconFile.exists() && diceIconFile.isFile() && diceIconFile.canRead()) {

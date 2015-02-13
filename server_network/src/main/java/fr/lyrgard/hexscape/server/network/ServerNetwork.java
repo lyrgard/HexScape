@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import fr.lyrgard.hexScape.message.AbstractMessage;
 import fr.lyrgard.hexScape.model.Universe;
@@ -15,6 +17,8 @@ import fr.lyrgard.hexScape.model.room.Room;
 
 
 public class ServerNetwork { 
+	
+	private final static Logger LOGGER = LoggerFactory.getLogger(ServerNetwork.class);
 
 	private static final ServerNetwork INSTANCE = new ServerNetwork();
 	
@@ -40,7 +44,7 @@ public class ServerNetwork {
 		try {
 			serverNetwork.start(4242);
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error while starting the server on default port 4242", e);
 		}
 	}
 	
