@@ -36,7 +36,7 @@ public class SelectMarkerService {
 				Player player = game.getPlayer(playerId);
 
 				if (player != null) {
-					selectMarker = new SelectMarker(player.getColor());
+					selectMarker = new SelectMarker(player);
 					markerByPlayerIds.put(playerId, selectMarker);
 				}
 			}

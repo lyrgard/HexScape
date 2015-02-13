@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.model;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.jme3.math.Vector2f;
@@ -14,13 +15,19 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
 
 import fr.lyrgard.hexScape.model.model3d.TileMesh;
-import fr.lyrgard.hexScape.model.player.ColorEnum;
+import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.PieceManager;
+import fr.lyrgard.hexScape.service.SelectMarkerService;
 
 public class SelectMarker implements Displayable {
 	
 	private static Mesh mesh;
 	
 	private Geometry geometry;
+	
+	private PieceManager piece;
+	
+	private Player player;
 	
 	static {
 		mesh = new Mesh();
@@ -35,11 +42,52 @@ public class SelectMarker implements Displayable {
 	
 	private List<SecondarySelectMarker> secondarySelectMarkers = new ArrayList<SecondarySelectMarker>();
 	
-	public SelectMarker(ColorEnum color) {
+	public SelectMarker(Player player) {
+		this.player = player;
 		geometry = new Geometry("selectCross", mesh);
 		geometry.setQueueBucket(Bucket.Translucent);  
 		geometry.setShadowMode(ShadowMode.Off);
-		geometry.setMaterial(SelectMarkerMaterialFactory.getMaterial(true, color));
+		geometry.setMaterial(SelectMarkerMaterialFactory.getMaterial(true, player.getColor()));
+	}
+	
+	public void attachTo(PieceManager piece) {
+		piece.getSpatial().attachChild(getSpatial());
+		getSpatial().setLocalTranslation(0, 0.3f, 0);
+		this.piece = piece;
+	}
+	
+	public void detach() {
+		if (piece != null) {
+			piece.getSpatial().detachChild(getSpatial());
+			while (!getSecondarySelectMarkers().isEmpty()) {
+				SecondarySelectMarker secondarySelectMarker = getSecondarySelectMarkers().get(0);
+				secondarySelectMarker.getSecondarySelectedPiece().switchSecondarySelect(player.getId(), piece);
+			}
+		}
+	}
+	
+	public boolean switchSecondarySelect(PieceManager secondarySelectedPiece) {
+		boolean secondarySelected = false;
+		Iterator<SecondarySelectMarker> it = getSecondarySelectMarkers().iterator();
+		boolean secondarySelectMarkerFound = false;
+		while (it.hasNext()) {
+			SecondarySelectMarker secondarySelectMarker = it.next();
+			if (secondarySelectedPiece.equals(secondarySelectMarker.getSecondarySelectedPiece())) {
+				secondarySelectMarkerFound = true;
+				secondarySelectedPiece.getSpatial().detachChild(secondarySelectMarker.getSpatial());
+				it.remove();
+				secondarySelected = false;
+				break;
+			}
+		}
+		if (!secondarySelectMarkerFound) {
+			SecondarySelectMarker secondarySelectMarker = SelectMarkerService.getInstance().getNewSecondarySelectMarker(player.getId(), piece, secondarySelectedPiece);
+			getSecondarySelectMarkers().add(secondarySelectMarker);
+			secondarySelectedPiece.getSpatial().attachChild(secondarySelectMarker.getSpatial());
+			secondarySelectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+			secondarySelected = true;
+		}
+		return secondarySelected;
 	}
 	
 	@Override
@@ -49,6 +97,10 @@ public class SelectMarker implements Displayable {
 
 	public List<SecondarySelectMarker> getSecondarySelectMarkers() {
 		return secondarySelectMarkers;
+	}
+
+	public PieceManager getPiece() {
+		return piece;
 	}
 
 }

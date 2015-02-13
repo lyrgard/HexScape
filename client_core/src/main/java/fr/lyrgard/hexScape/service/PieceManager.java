@@ -1,6 +1,7 @@
 package fr.lyrgard.hexScape.service;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
@@ -39,11 +40,12 @@ public class PieceManager {
 		return piece;
 	}
 	
-	public Spatial getSpatial() {
+	public Node getSpatial() {
 		if (pieceNode == null) {
 			pieceNode = new Node();
 			pieceModelSpatial = ExternalModelService.getInstance().getModel(piece.getModelId());
 			pieceNode.attachChild(pieceModelSpatial);
+			rotate(getPiece().getDirection());
 		}
 		return pieceNode;
 	}
@@ -51,8 +53,10 @@ public class PieceManager {
 	public void rotate(Direction direction) {
 		getPiece().setDirection(direction);
 		
-		float angle = DirectionService.getInstance().getAngle(direction);
-		pieceModelSpatial.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+		if (pieceModelSpatial != null) {
+			float angle = DirectionService.getInstance().getAngle(direction);
+			pieceModelSpatial.setLocalRotation(new Quaternion().fromAngleAxis(angle, Vector3f.UNIT_Y));
+		}
 	}
 	
 	public void moveTo(int x, int y, int z, Direction direction) {
@@ -77,53 +81,27 @@ public class PieceManager {
 	
 	public void select(String playerId) {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
-		pieceNode.attachChild(selectMarker.getSpatial());
-		selectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
+		selectMarker.detach();
+		selectMarker.attachTo(this);
 		selected = true;
 	}
 	
 	public void unselect(String playerId) {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
-		pieceNode.detachChild(selectMarker.getSpatial());
-		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
-		while (it.hasNext()) {
-			SecondarySelectMarker secondarySelectMarker = it.next();
-			secondarySelectMarker.getSecondarySelectedPiece().switchSecondarySelect(playerId, this);
-		}
+		selectMarker.detach();
 		selected = false;
 	}
-	
-	public boolean isSelected() {
-		return selected;
-	}
-
-
 
 	public void switchSecondarySelect(String playerId, PieceManager selectedPiece) {
 		SelectMarker selectMarker = SelectMarkerService.getInstance().getSelectMarker(playerId);
-		Iterator<SecondarySelectMarker> it = selectMarker.getSecondarySelectMarkers().iterator();
-		boolean secondarySelectMarkerFound = false;
-		while (it.hasNext()) {
-			SecondarySelectMarker secondarySelectMarker = it.next();
-			if (pieceNode.hasChild(secondarySelectMarker.getSpatial())) {
-				secondarySelectMarkerFound = true;
-				pieceNode.detachChild(secondarySelectMarker.getSpatial());
-				it.remove();
-				secondarySelected = false;
-				break;
-			}
-		}
-		if (!secondarySelectMarkerFound) {
-			SecondarySelectMarker secondarySelectMarker = SelectMarkerService.getInstance().getNewSecondarySelectMarker(playerId, selectedPiece, this);
-			selectMarker.getSecondarySelectMarkers().add(secondarySelectMarker);
-			pieceNode.attachChild(secondarySelectMarker.getSpatial());
-			secondarySelectMarker.getSpatial().setLocalTranslation(0, 0.3f, 0);
-			secondarySelected = true;
-		}
+		secondarySelected = selectMarker.switchSecondarySelect(this);
 	}
 
 
-
+	public boolean isSelected() {
+		return selected;
+	}
+	
 	public boolean isSecondarySelected() {
 		return secondarySelected;
 	}

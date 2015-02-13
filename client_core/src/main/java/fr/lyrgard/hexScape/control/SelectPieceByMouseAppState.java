@@ -81,20 +81,16 @@ public class SelectPieceByMouseAppState extends AbstractAppState {
 	
 	public void selectPiece(PieceManager piece) {
 		if (piece != null) {
-			cancelSelection();
-			selectedPiece = piece;
-
 			piece.select(CurrentUserInfo.getInstance().getPlayerId());
+			selectedPiece = piece;
 		}
 	}
 	
 	public void cancelSelection() {
 		if (selectedPiece != null) {
-			//selectedPiece.getSpatial().removeLight(selectedLigth);
 			selectedPiece.unselect(CurrentUserInfo.getInstance().getPlayerId());
+			selectedPiece = null;
 		}
-		//rootNode.detachChild(selectMarker);
-		selectedPiece = null;
 	}
 
 
