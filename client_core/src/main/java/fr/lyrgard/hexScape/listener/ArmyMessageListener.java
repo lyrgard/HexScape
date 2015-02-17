@@ -6,6 +6,7 @@ import java.io.File;
 
 
 
+
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -18,6 +19,7 @@ import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.ArmyService;
+import fr.lyrgard.hexScape.service.ConfigurationService;
 
 public class ArmyMessageListener extends AbstractMessageListener {
 	
@@ -36,7 +38,6 @@ public class ArmyMessageListener extends AbstractMessageListener {
 	@Subscribe public void onLoadArmyMessage(LoadArmyMessage message) {
 		File armyFile = message.getArmyFile();
 		String playerId = message.getPlayerId();
-		
 		
 		Army army = ArmyService.getInstance().loadArmy(playerId, armyFile);
 		

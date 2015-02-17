@@ -17,7 +17,9 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
+import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
 import fr.lyrgard.hexScape.model.player.User;
@@ -65,6 +67,7 @@ public class ClientWebSocket {
 			LOGGER.error("Error on seding to websocket", t);
 		}
 	}
+	
 
 	@OnWebSocketMessage
 	public void onMessage(String msg) {
@@ -83,6 +86,8 @@ public class ClientWebSocket {
 	
 	@OnWebSocketError
 	public void onError(Throwable t) {
+		ClientNetwork.getInstance().disconnect();
+		GuiMessageBus.post(new ErrorMessage(null, "Cannot connect to the server"));
 		LOGGER.error("Error on websocket", t);
 	}
 

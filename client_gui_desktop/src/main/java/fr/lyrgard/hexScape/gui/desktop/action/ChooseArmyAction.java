@@ -11,6 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LoadArmyMessage;
+import fr.lyrgard.hexScape.service.ConfigurationService;
 
 public class ChooseArmyAction extends AbstractAction {
 
@@ -32,10 +33,18 @@ public class ChooseArmyAction extends AbstractAction {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"HexScape Army", "hsa");
 		chooser.setFileFilter(filter);
+		String lastOpenedDir = ConfigurationService.getInstance().getLocationArmies();
+		if (lastOpenedDir != null) {
+			chooser.setCurrentDirectory(new File(lastOpenedDir));
+		}
+		
 
 		int returnVal = chooser.showOpenDialog(parent);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
 			final File armyFile = chooser.getSelectedFile();
+			
+			ConfigurationService.getInstance().setLocationArmies(armyFile.getParentFile());
+			ConfigurationService.getInstance().save();
 			
 			LoadArmyMessage message = new LoadArmyMessage(playerId, armyFile);
 			CoreMessageBus.post(message);			

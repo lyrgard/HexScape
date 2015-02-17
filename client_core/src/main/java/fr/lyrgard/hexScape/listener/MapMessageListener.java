@@ -17,6 +17,7 @@ import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.ConfigurationService;
 import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
 

@@ -25,8 +25,8 @@ public class ClientNetwork {
 	private ClientNetwork() {
 	}
 	
-	ClientWebSocket socket;
-	WebSocketClient client;
+	private ClientWebSocket socket;
+	private WebSocketClient client;
 	
 	public void connect(User user, String url) {
 		if (socket == null) {
@@ -34,6 +34,7 @@ public class ClientNetwork {
 			client = new WebSocketClient();
 			
 			client.getPolicy().setMaxTextMessageSize(1000000);
+			client.setConnectTimeout(5000);
 			socket = new ClientWebSocket(user);
 			try {
 				client.start();
@@ -52,11 +53,14 @@ public class ClientNetwork {
 	public void disconnect() {
 		if (socket != null) {
 			try {
-				client.stop();
+				if (client.isStarted()) {
+					client.stop();
+				}
 			} catch (Exception e) {
 				LOGGER.error("Error while disconnecting from server", e);
 			}
 			socket = null;
+			client = null;
 		}
 	}
 	

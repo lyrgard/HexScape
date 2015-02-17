@@ -30,6 +30,10 @@ public class ConfigurationService {
 	private static final String SERVER_HOST_KEY = "server.host";
 	
 	private static final String GAME_FOLDER = "game.folder";
+	
+	private static final String LOCATION_SAVED_GAMES = "location.saved_games";
+	private static final String LOCATION_MAPS = "location.maps";
+	private static final String LOCATION_ARMIES = "location.armies";
 
 	
 	private static ConfigurationService INSTANCE;
@@ -139,6 +143,30 @@ public class ConfigurationService {
 		if (!gameFolders.isEmpty()) {
 			setGameFolder(gameFolders.get(0));
 		}
+	}
+	
+	public String getLocationSavedGames() {
+		return properties.getProperty(LOCATION_SAVED_GAMES);
+	}
+	
+	public void setLocationSavedGames(File location) {
+		properties.put(LOCATION_SAVED_GAMES, location.getAbsolutePath());
+	}
+	
+	public String getLocationMaps() { 
+		return properties.getProperty(LOCATION_MAPS);
+	}
+	
+	public void setLocationMaps(File location) {
+		properties.put(LOCATION_MAPS, location.getAbsolutePath());
+	}
+	
+	public String getLocationArmies() {
+		return properties.getProperty(LOCATION_ARMIES);
+	}
+	
+	public void setLocationArmies(File location) {
+		properties.put(LOCATION_ARMIES, location.getAbsolutePath());
 	}
 	
 	public void save() {

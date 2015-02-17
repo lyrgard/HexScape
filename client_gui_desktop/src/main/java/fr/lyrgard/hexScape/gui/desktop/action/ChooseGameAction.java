@@ -19,6 +19,7 @@ import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.RestoreGameMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.game.Game;
+import fr.lyrgard.hexScape.service.ConfigurationService;
 
 public class ChooseGameAction extends AbstractAction {
 
@@ -37,16 +38,23 @@ public class ChooseGameAction extends AbstractAction {
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"Game save file", "hsg");
 		chooser.setFileFilter(filter);
+		String lastOpenedDir = ConfigurationService.getInstance().getLocationSavedGames();
+		if (lastOpenedDir != null) {
+			chooser.setCurrentDirectory(new File(lastOpenedDir));
+		}
 
 		int returnVal = chooser.showOpenDialog(parent);
 		if(returnVal == JFileChooser.APPROVE_OPTION) {
-			final File mapFile = chooser.getSelectedFile();
+			final File savedGameFile = chooser.getSelectedFile();
 			
 			String content;
 			Game game = null;
 			try {
-				content = FileUtils.readFileToString(mapFile, StandardCharsets.UTF_8);
+				content = FileUtils.readFileToString(savedGameFile, StandardCharsets.UTF_8);
 				game = Game.fromJson(content);
+				
+				ConfigurationService.getInstance().setLocationSavedGames(savedGameFile.getParentFile());
+				ConfigurationService.getInstance().save();
 				
 				RestoreGameMessage message = new RestoreGameMessage(game);
 				CoreMessageBus.post(message);		
