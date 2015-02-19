@@ -4,6 +4,7 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.bounding.BoundingBox;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 
 import fr.lyrgard.hexScape.service.PieceManager;
@@ -14,7 +15,10 @@ public class PointOfViewCameraAppState extends AbstractAppState {
 	
 	private Application app;
 	
-	PieceManager piece;
+	private Vector3f savedCameraPosition;
+	
+	private Quaternion savedCameraRotation;
+	
 	
 	public void initialize(AppStateManager stateManager, Application app) {
 		super.initialize(stateManager, app);
@@ -38,16 +42,21 @@ public class PointOfViewCameraAppState extends AbstractAppState {
 	public void setEnabled(boolean enabled) {
 		if (pointOfViewCamera != null) {
 			if (enabled) {
+				savedCameraPosition = app.getCamera().getLocation().clone();
+				savedCameraRotation = app.getCamera().getRotation().clone();
 				this.pointOfViewCamera.registerWithInput(app.getInputManager());
 			} else {
 				this.pointOfViewCamera.unregisterFromInput();
+				if (this.isEnabled() && savedCameraPosition != null && savedCameraRotation != null) {
+					app.getCamera().setLocation(savedCameraPosition);
+					app.getCamera().setRotation(savedCameraRotation);
+				}
 			}
 		}
 		super.setEnabled(enabled);
 	}
 
 	public void setPiece(PieceManager piece) {
-		this.piece = piece;
 		if (pointOfViewCamera != null) {
 			BoundingBox bv = (BoundingBox)piece.getSpatial().getWorldBound();
 			Vector3f pos = bv.getCenter();

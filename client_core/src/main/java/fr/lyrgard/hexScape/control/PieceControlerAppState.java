@@ -31,8 +31,8 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 	private static final String CANCEL_MAPPING = "ControlerAppState_cancel";
 	private static final String DELETE_MAPPING = "ControlerAppState_delete";
 	private static final String POV_MAPPING = "ControlerAppState_pov";
-	private static final String MOUSE_WHEEL_UP_MAPPING = "ControlerAppState_mouseWheelUp";
-	private static final String MOUSE_WHEEL_DOWN_MAPPING = "ControlerAppState_mouseWheelDown";
+	private static final String ROTATE_LEFT_MAPPING = "ControlerAppState_mouseWheelUp";
+	private static final String ROTATE_RIGHT_MAPPING = "ControlerAppState_mouseWheelDown";
 	
 	private PlacePieceByMouseAppState placePieceByMouseAppState = new PlacePieceByMouseAppState();
 	private SelectPieceByMouseAppState selectPieceByMouseAppState = new SelectPieceByMouseAppState();
@@ -63,10 +63,10 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 		inputManager.addMapping(CTRL_MAPPING, new KeyTrigger(KeyInput.KEY_LCONTROL), new KeyTrigger(KeyInput.KEY_RCONTROL));
 		inputManager.addMapping(DELETE_MAPPING, new KeyTrigger(KeyInput.KEY_DELETE));
 		inputManager.addMapping(POV_MAPPING, new KeyTrigger(KeyInput.KEY_P));
-		inputManager.addMapping(MOUSE_WHEEL_UP_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true));
-		inputManager.addMapping(MOUSE_WHEEL_DOWN_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false));
+		inputManager.addMapping(ROTATE_LEFT_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, false), new KeyTrigger(KeyInput.KEY_R));
+		inputManager.addMapping(ROTATE_RIGHT_MAPPING, new MouseAxisTrigger(MouseInput.AXIS_WHEEL, true), new KeyTrigger(KeyInput.KEY_T));
 	
-		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, POV_MAPPING, MOUSE_WHEEL_UP_MAPPING, MOUSE_WHEEL_DOWN_MAPPING, CTRL_MAPPING);
+		inputManager.addListener(this, CLICK_MAPPING, CANCEL_MAPPING, DELETE_MAPPING, POV_MAPPING, ROTATE_LEFT_MAPPING, ROTATE_RIGHT_MAPPING, CTRL_MAPPING);
 	}
 	
 	public void beginAddingPiece(PieceManager piece) {
@@ -147,22 +147,7 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				changeStateTo(State.WAITING);
 				break;
 			}
-		} else if (name.equals(MOUSE_WHEEL_UP_MAPPING)) {
-			switch (currentState) {
-			case WAITING:
-				// Nothing to do here
-				break;
-			case ADDING_PIECE:
-				rotatePiece(placePieceByMouseAppState.getPieceToPlace(), true);
-				break;
-			case MOVING_PIECE:
-				rotatePiece(placePieceByMouseAppState.getPieceToPlace(), true);
-				break;
-			case SELECTING_PIECE:
-				rotatePiece(selectPieceByMouseAppState.getSelectedPiece(), true);
-				break;
-			}
-		} else if (name.equals(MOUSE_WHEEL_DOWN_MAPPING)) {
+		} else if (name.equals(ROTATE_LEFT_MAPPING) && keyPressed) {
 			switch (currentState) {
 			case WAITING:
 				// Nothing to do here
@@ -175,6 +160,21 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 				break;
 			case SELECTING_PIECE:
 				rotatePiece(selectPieceByMouseAppState.getSelectedPiece(), false);
+				break;
+			}
+		} else if (name.equals(ROTATE_RIGHT_MAPPING) && keyPressed) {
+			switch (currentState) {
+			case WAITING:
+				// Nothing to do here
+				break;
+			case ADDING_PIECE:
+				rotatePiece(placePieceByMouseAppState.getPieceToPlace(), true);
+				break;
+			case MOVING_PIECE:
+				rotatePiece(placePieceByMouseAppState.getPieceToPlace(), true);
+				break;
+			case SELECTING_PIECE:
+				rotatePiece(selectPieceByMouseAppState.getSelectedPiece(), true);
 				break;
 			}
 		} else if (name.equals(DELETE_MAPPING) && keyPressed) {
