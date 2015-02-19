@@ -8,6 +8,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class ActivateOnlineService {
 
@@ -32,14 +33,20 @@ public class ActivateOnlineService {
 	
 	
 	@Subscribe public void onConnectedToServer(ConnectedToServerMessage message) {
-		for (Object object : objectsToActivateOnline) {
-			GuiMessageBus.register(object);
+		String userId = message.getUserId();
+		if (userId != null && message.getUserId().equals(CurrentUserInfo.getInstance().getId())) {
+			for (Object object : objectsToActivateOnline) {
+				GuiMessageBus.register(object);
+			}
 		}
 	}
 	
 	@Subscribe public void onDisconnectedFromServer(DisconnectedFromServerMessage message) {
-		for (Object object : objectsToActivateOnline) {
-			GuiMessageBus.unregister(object);
+		String userId = message.getUserId();
+		if (userId != null && message.getUserId().equals(CurrentUserInfo.getInstance().getId())) {
+			for (Object object : objectsToActivateOnline) {
+				GuiMessageBus.unregister(object);
+			}
 		}
 	}
 }

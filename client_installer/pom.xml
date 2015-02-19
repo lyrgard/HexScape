@@ -86,7 +86,7 @@
 					<baseDir>${staging.dir.app}</baseDir>
 					<installFile>${izpack.dir.app}/install.xml</installFile>
 					<outputDirectory>${project.build.directory}</outputDirectory>
-					<finalName>${project.build.finalName}</finalName>
+					<finalName>HexScape_install_${project.version}</finalName>
 					<enableOverrideArtifact>true</enableOverrideArtifact>
 					<mkdirs>true</mkdirs>
 					<autoIncludeUrl>false</autoIncludeUrl>
