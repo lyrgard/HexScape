@@ -33,6 +33,7 @@ import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MinFilter;
 import com.jme3.util.BufferUtils;
+import com.jme3.util.SkyFactory;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;

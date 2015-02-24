@@ -60,7 +60,7 @@ public class PointOfViewCameraAppState extends AbstractAppState {
 		if (pointOfViewCamera != null) {
 			BoundingBox bv = (BoundingBox)piece.getSpatial().getWorldBound();
 			Vector3f pos = bv.getCenter();
-			pos.y = pos.y + bv.getYExtent()*2f/5f;
+			pos.y = pos.y + bv.getYExtent()*9f/10f;
 			
 			
 			pointOfViewCamera.setPosition(pos, piece.getPiece().getDirection());

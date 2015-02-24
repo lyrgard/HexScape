@@ -222,11 +222,13 @@ public class FlyByCamera implements AnalogListener, ActionListener {
         Vector3f vel = new Vector3f(0, value * moveSpeed, 0);
         Vector3f pos = cam.getLocation().clone();
 
-        if (motionAllowed != null)
+        if (motionAllowed != null) {
             motionAllowed.checkMotionAllowed(pos, vel);
-        else
+        } else {
             pos.addLocal(vel);
+        }
 
+        pos.y = Math.max(pos.y, 0f);
         cam.setLocation(pos);
     }
 
@@ -246,6 +248,7 @@ public class FlyByCamera implements AnalogListener, ActionListener {
         else
             pos.addLocal(vel);
 
+        pos.y = Math.max(pos.y, 0f);
         cam.setLocation(pos);
     }
 

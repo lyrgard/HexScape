@@ -15,6 +15,7 @@ import com.jme3.renderer.Camera;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.map.Direction;
+import fr.lyrgard.hexScape.service.DirectionService;
 
 
 public class PointOfViewCamera implements AnalogListener, ActionListener {
@@ -152,7 +153,7 @@ public class PointOfViewCamera implements AnalogListener, ActionListener {
 		q.normalizeLocal();
 
 		cam.setAxes(q);
-	}
+	}	
 
 	public void onAnalog(String name, float value, float tpf) {
 
@@ -188,11 +189,12 @@ public class PointOfViewCamera implements AnalogListener, ActionListener {
 	}
 	
 	public void setPosition(Vector3f pos, Direction dir) {
-		//cam.setLocation(new Vector3f(0, 100, 0));
-		 
 		cam.setLocation(pos);
-		cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
-//		cam.lookAt(new Vector3f(x, y, z), initialUpVec);
+	
+		//cam.lookAt(DirectionService.getInstance().getNormal(dir), new Vector3f(0, 1, 0));
+		Quaternion q = new Quaternion();
+		q.fromAngleAxis( DirectionService.getInstance().getAngle(dir), initialUpVec); 
+		cam.setRotation(q);
 	}
 }
 

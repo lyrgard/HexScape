@@ -21,11 +21,15 @@ public class HexScapeDesktopGui {
 		final HexScapeCore core = HexScapeCore.getInstance();
 		final SimpleApplication app = core.getHexScapeJme3Application();
 		
+		
 		AppSettings settings = new AppSettings(true);
 		//settings.setCustomRenderer(SwingContext.class);
 		settings.setFrameRate(60);
 		settings.setWidth(102);
 		settings.setWidth(77);
+		
+		// Antialiasing
+		//settings.setSamples(4);
 		
 		
 		app.setShowSettings(false);

@@ -4,15 +4,23 @@ package fr.lyrgard.hexScape;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
+import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
+import com.jme3.bounding.BoundingBox;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
+import com.jme3.texture.Texture;
+import com.jme3.util.SkyFactory;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.camera.FlyByCameraAppState;
@@ -204,7 +212,40 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		this.scene = scene;
 		
-		if (scene != null) {
+		if (scene != null) {			
+			
+			// Sky
+			Texture west = assetManager.loadTexture("model/texture/right.png");
+			Texture east = assetManager.loadTexture("model/texture/left.png");
+			Texture north = assetManager.loadTexture("model/texture/back.png");
+			Texture south = assetManager.loadTexture("model/texture/front.png");
+			Texture up = assetManager.loadTexture("model/texture/top.png");
+			Texture down = assetManager.loadTexture("model/texture/bottom.png");
+			Spatial sky = SkyFactory.createSky(assetManager, west, east, north, south, up, down);
+			//sky.setLocalScale(1000);
+			rootNode.attachChild(sky);
+			
+			Texture wood = assetManager.loadTexture("model/texture/wood.jpg");
+			
+			BoundingBox bv = (BoundingBox)scene.getSpatial().getWorldBound();
+			float sizeX = bv.getXExtent() * 2f;
+			float sizeZ = bv.getZExtent() * 2f;
+			Vector3f center = bv.getCenter();
+			Box tableMesh = new Box(sizeX , 1, sizeZ);
+
+			Geometry table = new Geometry("Table", tableMesh);
+			table.setLocalTranslation(new Vector3f(center.x,-1,center.z));
+			
+			Material tableMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+			tableMat.setTexture("DiffuseMap", wood);
+			tableMat.setBoolean("UseMaterialColors",true);    
+			tableMat.setColor("Ambient", ColorRGBA.White);
+			tableMat.setColor("Diffuse",ColorRGBA.White);  // minimum material color
+			tableMat.setColor("Specular",ColorRGBA.White); // for shininess
+			tableMat.setFloat("Shininess", 5f);
+			table.setMaterial(tableMat);
+			rootNode.attachChild(table);
+			
 			rootNode.attachChild(scene.getSpatial());
 			//rootNode.attachChild(Sky.getInstance().getSpatial());
 			if (CurrentUserInfo.getInstance().isPlayingGame()) {
