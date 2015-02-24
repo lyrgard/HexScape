@@ -24,12 +24,12 @@ private static final Sky INSTANCE = new Sky();
 	private void loadSky() {
 		AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
 		
-		Texture west = assetManager.loadTexture("left.png");
-        Texture east = assetManager.loadTexture("right.png");
-        Texture north = assetManager.loadTexture("front.png");
-        Texture south = assetManager.loadTexture("back.png");
-        Texture up = assetManager.loadTexture("top.png");
-        Texture down = assetManager.loadTexture("bottom.png");
+		Texture west = assetManager.loadTexture("model/texture/sky/left.png");
+        Texture east = assetManager.loadTexture("model/texture/sky/right.png");
+        Texture north = assetManager.loadTexture("model/texture/sky/front.png");
+        Texture south = assetManager.loadTexture("model/texture/sky/back.png");
+        Texture up = assetManager.loadTexture("model/texture/sky/top.png");
+        Texture down = assetManager.loadTexture("model/texture/sky/bottom.png");
 
 		spatial = SkyFactory.createSky(HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(), west, east, north, south, up, down);
 		spatial.setShadowMode(ShadowMode.Off);

@@ -35,7 +35,9 @@ import fr.lyrgard.hexScape.message.LookingFreelyMessage;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
+import fr.lyrgard.hexScape.model.Sky;
 import fr.lyrgard.hexScape.model.TitleScreen;
+import fr.lyrgard.hexScape.model.Table;
 import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
 
@@ -89,14 +91,14 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		DirectionalLight sun = new DirectionalLight();
 		sun.setColor(ColorRGBA.White.mult(0.5f));
-		sun.setDirection(new Vector3f(1,-1, 0.5f).normalizeLocal());
+		sun.setDirection(new Vector3f(-1,-1, -0.5f).normalizeLocal());
 		rootNode.addLight(sun);
 		
 		AmbientLight al = new AmbientLight();
 		al.setColor(ColorRGBA.White.mult(1f));
 		rootNode.addLight(al);
 		
-		final int SHADOWMAP_SIZE=1024;
+		final int SHADOWMAP_SIZE=2048;
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(sun);
         dlsr.setShadowIntensity(0.3f);
@@ -214,37 +216,9 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		if (scene != null) {			
 			
-			// Sky
-			Texture west = assetManager.loadTexture("model/texture/right.png");
-			Texture east = assetManager.loadTexture("model/texture/left.png");
-			Texture north = assetManager.loadTexture("model/texture/back.png");
-			Texture south = assetManager.loadTexture("model/texture/front.png");
-			Texture up = assetManager.loadTexture("model/texture/top.png");
-			Texture down = assetManager.loadTexture("model/texture/bottom.png");
-			Spatial sky = SkyFactory.createSky(assetManager, west, east, north, south, up, down);
-			//sky.setLocalScale(1000);
-			rootNode.attachChild(sky);
-			
-			Texture wood = assetManager.loadTexture("model/texture/wood.jpg");
-			
-			BoundingBox bv = (BoundingBox)scene.getSpatial().getWorldBound();
-			float sizeX = bv.getXExtent() * 2f;
-			float sizeZ = bv.getZExtent() * 2f;
-			Vector3f center = bv.getCenter();
-			Box tableMesh = new Box(sizeX , 1, sizeZ);
-
-			Geometry table = new Geometry("Table", tableMesh);
-			table.setLocalTranslation(new Vector3f(center.x,-1,center.z));
-			
-			Material tableMat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
-			tableMat.setTexture("DiffuseMap", wood);
-			tableMat.setBoolean("UseMaterialColors",true);    
-			tableMat.setColor("Ambient", ColorRGBA.White);
-			tableMat.setColor("Diffuse",ColorRGBA.White);  // minimum material color
-			tableMat.setColor("Specular",ColorRGBA.White); // for shininess
-			tableMat.setFloat("Shininess", 5f);
-			table.setMaterial(tableMat);
-			rootNode.attachChild(table);
+			// Sky and table
+			rootNode.attachChild(Sky.getInstance().getSpatial());
+			rootNode.attachChild(new Table(scene));
 			
 			rootNode.attachChild(scene.getSpatial());
 			//rootNode.attachChild(Sky.getInstance().getSpatial());
