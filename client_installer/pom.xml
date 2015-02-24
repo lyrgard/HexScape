@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>fr.lyrgard.hexscape</groupId>
 		<artifactId>hexscape</artifactId>
-		<version>1.1.2-beta</version>
+		<version>1.1.3-beta</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	<artifactId>hexscape_client_installer</artifactId>
