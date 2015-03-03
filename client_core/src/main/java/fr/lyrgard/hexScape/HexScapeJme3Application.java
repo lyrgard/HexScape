@@ -4,23 +4,15 @@ package fr.lyrgard.hexScape;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppState;
-import com.jme3.asset.AssetManager;
 import com.jme3.asset.plugins.FileLocator;
-import com.jme3.bounding.BoundingBox;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
-import com.jme3.texture.Texture;
-import com.jme3.util.SkyFactory;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.camera.FlyByCameraAppState;
@@ -44,6 +36,8 @@ import fr.lyrgard.hexScape.service.PieceManager;
 public class HexScapeJme3Application extends SimpleApplication {
 	
 	private MapManager scene;
+	
+	private Table table;
 	
 	private PieceManager pieceLookedAt;
 	
@@ -200,6 +194,10 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rootNode.detachChild(this.scene.getSpatial());
 			scene = null;
 		}
+		if (this.table != null) {
+			rootNode.detachChild(this.table);
+			this.table = null;
+		}
 		setControlState(View3dControlState.TITLE_SCREEN);
 		
 		rootNode.attachChild(TitleScreen.getInstance().getSpatial());
@@ -218,7 +216,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 			
 			// Sky and table
 			rootNode.attachChild(Sky.getInstance().getSpatial());
-			rootNode.attachChild(new Table(scene));
+			this.table = new Table(scene);
+			rootNode.attachChild(table);
 			
 			rootNode.attachChild(scene.getSpatial());
 			//rootNode.attachChild(Sky.getInstance().getSpatial());

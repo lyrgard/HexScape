@@ -3,6 +3,8 @@ package fr.lyrgard.hexScape.gui.desktop;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -17,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.eventbus.Subscribe;
 
+import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
@@ -24,6 +28,7 @@ import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
+import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.InfoMessage;
@@ -66,7 +71,19 @@ public class HexScapeFrame extends JFrame {
 			LOGGER.error("Error while loading Look And Feels Nimbus", e);
 		}
 
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent e) {
+				if (HexScapeCore.getInstance().isOnline()) {
+					DisconnectFromServerMessage message = new DisconnectFromServerMessage();
+	        		CoreMessageBus.post(message);
+				}
+				HexScapeCore.getInstance().getHexScapeJme3Application().stop(true);
+				System.exit(0);
+			}
+		});
 		
 		setLayout(layout);
 

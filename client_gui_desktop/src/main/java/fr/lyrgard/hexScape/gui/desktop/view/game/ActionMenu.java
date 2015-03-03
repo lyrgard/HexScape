@@ -12,6 +12,7 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.LookAtMapAction;
 import fr.lyrgard.hexScape.gui.desktop.action.LookFreelyAction;
 import fr.lyrgard.hexScape.gui.desktop.action.LookFromPieceAction;
+import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.LookingFreelyMessage;
 import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
@@ -59,6 +60,16 @@ public class ActionMenu extends JPanel {
 //			}
 //		});
 //	}
+	
+	@Subscribe public void onGameStart(GameStartedMessage message) {
+		String gameId = message.getGameId();
+		
+		if (gameId.equals(CurrentUserInfo.getInstance().getGameId())) {
+			lookAtPointOfView.setVisible(false);
+			lookAtMap.setVisible(false);
+			lookFreely.setVisible(true);
+		}
+	}
 	
 	@Subscribe public void onPieceSelected(PieceSelectedMessage message) {
 

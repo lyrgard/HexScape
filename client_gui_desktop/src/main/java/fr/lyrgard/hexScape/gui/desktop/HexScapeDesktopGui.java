@@ -69,13 +69,6 @@ public class HexScapeDesktopGui {
 		        JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 			}
 		});
-
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-	        public void run() {
-	        	DisconnectFromServerMessage message = new DisconnectFromServerMessage();
-	        	CoreMessageBus.post(message);
-	        }
-	    }, "Disconnect from server"));
 	}
 	
 	
