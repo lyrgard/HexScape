@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 
+import fr.lyrgard.hexScape.message.CardInstanceChangedOwnerMessage;
+import fr.lyrgard.hexScape.message.ChangeCardInstanceOwnerMessage;
 import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
@@ -56,6 +58,8 @@ import fr.lyrgard.hexScape.message.WarningMessage;
 	    property = "type")  
 @JsonSubTypes({
 		@Type(value = ArmyLoadedMessage.class, name = "ArmyLoadedMessage"),
+		@Type(value = CardInstanceChangedOwnerMessage.class, name = "CardInstanceChangedOwner"),
+		@Type(value = ChangeCardInstanceOwnerMessage.class, name = "ChangeCardInstanceOwner"),
 		@Type(value = ConnectedToServerMessage.class, name = "ConnectedToServerMessage"),
 		@Type(value = CreateGameMessage.class, name = "CreateGameMessage"),
 		@Type(value = ErrorMessage.class, name = "ErrorMessage"),

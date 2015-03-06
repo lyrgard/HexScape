@@ -43,7 +43,7 @@ public class SelectedCardPanel extends JPanel {
 
 	public SelectedCardPanel() {
 
-		setMinimumSize(new Dimension(UNDEFINED_CONDITION, 50));
+		//setMinimumSize(new Dimension(UNDEFINED_CONDITION, 50));
 		//setPreferredSize(new Dimension(200, 200));
 		//setMaximumSize(new Dimension(-1, 200));
 

@@ -23,13 +23,13 @@ public class LeftPanel extends JPanel {
 		this.setLayout(new MigLayout(
 				"wrap", // Layout Constraints
 				"[center, 200]", // Column constraints
-				"[grow]20[200]20[][]" // Row constraints
+				"[grow]20[200:200:200]20[][]" // Row constraints
 				));
 		
 		
 		
 		add(new ArmiesTabbedPane(), "grow");
-		add(new SelectedCardPanel(), "width 250, height 350");
+		add(new SelectedCardPanel(), "grow");
 		add(saveGameButton);
 		add(leaveGameButton);
 		

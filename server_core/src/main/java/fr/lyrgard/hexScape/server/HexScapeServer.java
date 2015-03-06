@@ -17,7 +17,7 @@ import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.room.Room;
 import fr.lyrgard.hexScape.server.listener.DiceMessageListener;
 import fr.lyrgard.hexScape.server.listener.GameMessageListener;
-import fr.lyrgard.hexScape.server.listener.MarkerMessageListener;
+import fr.lyrgard.hexScape.server.listener.CardMessageListener;
 import fr.lyrgard.hexScape.server.listener.PieceMessageListener;
 import fr.lyrgard.hexScape.server.listener.RoomMessageListener;
 import fr.lyrgard.hexScape.server.listener.ServerMessageListener;
@@ -79,7 +79,7 @@ public class HexScapeServer {
 		GameMessageListener.start();
 		DiceMessageListener.start();
 		PieceMessageListener.start();
-		MarkerMessageListener.start();
+		CardMessageListener.start();
 		try {
 			ServerNetwork.getInstance().start(port);
 		} catch (Exception e) {

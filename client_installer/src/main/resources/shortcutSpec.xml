@@ -5,15 +5,16 @@
   <shortcut
     name="HexScape"
     target="$INSTALL_PATH\HexScape.jar"
-    commandLine=""
+    description="Launch HexScape"
     workingDirectory="$INSTALL_PATH"
-    description="This starts HexScape"
-    iconIndex="0"
-    initialState="maximized"
+    iconFile="$INSTALL_PATH\hexscape.ico"
+    initialState="normal"
     programGroup="yes"
     desktop="yes"
-    startup="no">
+    applications="no"
+	startMenu="no"
+	startup="no">
 
-    <createForPack name="pack.core"/>
+    <createForPack name="Core files"/>
   </shortcut>
 </shortcuts>

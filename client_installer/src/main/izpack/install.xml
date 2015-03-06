@@ -32,7 +32,6 @@
 		<panel classname="HelloPanel" />
 		<panel classname="LicencePanel" />
 		<panel classname="TargetPanel" />
-		<!-- <panel classname="PacksPanel" /> -->
 		<panel classname="InstallPanel" />
 		<panel classname="ShortcutPanel" />
 		<panel classname="SimpleFinishPanel"/>
@@ -42,6 +41,7 @@
 		<pack name="Core files" required="yes" id="pack.core">
 			<description>Core files</description>
 			<file src="HexScape.jar" targetdir="$INSTALL_PATH" ></file>
+			<file src="hexscape.ico" targetdir="$INSTALL_PATH" ></file>
 			<fileset dir="asset" targetdir="$INSTALL_PATH/asset"></fileset>
 		</pack>
 	</packs>

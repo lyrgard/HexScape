@@ -3,6 +3,7 @@ package fr.lyrgard.hexScape.server.listener;
 import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
+import fr.lyrgard.hexScape.message.ChangeCardInstanceOwnerMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
 import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
@@ -18,18 +19,18 @@ import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexscape.server.network.ServerNetwork;
 
-public class MarkerMessageListener {
+public class CardMessageListener {
 
-	private static MarkerMessageListener instance;
+	private static CardMessageListener instance;
 	
 	public static void start() {
 		if (instance == null) {
-			instance = new MarkerMessageListener();
+			instance = new CardMessageListener();
 			CoreMessageBus.register(instance);
 		}
 	}
 	
-	private MarkerMessageListener() {
+	private CardMessageListener() {
 	}
 	
 	
@@ -140,5 +141,13 @@ public class MarkerMessageListener {
 				}
 			}
 		}
+	}
+	
+	@Subscribe public void onChangeCardInstanceOwner(ChangeCardInstanceOwnerMessage message) {
+		String userId = message.getSessionUserId();
+		String cardId = message.getCardId();
+		String newOwnerId = message.getNewOwnerId();
+		
+		
 	}
 }

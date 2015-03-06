@@ -8,7 +8,6 @@
 		target="/usr/bin/java"
 		commandLine="-jar $INSTALL_PATH/HexScape.jar"
 		description="Launch HexScape"
-
 		workingDirectory="$INSTALL_PATH"
 		initialState="maximized"
 		programGroup="yes"
@@ -18,8 +17,8 @@
 		startup="no"
 		type="Application"
 		terminal="true"
-		encoding="UTF-8">
-		<!-- 		iconFile="$INSTALL_PATH/images/MyApp.png"  -->	
+		encoding="UTF-8"
+		iconFile="$INSTALL_PATH\hexscape.ico">
 		<createForPack name="Core files"/>
 	</shortcut>
 
