@@ -11,6 +11,7 @@ import com.google.common.eventbus.Subscribe;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.message.CardInstanceChangedOwnerMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameObservedMessage;
@@ -55,6 +56,31 @@ public class ArmiesTabbedPane extends JTabbedPane {
 					
 					if (armyPanel != null) {
 						armyPanel.setArmy(army);
+					}
+				}
+			}
+		});
+	}
+	
+	
+	@Subscribe public void onCardInstanceChangedOwner(final CardInstanceChangedOwnerMessage message) {
+		EventQueue.invokeLater(new Runnable() {
+
+			public void run() {
+				String oldOwnerId = message.getOldOwnerId();
+				String newOwnerId = message.getNewOwnerId();
+				
+				Game game = Universe.getInstance().getGamesByGameIds().get(CurrentUserInfo.getInstance().getGameId());
+
+				if (game != null) {
+					for (Player player : game.getPlayers()) {
+						if (player.getId().equals(oldOwnerId) || player.getId().equals(newOwnerId)) {
+							ArmyPanel armyPanel = armyPanelByPlayerIds.get(player.getId());
+
+							if (armyPanel != null && player.getArmy() != null) {
+								armyPanel.setArmy(player.getArmy());
+							}
+						}
 					}
 				}
 			}

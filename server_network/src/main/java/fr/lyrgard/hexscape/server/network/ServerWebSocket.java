@@ -78,9 +78,18 @@ public class ServerWebSocket extends WebSocketHandler {
 				send(new UserIdAllocatedMessage(userId));
 				ServerNetwork.getInstance().registerSocket(userId, this);
 			} else {
-				//System.out.println("Received message " + message.getClass() + " from player " + playerId);
 				message.setSessionUserId(userId);
-				CoreMessageBus.post(message);
+				
+				User user = Universe.getInstance().getUsersByIds().get(userId); 
+				
+				if (user.getGame() != null) {
+					// synchronize on the game to prevent concurrent game state modifications
+					synchronized(user.getGame()) {
+						CoreMessageBus.post(message);
+					}
+				} else {
+					CoreMessageBus.post(message);
+				}
 			}
 		} catch (JsonParseException e) {
 			LOGGER.error("Error while receiving message : " + msg, e);

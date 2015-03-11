@@ -22,6 +22,15 @@ public class Army {
 		}
 		return null;
 	}
+	
+	public boolean hasCard(String cardId) {
+		for (CardInstance card : cards) {
+			if (card.getId().equals(cardId)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public String getName() {
 		return name;

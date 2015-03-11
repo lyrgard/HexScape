@@ -67,6 +67,15 @@ public class Game {
 		return null;
 	}
 	
+	public Player getCardOwner(String cardId) {
+		for (Player player : getPlayers()) {
+			if (player.getArmy() != null && player.getArmy().hasCard(cardId)) {
+				return player;
+			}
+		}
+		return null;
+	}
+	
 	public CardInstance getCard(String cardInstanceId) {
 		for (Player player : getPlayers()) {
 			if (player.getArmy() != null) {

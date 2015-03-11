@@ -62,7 +62,7 @@ public class RoomMessageListener {
 				if (player.getUserId() != null) {
 					User aUser = Universe.getInstance().getUsersByIds().get(player.getUserId());
 					aUser.setPlayer(player);
-					aUser.setGame(game);
+					aUser.setGameId(game.getId());
 				}
 			}
 		}

@@ -2,6 +2,7 @@ package fr.lyrgard.hexScape.model.player;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -17,7 +18,7 @@ public class User {
 	private Room room;
 	
 	@JsonIgnore
-	private Game game;
+	private String gameId;
 	
 	@JsonIgnore
 	private Player player;
@@ -33,11 +34,7 @@ public class User {
 	
 	@JsonIgnore
 	public String getGameId() {
-		if (game != null) {
-			return game.getId();
-		} else {
-			return null;
-		}
+		return gameId;
 	}
 	
 	@JsonIgnore
@@ -51,6 +48,7 @@ public class User {
 	
 	@JsonIgnore
 	public boolean isPlayingGame() {
+		Game game = getGame();
 		if (game != null && player != null) {
 			return game.getPlayers().contains(player);
 		} else {
@@ -82,12 +80,17 @@ public class User {
 		this.color = color;
 	}
 
+	@JsonIgnore
 	public Game getGame() {
-		return game;
+		if (gameId != null) {
+			return Universe.getInstance().getGamesByGameIds().get(gameId);
+		} else {
+			return null;
+		}
 	}
 
-	public void setGame(Game game) {
-		this.game = game;
+	public void setGameId(String gameId) {
+		this.gameId = gameId;
 	}
 
 	public Room getRoom() {

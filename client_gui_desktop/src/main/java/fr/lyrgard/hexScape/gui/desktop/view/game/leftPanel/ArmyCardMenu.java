@@ -7,13 +7,19 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
 import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
+import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.MarkerService;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.action.AddMarkerToCardAction;
 import fr.lyrgard.hexScape.gui.desktop.action.AddStackableMarkerToCardAction;
+import fr.lyrgard.hexScape.gui.desktop.action.ChangeCardOwnerAction;
+import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
 import fr.lyrgard.hexScape.gui.desktop.action.RemoveAllMarkersOfTypeForPlayerdAction;
 
 public class ArmyCardMenu extends JPopupMenu {
@@ -55,6 +61,23 @@ public class ArmyCardMenu extends JPopupMenu {
 			if (markerType instanceof HiddenMarkerDefinition) {
 				JMenuItem removeMarkersItem = new JMenuItem(new RemoveAllMarkersOfTypeForPlayerdAction(markerType));
 				add(removeMarkersItem);
+			}
+		}
+		
+		Game game = CurrentUserInfo.getInstance().getGame();
+		if (game != null) {
+			if (game.getPlayers().size() > 1) {
+				final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/share.png"));
+				JMenu giveCardToNewOwnerMenu = new JMenu("give this card to another player :");
+				giveCardToNewOwnerMenu.setIcon(icon);
+				for (Player player : game.getPlayers()) {
+					if (player.getArmy() != null && !player.getArmy().hasCard(card.getId())) {
+						JMenuItem giveCardToPlayerItem = new JMenuItem(new ChangeCardOwnerAction(card, player));
+						giveCardToPlayerItem.setText(player.getDisplayName());
+						giveCardToNewOwnerMenu.add(giveCardToPlayerItem);
+					}
+				}
+				add(giveCardToNewOwnerMenu);
 			}
 		}
 	}

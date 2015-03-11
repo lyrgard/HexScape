@@ -1,5 +1,8 @@
 package fr.lyrgard.hexScape.message;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class CardInstanceChangedOwnerMessage extends AbstractMessage {
 	
 	private String oldCardId;
@@ -8,11 +11,20 @@ public class CardInstanceChangedOwnerMessage extends AbstractMessage {
 	
 	private String newOwnerId;
 	
-	public CardInstanceChangedOwnerMessage(String oldCardId, String newOwnerId, String newCardId) {
+	private String oldOwnerId;
+	
+	@JsonCreator
+	public CardInstanceChangedOwnerMessage(
+			@JsonProperty("oldCardId") String oldCardId, 
+			@JsonProperty("oldOwnerId") String oldOwnerId, 
+			@JsonProperty("newCardId") String newCardId, 
+			@JsonProperty("newOwnerId") String newOwnerId) {
 		super();
 		this.oldCardId = oldCardId;
-		this.newOwnerId = newOwnerId;
 		this.newCardId = newCardId;
+		this.oldOwnerId = oldOwnerId;
+		this.newOwnerId = newOwnerId;
+		
 	}
 
 
@@ -28,6 +40,11 @@ public class CardInstanceChangedOwnerMessage extends AbstractMessage {
 
 	public String getNewCardId() {
 		return newCardId;
+	}
+
+
+	public String getOldOwnerId() {
+		return oldOwnerId;
 	}
 	
 	

@@ -136,7 +136,7 @@ private static GameMessageListener instance;
 		
 		
 		if (game != null && user != null) {
-			user.setGame(game);
+			user.setGameId(gameId);
 			GuiMessageBus.post(message);
 			
 			if (HexScapeCore.getInstance().isOnline()) {
@@ -203,10 +203,10 @@ private static GameMessageListener instance;
 			if (player != null) {
 				player.setUserId(user.getId());
 				MarkerService.getInstance().normalizeMarkers(game);
-				user.setGame(game);
+				user.setGameId(game.getId());
 				user.setPlayer(player);
 				if (CurrentUserInfo.getInstance().getId().equals(userId)) {
-					CurrentUserInfo.getInstance().setGame(game);
+					CurrentUserInfo.getInstance().setGameId(game.getId());
 					CurrentUserInfo.getInstance().setPlayer(player);
 					
 				}
@@ -253,7 +253,7 @@ private static GameMessageListener instance;
 				if (player != null && player.getUserId() != null) {
 					User user = Universe.getInstance().getUsersByIds().get(player.getUserId());
 
-					user.setGame(null);
+					user.setGameId(null);
 					user.setPlayer(null);
 					player.setUserId(null);
 				}

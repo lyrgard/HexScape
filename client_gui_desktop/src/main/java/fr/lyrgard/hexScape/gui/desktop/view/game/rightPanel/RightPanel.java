@@ -12,6 +12,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.view.common.chat.ChatPanel;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.message.CardInstanceChangedOwnerMessage;
 import fr.lyrgard.hexScape.message.DiceThrownMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
@@ -173,7 +174,7 @@ public class RightPanel extends JPanel {
 			CardInstance card = game.getCard(cardId);
 			Player player = game.getPlayer(playerId);
 			if (card != null && player != null) {
-				CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+				CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 
 				if (card != null) {
 					chatPanel.addPlayerAction(player, "player " + player.getDisplayName() + " added " + number + " " + markerDefinition.getName() + " to " + cardType.getName());
@@ -198,7 +199,7 @@ public class RightPanel extends JPanel {
 				for (Player owner : game.getPlayers()) {
 					if (owner.getArmy() != null) {
 						CardInstance card = owner.getArmy().getCard(cardId);
-						CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+						CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 						if (card != null) {
 							for (MarkerInstance marker : card.getMarkers()) {
 								if (marker.getId().equals(markerId)) {
@@ -231,7 +232,7 @@ public class RightPanel extends JPanel {
 				for (Player owner : game.getPlayers()) {
 					if (owner.getArmy() != null) {
 						CardInstance card = owner.getArmy().getCard(cardId);
-						CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+						CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 
 						if (card != null) {
 							for (MarkerInstance marker : card.getMarkers()) {
@@ -249,6 +250,27 @@ public class RightPanel extends JPanel {
 				}
 			}
 		}
+	}
+	
+	@Subscribe public void onCardInstanceChangedOwner(CardInstanceChangedOwnerMessage message) {
+		String cardId = message.getNewCardId();
+		String oldOwnerId = message.getOldOwnerId();
+		String newOwnerId = message.getNewOwnerId();
+	
+		
+		Game game = CurrentUserInfo.getInstance().getGame();
+		
+		if (game != null) {
+			CardInstance card = game.getCard(cardId);
+			Player oldOwner = game.getPlayerByUserId(oldOwnerId);
+			Player newOwner = game.getPlayerByUserId(newOwnerId);
+			
+			if (card != null && oldOwner != null && newOwner != null) {
+				CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
+						
+				chatPanel.addAction("Control of " + cardType.getName() + " has passed from " + oldOwner.getDisplayName() + " to " + newOwner.getDisplayName());
+			}
+		}	   
 	}
 	
 	@Subscribe public void onChatMessage(GameMessagePostedMessage message) {

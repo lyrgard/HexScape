@@ -68,7 +68,7 @@ public class ArmyService {
 					}
 				}
 				
-				CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(cardId);
+				CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(cardId);
 				
 				if (cardType == null) {
 					if (firstLine) {

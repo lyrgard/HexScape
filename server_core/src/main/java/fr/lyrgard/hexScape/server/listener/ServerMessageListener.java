@@ -50,7 +50,7 @@ public class ServerMessageListener {
 					
 					if (player != null) {
 						player.setUserId(null);
-						user.setGame(null);
+						user.setGameId(null);
 						user.setPlayer(null);
 						playerId = player.getId();
 					}

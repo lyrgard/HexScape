@@ -8,11 +8,19 @@ import javax.swing.JPopupMenu;
 public class PopMenuClickListener extends MouseAdapter {
 	
 	private JPopupMenu menu;
+	
+	private PopupMenuFatcory menuFactory;
 
 	public  PopMenuClickListener(JPopupMenu menu) {
 		super();
 		this.menu = menu;
 	}
+	
+	public  PopMenuClickListener(PopupMenuFatcory menuFactory) {
+		super();
+		this.menuFactory = menuFactory;
+	}
+	
 	
 	@Override
 	public void mousePressed(MouseEvent e){
@@ -27,6 +35,12 @@ public class PopMenuClickListener extends MouseAdapter {
     }
 
     private void doPop(MouseEvent e){
-        menu.show(e.getComponent(), e.getX(), e.getY());
+    	JPopupMenu theMenu;
+    	if (menu == null) {
+    		theMenu = menuFactory.getMenu();
+    	} else {
+    		theMenu = menu;
+    	}
+    	theMenu.show(e.getComponent(), e.getX(), e.getY());
     }
 }

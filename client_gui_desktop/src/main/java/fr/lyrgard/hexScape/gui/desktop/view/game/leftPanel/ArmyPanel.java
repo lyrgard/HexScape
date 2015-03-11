@@ -1,5 +1,7 @@
 package fr.lyrgard.hexScape.gui.desktop.view.game.leftPanel;
 
+import java.awt.Component;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -39,6 +41,11 @@ public class ArmyPanel extends JScrollPane {
 	}
 	
 	public void setArmy(Army army) {
+		for (Component component : armyPanel.getComponents()) {
+			if (component instanceof ArmyCardPanel) {
+				((ArmyCardPanel) component).detach();
+			}
+		}
 		armyPanel.removeAll();
 		if (army != null) {
 			for (CardInstance card : army.getCards()) {
@@ -52,4 +59,6 @@ public class ArmyPanel extends JScrollPane {
 			armyPanel.add(new JButton(new ChooseArmyAction(getTopLevelAncestor(), playerId)));
 		}
 	}
+	
+	
 }

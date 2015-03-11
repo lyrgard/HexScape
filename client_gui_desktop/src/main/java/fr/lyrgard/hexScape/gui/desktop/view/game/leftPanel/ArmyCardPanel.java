@@ -69,7 +69,7 @@ public class ArmyCardPanel extends JPanel {
 		markerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 1, 1));
 		add(markerPanel, BorderLayout.CENTER);
 		
-		CardType cardType = CardService.getInstance().getCardInventory().getCardsById().get(card.getCardTypeId());
+		CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 		
 		imageIcon = new ImageIcon(new File(cardType.getIconPath()).getAbsolutePath());
 
@@ -112,7 +112,7 @@ public class ArmyCardPanel extends JPanel {
 		add(imageLabel, BorderLayout.LINE_END);
 
 		if (user.isPlayingGame() && user.getPlayerId().equals(playerId)) {
-			imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenu(card)));
+			imageLabel.addMouseListener(new PopMenuClickListener(new ArmyCardMenuFactory(card)));
 		}
 		imageLabel.addMouseListener(new MouseAdapter() {
 
@@ -250,6 +250,10 @@ public class ArmyCardPanel extends JPanel {
 		markerPanel.validate();
 		markerPanel.repaint();
 	}
+	
+	public void detach() {
+		GuiMessageBus.unregister(this);
+	}
 
 	@Subscribe public void onMarkerPlaced(final MarkerPlacedMessage message) {
 		EventQueue.invokeLater(new Runnable() {
@@ -294,4 +298,6 @@ public class ArmyCardPanel extends JPanel {
 			GuiMessageBus.unregister(this);
 		}
 	}
+	
+	
 }

@@ -20,7 +20,6 @@
 		<staging.dir>${project.build.directory}/staging</staging.dir>
 		<info.appName>HexScape</info.appName>
 		<info.appsubpath>HexScape</info.appsubpath>
-		<izpack.dir.app>${basedir}/src/main/izpack</izpack.dir.app>
 		<staging.dir.app>${staging.dir}/appfiles</staging.dir.app>
 	</properties>
 
@@ -45,6 +44,23 @@
 								</resource>
 							</resources>
 							<includeEmptyDirs>true</includeEmptyDirs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-install-xml</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/izpack</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							
 						</configuration>
 					</execution>
 				</executions>
@@ -84,7 +100,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<baseDir>${staging.dir.app}</baseDir>
-					<installFile>${izpack.dir.app}/install.xml</installFile>
+					<installFile>${project.build.directory}/install.xml</installFile>
 					<outputDirectory>${project.build.directory}</outputDirectory>
 					<finalName>HexScape_install_${project.version}</finalName>
 					<enableOverrideArtifact>true</enableOverrideArtifact>

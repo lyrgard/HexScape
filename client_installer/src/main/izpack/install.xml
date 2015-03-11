@@ -4,7 +4,7 @@
 
 	<info>
 		<appname>HexScape</appname>
-		<appversion>1.1.0-beta</appversion>
+		<appversion>${project.version}</appversion>
 		<authors>
 			<author name="Lyrgard" email="lyrgard@gmail.com" />
 		</authors>
@@ -23,14 +23,14 @@
   	</locale>
 
 	<resources>
-		<res id="LicencePanel.licence" src="licence.txt" />
+		<res id="HTMLLicencePanel.licence" src="licence.html" />
 		<res id="packsLang.xml_eng" src="packsLang.xml_eng"/>
 		<res id="shortcutSpec.xml" src="shortcutSpec.xml"/>
 	</resources>
 	
 	<panels>
 		<panel classname="HelloPanel" />
-		<panel classname="LicencePanel" />
+		<panel classname="HTMLLicencePanel" />
 		<panel classname="TargetPanel" />
 		<panel classname="InstallPanel" />
 		<panel classname="ShortcutPanel" />
@@ -42,7 +42,7 @@
 			<description>Core files</description>
 			<file src="HexScape.jar" targetdir="$INSTALL_PATH" ></file>
 			<file src="hexscape.ico" targetdir="$INSTALL_PATH" ></file>
-			<fileset dir="asset" targetdir="$INSTALL_PATH/asset"></fileset>
+			<fileset dir="asset" targetdir="$USER_HOME/.hexscape/asset"></fileset>
 		</pack>
 	</packs>
 	

@@ -8,22 +8,22 @@ public class CardCollection {
 
 	private String name;
 	
-	private Map<String, CardType> cardsById = new HashMap<String, CardType>();
+	private Map<String, CardType> cardTypesById = new HashMap<String, CardType>();
 	
 	private Map<String, Integer> numberById = new HashMap<String, Integer>();
 	
 	private Map<String, CardType> cardsByPieceId = new HashMap<String, CardType>();
 	
 	public void addCard(String id, CardType card, Integer number) {
-		cardsById.put(id, card);
+		cardTypesById.put(id, card);
 		numberById.put(id, number);
 		for (String pieceId : card.getFigureNames()) {
 			cardsByPieceId.put(pieceId, card);
 		}
 	}
 
-	public Map<String, CardType> getCardsById() {
-		return cardsById;
+	public Map<String, CardType> getCardTypesById() {
+		return cardTypesById;
 	}
 
 	public Map<String, Integer> getNumberById() {

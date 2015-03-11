@@ -78,7 +78,7 @@ public class SelectedCardPanel extends JPanel {
 	@Subscribe public void onCardSelected(CardSelectedMessage message) {
 		String cardTypeId = message.getCard().getCardTypeId();
 		
-		CardType card = CardService.getInstance().getCardInventory().getCardsById().get(cardTypeId);
+		CardType card = CardService.getInstance().getCardInventory().getCardTypesById().get(cardTypeId);
 		displayCard(card);
 	}
 
@@ -95,7 +95,7 @@ public class SelectedCardPanel extends JPanel {
 					if (game != null) {
 						PieceInstance piece = game.getPiece(pieceId);
 						if (piece != null && piece.getCard() != null) {
-							CardType card = CardService.getInstance().getCardInventory().getCardsById().get(piece.getCard().getCardTypeId());
+							CardType card = CardService.getInstance().getCardInventory().getCardTypesById().get(piece.getCard().getCardTypeId());
 							displayCard(card);
 						}
 					}

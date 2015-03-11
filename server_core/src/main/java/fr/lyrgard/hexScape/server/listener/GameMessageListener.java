@@ -130,7 +130,7 @@ public class GameMessageListener {
 		
 		if (user != null && game != null && user.getRoom() != null ) {
 			if (game.isStarted()) {
-				user.setGame(game);
+				user.setGameId(game.getId());
 				game.getObserversIds().add(userId);
 				GameObservedMessage resultMessage = new GameObservedMessage(user.getId(), gameId);
 				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
@@ -155,7 +155,7 @@ public class GameMessageListener {
 			if (user.getPlayer() == null && player.getUserId() == null) {
 				player.setUserId(user.getId());
 				user.setPlayer(player);
-				user.setGame(game);
+				user.setGameId(game.getId());
 				
 				try {
 					for (User userInRoom : user.getRoom().getUsers()) {
@@ -204,7 +204,7 @@ public class GameMessageListener {
 				} else if (game.getObserversIds().contains(userId)) {
 					game.getObserversIds().remove(userId);
 				}
-				user.setGame(null);
+				user.setGameId(null);
 
 				GameLeftMessage resultMessage = new GameLeftMessage(user.getId(), playerId, game.getId());
 				ServerNetwork.getInstance().sendMessageToRoom(resultMessage, user.getRoom().getId());
