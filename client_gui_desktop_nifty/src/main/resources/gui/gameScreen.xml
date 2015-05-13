@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<screen id="gameScreen">
+		<layer id="background" backgroundColor="#0000" childLayout="horizontal">
+
+		</layer>
+		<layer id="foreground" backgroundColor="#0000" childLayout="horizontal">
+			<panel id="panel_left" width="80%" height="100%" childLayout="vertical"
+				backgroundColor="#0f08">
+				<!-- spacer -->
+			</panel>
+			<panel id="panel_right" width="20%" height="100%" childLayout="vertical"
+				backgroundColor="#00f8">
+				<panel id="panel_top_right1" width="100%" height="15%"
+					childLayout="center" backgroundColor="#00f8">
+				</panel>
+				<panel id="panel_top_right2" width="100%" height="15%"
+					childLayout="center" backgroundColor="#44f8">
+				</panel>
+				<panel id="panel_bot_right" width="100%" height="70%" valign="center"
+					backgroundColor="#88f8">
+				</panel>
+			</panel>
+		</layer>
+	</screen>
+</nifty>
