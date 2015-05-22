@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<controlDefinition name="armyCardPanel" style="nifty-panel-style" 
+		controller="fr.lyrgard.hexScape.gui.desktop.controller.game.ArmyCardPanelController"
+		armyCardImage="$image">
+		<panel style="#panel" childLayout="horizontal" focusable="true" valign="center" visibleToMouse="true" width="100%" heigth="100%" backgroundColor="#f008">
+			<panel width="*" height="100%" childLayout="vertical">
+				<text text="TOTO" style="nifty-label"/>
+			</panel>
+			<panel width="50px" height="100%" childLayout="vertical" backgroundColor="#00f8">
+				<image id="#armyCardImage" filename="$armyCardImage" width="50px" height="50px"/>
+				<text text="" style="nifty-label"/>
+				<control name="imageButton" align="center" height="24px" width="24px" valign="center" visibleToMouse="true"  
+						id="#putOnMapButton" 
+						goTo="homeScreen"
+						image="gui/icons/open.png" 
+						imageHover="gui/icons/openHover.png" 
+						imagePressed="gui/icons/open.png" 
+						/>
+			</panel>
+		</panel>
+	</controlDefinition>
+</nifty-controls>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+    <controlDefinition style="hexScape-textfield" name="hexScapeTextfield"
+                       passwordChar="$passwordChar" maxLength="$maxLength"
+                       width="$width">
+        <panel childLayout="center" width="$width">
+        	<image filename="gui/images/textfield/textfieldBackground.png" width="100%"  imageMode="resize:10,8,10,15,4,20,4,2,10,8,10,15"/>
+        	<panel childLayout="horizontal" >
+	        	<control id="#textField" name="textfield" maxLength="50" width="300px"  valign="center"/>
+	        </panel>
+        </panel>
+    </controlDefinition>
+</nifty-controls>

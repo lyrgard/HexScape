@@ -118,10 +118,10 @@ public class SelectedGamePanel extends JPanel {
 				EventQueue.invokeLater(new Runnable() {
 
 			public void run() {
-				Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
-				view3d.setSize(new Dimension(50, 50));
-				view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
-				add(view3d, BorderLayout.CENTER);
+				//Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+//				view3d.setSize(new Dimension(50, 50));
+//				view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, 150));
+//				add(view3d, BorderLayout.CENTER);
 				System.out.println("SELECTED GAME VIEW TAKES 3D");
 
 						DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), false);

@@ -30,7 +30,7 @@ public class SelectPlayerDialog extends JDialog {
 			selectedPlaceholderId = freePlayers.iterator().next().getId();
 		}
 		
-		setLocationRelativeTo(HexScapeFrame.getInstance());
+		//setLocationRelativeTo(HexScapeFrame.getInstance());
 		setTitle("Choose your role");
 		
 		this.setLayout(new MigLayout(

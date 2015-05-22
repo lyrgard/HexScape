@@ -114,7 +114,7 @@ public class RoomView extends AbstractView {
 
 			public void run() {
 				RoomView.this.setRoom(room);
-				HexScapeFrame.getInstance().showView(ViewEnum.ROOM);
+				//HexScapeFrame.getInstance().showView(ViewEnum.ROOM);
 			}
 		});
 	}

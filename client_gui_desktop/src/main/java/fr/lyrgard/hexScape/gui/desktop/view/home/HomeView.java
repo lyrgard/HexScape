@@ -39,7 +39,7 @@ public class HomeView extends AbstractView {
 		
 		GuiMessageBus.register(this);
 	}
-
+	
 	@Override
 	public void refresh() {
 		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
@@ -51,6 +51,7 @@ public class HomeView extends AbstractView {
 		});
 		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
 		//view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
+		
 		add(view3d, BorderLayout.CENTER);
 		System.out.println("HOME VIEW TAKES 3D");
 	}

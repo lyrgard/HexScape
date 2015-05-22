@@ -1,10 +1,5 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
-import java.awt.Dimension;
-
-import javax.swing.JPopupMenu;
-import javax.swing.SwingUtilities;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
@@ -16,9 +11,7 @@ import de.lessvoid.nifty.screen.ScreenController;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.InitCallBack;
-import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
-import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
+import fr.lyrgard.hexScape.gui.desktop.controller.home.HomeScreenController;
 
 
 public class HexScapeDesktopGui implements ScreenController, InitCallBack {
@@ -26,22 +19,35 @@ public class HexScapeDesktopGui implements ScreenController, InitCallBack {
 	private Nifty nifty;
 	
 	public static void main(String[] args){
-		HexScapeCore.getInstance();
 		new HexScapeDesktopGui().start();
 	}
 	
 	
 	
 	private void start() {
-		HexScapeJme3Application app = HexScapeCore.getInstance().getHexScapeJme3Application();
+		HexScapeFrame frame = HexScapeFrame.getInstance();
+		
+		final HexScapeCore core = HexScapeCore.getInstance();
+		final HexScapeJme3Application app = core.getHexScapeJme3Application();
+		AppSettings settings = new AppSettings(true);
+		settings.setWidth(frame.getCanvasContainer().getWidth());
+		settings.setHeight(frame.getCanvasContainer().getHeight());
+		app.setSettings(settings);
+		app.createCanvas(); // create canvas!
+		JmeCanvasContext ctx = (JmeCanvasContext) app.getContext();
+		ctx.setSystemListener(app);
+		
 		app.setInitCallBack(this);
-		app.start();
+		
+		frame.setJmeCanvas(ctx.getCanvas());
+		
+		app.startCanvas();
 	}
 
 
 	@Override
 	public void init() {
-		HexScapeJme3Application app = HexScapeCore.getInstance().getHexScapeJme3Application();
+		SimpleApplication app = HexScapeCore.getInstance().getHexScapeJme3Application();
 		
 		NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(app.getAssetManager(),
 				app.getInputManager(),
@@ -55,8 +61,12 @@ public class HexScapeDesktopGui implements ScreenController, InitCallBack {
 		nifty.addXml("gui/gameScreen.xml");
 		nifty.gotoScreen("homeScreen");
 
+		nifty.registerMouseCursor("buttonHoverMousePointer", "gui/images/cursorHover.png", 0, 0);
+		
 		// attach the nifty display to the gui view port as a processor
 		app.getGuiViewPort().addProcessor(niftyDisplay);
+		
+		//nifty.resolutionChanged();
 	}
 
 	@Override

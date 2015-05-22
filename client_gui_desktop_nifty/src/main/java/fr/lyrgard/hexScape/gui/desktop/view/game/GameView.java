@@ -64,7 +64,7 @@ public class GameView extends AbstractView {
 
 				public void run() {
 					//leaveGameButton.setAction(new LeaveGameAction(gameId));
-					HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+					//HexScapeFrame.getInstance().showView(ViewEnum.GAME);
 				}
 			});
 		}
@@ -81,7 +81,7 @@ public class GameView extends AbstractView {
 
 				public void run() {
 					//leaveGameButton.setAction(new LeaveGameAction(gameId));
-					HexScapeFrame.getInstance().showView(ViewEnum.GAME);
+					//HexScapeFrame.getInstance().showView(ViewEnum.GAME);
 				}
 			});
 		}
@@ -96,9 +96,9 @@ public class GameView extends AbstractView {
 
 				public void run() {
 					if (HexScapeCore.getInstance().isOnline()) {
-						HexScapeFrame.getInstance().showView(ViewEnum.ROOM);
+						//HexScapeFrame.getInstance().showView(ViewEnum.ROOM);
 					} else {
-						HexScapeFrame.getInstance().showView(ViewEnum.HOME);
+						//HexScapeFrame.getInstance().showView(ViewEnum.HOME);
 					}
 				}
 			});
@@ -108,8 +108,8 @@ public class GameView extends AbstractView {
 
 	@Override
 	public void refresh() {
-		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
-		view3d.setSize(new Dimension(50, 50));
+//		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+//		view3d.setSize(new Dimension(50, 50));
 		//view3d.setPreferredSize(new Dimension(200, 200));
 		//add(view3d, "cell 1 1, grow, push");
 		System.out.println("GAME VIEW TAKES 3D");

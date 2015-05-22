@@ -39,11 +39,19 @@ public class MapMessageListener extends AbstractMessageListener {
 	@Subscribe public void onLoadMapMessage(LoadMapMessage message) {
 		final File file = message.getMapFile();
 		
-		MapManager mapManager = MapManager.fromFile(file);
+		final MapManager mapManager = MapManager.fromFile(file);
 		
-		if (mapManager != null) {
-			CoreMessageBus.post(new MapLoadedMessage(CurrentUserInfo.getInstance().getId(), mapManager.getMap()));
-		}
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			public Void call() throws Exception {
+				HexScapeCore.getInstance().getHexScapeJme3Application().setScene(mapManager);
+				
+				if (mapManager != null) {
+					CoreMessageBus.post(new MapLoadedMessage(CurrentUserInfo.getInstance().getId(), mapManager.getMap()));
+				}
+				return null;
+			}
+		});
 	}
 	
 	@Subscribe public void onMapLoaded(MapLoadedMessage message) {

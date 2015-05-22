@@ -11,14 +11,14 @@
 	</parent>
 
 	<properties>
-		<jmonkey.version>3.0.0.20140325-SNAPSHOT</jmonkey.version>
+		<jmonkey.version>3.0.10</jmonkey.version>
 	</properties>
 
 	<repositories>
 		<repository>
-			<id>sonatype-public</id>
-			<name>sonatype public</name>
-			<url>https://oss.sonatype.org/content/groups/public/</url>
+			<id>jme</id>
+			<name>jme</name>
+			<url>http://updates.jmonkeyengine.org/maven</url>
 		</repository>
 
 	</repositories>
@@ -39,39 +39,39 @@
 		<!-- The core library -->
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>jME3-core</artifactId>
+			<artifactId>jme3-core</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 
 		<!-- LWJGL stuff -->
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>jME3-lwjgl</artifactId>
+			<artifactId>jme3-lwjgl</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-lwjgl-natives</artifactId>
-			<version>${jmonkey.version}</version>
+			<groupId>com.jme3-lib</groupId>
+			<artifactId>lwjgl-natives</artifactId>
+			<version>2.9.0</version>
 		</dependency>
 		<dependency>
-			<groupId>com.jme3</groupId>
+			<groupId>com.jme3-lib</groupId>
 			<artifactId>lwjgl</artifactId>
+			<version>2.9.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jme3</groupId>
+			<artifactId>jme3-desktop</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>jME3-desktop</artifactId>
+			<artifactId>jme3-effects</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.jme3</groupId>
-			<artifactId>jME3-effects</artifactId>
-			<version>${jmonkey.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.jme3</groupId>
-			<artifactId>jME3-jbullet</artifactId>
+			<artifactId>jme3-jbullet</artifactId>
 			<version>${jmonkey.version}</version>
 		</dependency>
 

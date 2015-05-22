@@ -30,10 +30,10 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.VertexBuffer.Type;
+import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
 import com.jme3.texture.Texture.MinFilter;
 import com.jme3.util.BufferUtils;
-import com.jme3.util.SkyFactory;
 
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
@@ -220,6 +220,16 @@ public class MapManager {
 			mapNode = new Node("mapNode");
 			populateMapNode();
 			sceneNode.attachChild(mapNode);
+			
+			
+//			Box box1 = new Box(5,5,5);
+//	        Geometry blue = new Geometry("Box", box1);
+//	        Material mat1 = new Material(HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager(), 
+//	                "Common/MatDefs/Misc/Unshaded.j3md");
+//	        mat1.setColor("Color", ColorRGBA.Blue);
+//	        blue.setMaterial(mat1);
+//			
+//			sceneNode.attachChild(blue);
 		}
 
 		return sceneNode;

@@ -27,6 +27,7 @@ public class ChooseMapAction extends AbstractAction {
 	}
 
 	public void actionPerformed(ActionEvent paramActionEvent) {
+		
 		JFileChooser chooser = new JFileChooser();
 		FileNameExtensionFilter filter = new FileNameExtensionFilter(
 				"VirtualScape maps", "hsc");

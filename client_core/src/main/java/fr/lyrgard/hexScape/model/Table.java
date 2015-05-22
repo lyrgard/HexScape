@@ -5,6 +5,7 @@ import com.jme3.bounding.BoundingBox;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
@@ -26,8 +27,8 @@ public class Table extends Geometry {
 		}
 		
 		BoundingBox bv = (BoundingBox)scene.getSpatial().getWorldBound();
-		float sizeX = bv.getXExtent() * 2f;
-		float sizeZ = bv.getZExtent() * 2f;
+		float sizeX = bv.getXExtent() * 8f;
+		float sizeZ = bv.getZExtent() * 8f;
 		Vector3f center = bv.getCenter();
 		Box tableMesh = new Box(sizeX , 1, sizeZ);
 
@@ -44,6 +45,7 @@ public class Table extends Geometry {
 			tableMat.setFloat("Shininess", 5f);
 		}
 		setMaterial(tableMat);
+		setShadowMode(ShadowMode.Receive);
 	}
 
 }

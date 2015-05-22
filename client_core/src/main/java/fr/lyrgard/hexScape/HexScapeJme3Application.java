@@ -8,10 +8,16 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.ViewPort;
+import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Geometry;
+import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
@@ -55,6 +61,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	PointLight haloLight;
 	
+	private InitCallBack initCallBack;
+	
 	public HexScapeJme3Application() {
 		super(new AppState[] {});
 		
@@ -72,6 +80,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 		selectMarkerAppState.setEnabled(false);
 		flyByCameraAppState.setEnabled(false);
 	}
+	
+	private DirectionalLightShadowRenderer dlsr;
 
 	@Override
 	public void simpleInitApp() {
@@ -83,48 +93,39 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		
+		Vector3f sunDirection = new Vector3f(-1,-1, -0.5f).normalizeLocal();
+		
 		DirectionalLight sun = new DirectionalLight();
 		sun.setColor(ColorRGBA.White.mult(0.5f));
-		sun.setDirection(new Vector3f(-1,-1, -0.5f).normalizeLocal());
+		sun.setDirection(sunDirection);
 		rootNode.addLight(sun);
 		
 		AmbientLight al = new AmbientLight();
 		al.setColor(ColorRGBA.White.mult(1f));
 		rootNode.addLight(al);
 		
-		final int SHADOWMAP_SIZE=2048;
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+		final int SHADOWMAP_SIZE=1024;
+        dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(sun);
         dlsr.setShadowIntensity(0.3f);
         viewPort.addProcessor(dlsr);
-        //viewPort.setBackgroundColor(ColorRGBA.Blue);
-        
-//        p = new Picture("background");
-//        Texture tileTexture = assetManager.loadTexture("model/texture/select_cross_white.png");
-//        Material bgMaterial = new Material(assetManager, 
-//				"Common/MatDefs/Light/Lighting.j3md");
-//        bgMaterial.setBoolean("UseMaterialColors",true);
-//        bgMaterial.setTexture("DiffuseMap", tileTexture);
-//        bgMaterial.setColor("Ambient", ColorRGBA.Red);
-//        bgMaterial.setColor("Diffuse",ColorRGBA.White);  // minimum material color
-//        bgMaterial.setColor("Specular",ColorRGBA.White); // for shininess
-//        bgMaterial.setFloat("Shininess", 50f);
-//        p.setMaterial(bgMaterial);
-//        
-//       
-//		ViewPort pv = renderManager.createPreView("background", cam);
-//		pv.setClearFlags(true, true, true);
-//		pv.attachScene(p);
-		 
-//		viewPort.setClearFlags(false, true, true);
-        
+	
+		
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
         setPauseOnLostFocus(false);
         
         displayTitleScreen();
         
         //rotatingAroundCameraAppState.setRotateAroundNode(TitleScreen.getInstance().getSpatial());
-        GuiMessageBus.post(new CoreReady());
+        GuiMessageBus.post(new CoreReady());     
+        
+        if (initCallBack != null) {
+        	initCallBack.init();
+        }
+	}
+
+	public void setInitCallBack(InitCallBack initCallBack) {
+		this.initCallBack = initCallBack;
 	}
 
 	public MapManager getScene() {
@@ -191,7 +192,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 	public void displayTitleScreen() {
 		
 		if (this.scene != null) {
-			rootNode.detachChild(this.scene.getSpatial());
+			rootNode.detachAllChildren();
 			scene = null;
 		}
 		if (this.table != null) {
@@ -205,11 +206,11 @@ public class HexScapeJme3Application extends SimpleApplication {
 
 	public void setScene(MapManager scene) {
 		
-		rootNode.detachChild(TitleScreen.getInstance().getSpatial());
+		rootNode.detachAllChildren();
 		if (this.scene != null) {
 			rootNode.detachChild(this.scene.getSpatial());
 		}
-		
+		dlsr.cleanup();
 		this.scene = scene;
 		
 		if (scene != null) {			
@@ -220,7 +221,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rootNode.attachChild(table);
 			
 			rootNode.attachChild(scene.getSpatial());
-			//rootNode.attachChild(Sky.getInstance().getSpatial());
+			
 			if (CurrentUserInfo.getInstance().isPlayingGame()) {
 				// reset camera position
 				rotatingAroundCameraAppState.setRotateAroundNode(scene.getSpatial(), true);

@@ -2,7 +2,6 @@ package fr.lyrgard.hexScape.gui.desktop.view.home;
 
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.EventQueue;
 import java.util.concurrent.Callable;
 
@@ -13,7 +12,6 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.action.ConnectToServerAction;
 import fr.lyrgard.hexScape.gui.desktop.action.JoinGameAction;
 import fr.lyrgard.hexScape.gui.desktop.action.OpenConfigDialogAction;
@@ -49,10 +47,10 @@ public class HomeView extends AbstractView {
 				return null;
 			}
 		});
-		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
+		//Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
 		//view3d.setPreferredSize(new Dimension(UNDEFINED_CONDITION, UNDEFINED_CONDITION));
 		
-		add(view3d, BorderLayout.CENTER);
+		//add(view3d, BorderLayout.CENTER);
 		System.out.println("HOME VIEW TAKES 3D");
 	}
 

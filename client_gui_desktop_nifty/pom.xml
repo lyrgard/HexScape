@@ -72,6 +72,12 @@
 			<version>3.0.10</version>
 		</dependency>
 		<dependency>
+			<groupId>org.bushe</groupId>
+    		<artifactId>eventbus</artifactId>
+    		<version>1.4</version>
+		</dependency>
+		
+		<!-- <dependency>
 			<groupId>lessvoid</groupId>
 			<artifactId>nifty</artifactId>
 			<version>${nifty.version}</version>
@@ -85,7 +91,7 @@
 			<groupId>lessvoid</groupId>
 			<artifactId>nifty-style-black</artifactId>
 			<version>${nifty.version}</version>
-		</dependency>
+		</dependency> -->
 		<dependency>
 			<groupId>com.miglayout</groupId>
 			<artifactId>miglayout</artifactId>

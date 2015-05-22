@@ -111,7 +111,7 @@ public class GameView extends AbstractView {
 		Component view3d = HexScapeFrame.getInstance().getView3d().getComponent();
 		view3d.setSize(new Dimension(50, 50));
 		//view3d.setPreferredSize(new Dimension(200, 200));
-		add(view3d, "cell 1 1, grow, push");
+		//add(view3d, "cell 1 1, grow, push");
 		System.out.println("GAME VIEW TAKES 3D");
 	}
 

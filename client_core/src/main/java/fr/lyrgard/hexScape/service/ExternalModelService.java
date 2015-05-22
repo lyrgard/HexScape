@@ -14,6 +14,7 @@ import fr.lyrgard.hexScape.model.model3d.ExternalModel;
 import fr.lyrgard.hexScape.model.model3d.loader.AseModelLoader;
 import fr.lyrgard.hexScape.model.model3d.loader.ModelLoader;
 import fr.lyrgard.hexScape.model.model3d.loader.ObjModelLoader;
+import fr.lyrgard.hexScape.model.model3d.loader.TwoImagesModelLoader;
 
 public class ExternalModelService {
 	
@@ -32,6 +33,7 @@ public class ExternalModelService {
 	private ExternalModelService() {
 		modelLoaders.add(new AseModelLoader());
 		modelLoaders.add(new ObjModelLoader());
+		modelLoaders.add(new TwoImagesModelLoader());
 	}
 	
 	public Spatial getModel(String modelId) {
