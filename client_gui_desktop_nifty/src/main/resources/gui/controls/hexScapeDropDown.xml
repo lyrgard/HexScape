@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+    <!-- DROP DOWN CONTROL -->
+    <controlDefinition
+            style="hexscape-drop-down"
+            name="hexScapeDropDown"
+            controller="de.lessvoid.nifty.controls.dropdown.DropDownControl"
+            inputMapping="de.lessvoid.nifty.controls.dropdown.DropDownControlInputMapping">
+        <panel style="#panel">
+            <interact onClick="dropDownClicked()"/>
+            <image style="#icon"/>
+            <panel style="#panel-text">
+                <text id="#text" style="#text" text=""/>
+                <panel width="12px" />
+            </panel>
+            <!-- <panel style="#panel-icon">
+                
+            </panel> -->
+        </panel>
+    </controlDefinition>
+
+    <!-- DROP DOWN BOX POPUP (The Actual List this is) -->
+    <popup id="dropDownBoxSelectPopup" style="nifty-drop-down" childLayout="absolute"
+           controller="de.lessvoid.nifty.controls.dropdown.DropDownPopup">
+        <interact onClick="close()"/>
+        <panel id="#panel" style="#list-panel" height="200px">
+            <control id="#listBox" name="hexScapeListBox" horizontal="optional" displayItems="$displayItems"
+                     selectionMode="Single" forceSelection="true"/>
+        </panel>
+    </popup>
+</nifty-controls>

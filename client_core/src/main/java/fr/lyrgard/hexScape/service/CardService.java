@@ -11,6 +11,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.card.CardCollection;
 
@@ -98,7 +99,7 @@ public class CardService {
 		for (String extension : IMAGE_TYPES) {
 			File file = new File(folder, name + "." + extension);
 			if (file.exists() && file.isFile() && file.canRead()) {
-				return file.getAbsolutePath();
+				return HexScapeCore.APP_DATA_FOLDER.toURI().relativize(file.toURI()).getPath();
 			}
 		}
 		return null;

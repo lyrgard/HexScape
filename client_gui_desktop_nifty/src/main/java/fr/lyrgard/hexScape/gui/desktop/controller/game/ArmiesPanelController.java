@@ -12,9 +12,12 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import fr.lyrgard.hexScape.gui.desktop.controller.ImageButtonBuilder;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
+import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.player.Player;
+import fr.lyrgard.hexScape.service.CardService;
 
 public class ArmiesPanelController {
 
@@ -64,8 +67,10 @@ public class ArmiesPanelController {
 		
 		int i = 0;
 		for (CardInstance card : army.getCards()) {
+			final CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 			new ArmyPanelBuilder(card, playerId, i) {{
 				height("100px");
+				parameter("image", cardType.getIconPath());
 			}}.build(nifty, screen, scrollPanelContainer);
 			i++;
 		}

@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
 	<screen id="gameScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.game.GameScreenController">
-		<layer id="foreground" backgroundColor="#0000" childLayout="horizontal">
-			<panel id="leftPanel" width="300px" height="100%" childLayout="vertical">
-				<control name="scrollPanel" id="armiesScrollPanel" horizontal="false" height="550px" width="100%" stepSizeY="100" pageSizeY="300">
-					<panel id="#scrollPanelContainer" width="100%" childLayout="vertical">
+		<layer id="foreground" backgroundColor="#0000" childLayout="center">
+			<panel id="bottomPanel" width="1000px" height="120px" childLayout="center" valign="bottom">
+				<control name="scrollPanel" id="armiesScrollPanel" vertical="false" height="100%" width="100%" stepSizeX="100" pageSizeX="300">
+					<panel id="#scrollPanelContainer" height="100%" childLayout="horizontal">
   					</panel>
 				</control>
 			</panel>

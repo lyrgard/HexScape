@@ -8,5 +8,6 @@ public class ArmyPanelBuilder extends ControlBuilder {
 
 	public ArmyPanelBuilder(CardInstance cardInstance, String playerId, int place) {
 		super("armyCardPanel_" + playerId + "_" + place, "armyCardPanel");
+		
 	}
 }

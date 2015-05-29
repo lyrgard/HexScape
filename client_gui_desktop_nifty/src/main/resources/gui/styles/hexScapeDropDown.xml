@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles xmlns="http://hexscape-gui.lessvoid.com/hexscape-gui">
+
+    <style id="hexscape-drop-down#panel">
+        <attributes childLayout="center" height="32px" focusable="true" visibleToMouse="true"/>
+        <!-- <effect>
+            <onHover name="border" color="#822f" post="true"/>
+        </effect> -->
+    </style>
+
+    <style id="hexscape-drop-down#panel-text" >
+        <attributes childLayout="horizontal" childClip="true" padding="0px,12px" width="100%" heigth="32"/>
+        <!-- <effect>
+            <onActive name="border" color="#222f" post="true" inset="1px"/>
+            <onFocus name="colorBar" color="#800f" post="true" inset="1px"/>
+            <onEnabled name="renderQuad" startColor="#2228" endColor="#2220" post="true" length="150"/>
+            <onDisabled name="renderQuad" startColor="#2220" endColor="#2228" post="true" length="150"/>
+        </effect> -->
+    </style>
+
+    <style id="hexscape-drop-down#text" base="uiLabel24">
+        <attributes color="#444f" selectionColor="#888f" visibleToMouse="false" align="left" valign="center"
+                    textHAlign="left" height="32px" />
+        <effect>
+            <onFocus name="textColor" post="false" color="#000f"/>
+        </effect>
+    </style>
+
+    <!-- <style id="hexscape-drop-down#panel-icon">
+        <attributes childLayout="center"/>
+    </style> -->
+
+    <style id="hexscape-drop-down#icon">
+        <attributes filename="gui/images/dropdown/dropdown.png" width="100%" heigth="100%" imageMode="resize:10,7,23,16,10,7,23,0,10,7,23,15"/>
+        <effect>
+            <onClick name="focus" targetElement="#parent"/>
+            <onClick name="imageOverlay" filename="gui/images/dropdown/dropdownHover.png" imageMode="resize:10,7,23,16,10,7,23,0,10,7,23,15" post="true"/>
+            <onFocus name="imageOverlay" filename="gui/images/dropdown/dropdownHover.png" imageMode="resize:10,7,23,16,10,7,23,0,10,7,23,15" post="true"/>
+        </effect>
+    </style>
+
+    <style id="hexscape-drop-down#list-panel">
+        <attributes childLayout="vertical" width="*"/>
+        <effect>
+            <onStartScreen name="clip" length="150" inherit="true" post="false"/>
+            <onStartScreen name="move" length="150" timeType="exp" factor="2.5" mode="fromOffset" offsetY="-100"
+                           inherit="true"/>
+            <onStartScreen name="fade" length="150" startColor="#0000" endColor="#000c" inherit="true"/>
+            <onEndScreen name="clip" length="150" inherit="true" post="false"/>
+            <onEndScreen name="move" length="150" timeType="exp" factor="2.5" mode="toOffset" offsetY="-100"
+                         inherit="true"/>
+        </effect>
+    </style>
+
+    <style id="hexscape-drop-down#text-item" base="uiLabel24">
+        <attributes textHAlign="left" textVAlign="center" width="100%"/>
+        <effect>
+            <onHover name="focus"/>
+            <!-- <onFocus name="colorBar" color="#000f" post="false"/> -->
+        </effect>
+    </style>
+</nifty-styles>

@@ -31,7 +31,7 @@
 						text="${i18n.newGame}" />	
 				</panel>
 				<panel height="100%" width="50%" childLayout="center">
-					<control name="imageButtonText" id="loadGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+					<control name="imageButtonText" id="restoreGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
 						goTo="homeScreen"  
 						image="gui/images/openFileWithText.png" 
 						imageHover="gui/images/openFileWithText.png" 
@@ -74,15 +74,16 @@
 					</panel>
 					<panel height="100%" width="60%" childLayout="horizontal">
 						<panel width="10px"/>
-						<control id="playerNumberDropDown" name="dropDown" displayItems="4" width="50px" valign="center"/>
+						<control id="playerNumberDropDown" name="hexScapeDropDown" displayItems="4" width="60px" valign="center"/>
 					</panel>
 				</panel>
 				<panel height="40%" width="100%" align="left" childLayout="center">
-					<control name="imageButton" id="startGameButton" height="50" width="150" visibleToMouse="true" visible="false"
-							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.StartGameButtonController" 
-							image="gui/images/startGame.png" 
-							imageHover="gui/images/startGameHover.png" 
-							imagePressed="gui/images/startGame.png" />
+					<control name="imageButtonText" id="startGameButton" visible="false" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.StartGameButtonController"   
+							image="gui/images/startGameWithText.png" 
+							imageHover="gui/images/startGameWithText.png" 
+							imagePressed="gui/images/startGameWithText.png"
+							text="${i18n.startGame}" />
 				</panel>
 			</panel>
 		</panel>
