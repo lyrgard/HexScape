@@ -36,8 +36,6 @@ public class HexScapeCore {
 	private boolean online = false;
 	
 	private CardCollection cardInventory;
-	
-	private MapManager mapManager;
 
 	private HexScapeCore() {
 		instance = this;
@@ -73,11 +71,7 @@ public class HexScapeCore {
 	}
 
 	public MapManager getMapManager() {
-		return mapManager;
-	}
-
-	public void setMapManager(MapManager mapManager) {
-		this.mapManager = mapManager;
+		return hexScapeJme3Application.getScene();
 	}
 
 	public boolean isOnline() {

@@ -2,35 +2,27 @@ package fr.lyrgard.hexScape.gui.desktop.controller;
 
 import java.util.Properties;
 
+import org.bushe.swing.event.EventTopicSubscriber;
+
 import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.effects.EffectEventId;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.render.ImageRenderer;
+import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import de.lessvoid.nifty.input.NiftyInputEvent;
-import de.lessvoid.nifty.render.NiftyImage;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.xml.xpp3.Attributes;
 
 public abstract class AbstractImageButtonController implements ImageButtonController {
 
 	//private final static String IMAGE_ID = "#imageButtonImage";
-	
-	private final static String IMAGE_FILENAME = "image";
-	private final static String IMAGE_HOVER_FILENAME = "imageHover";
-	private final static String IMAGE_PRESSED_FILENAME = "imagePressed";
-	
+
 	protected Nifty nifty;
 	protected Screen screen;
 	protected Element element;
 	protected Properties properties;
 	protected Attributes attributes;
-	
-	
+	private boolean activated = true;
 
-	protected NiftyImage image;
-	protected NiftyImage imageHover;
-	protected NiftyImage imagePressed;
-	protected Element imageElement;
-	
 	public AbstractImageButtonController() {
 	}
 
@@ -41,31 +33,20 @@ public abstract class AbstractImageButtonController implements ImageButtonContro
 		this.element = element;
 		this.properties = properties;
 		this.attributes = attributes;
-		
-		//imageElement = element.findElementByName(element.getId() + IMAGE_ID);
-		imageElement = element.getElements().get(0);
-		
-		String imageFilename = attributes.get(IMAGE_FILENAME);
-		String imageHoverFilename = attributes.get(IMAGE_HOVER_FILENAME);
-		String imagePressedFilename = attributes.get(IMAGE_PRESSED_FILENAME);
-		
-		if (imageFilename != null) {
-			image = nifty.createImage(imageFilename, false);
-		}
-		
-		if (imageHoverFilename != null) {
-			imageHover = nifty.createImage(imageHoverFilename, false);
-		}
-		
-		if (imagePressedFilename != null) {
-			imagePressed = nifty.createImage(imagePressedFilename, false);
-		}
-		
-		imageElement.getRenderer(ImageRenderer.class).setImage(image);
 	}
 
 	@Override
 	public void init(Properties properties, Attributes attributes) {
+		if (element.getId() != null) {
+
+			EventTopicSubscriber<NiftyMousePrimaryClickedEvent> mouseClickedSubscriber = new EventTopicSubscriber<NiftyMousePrimaryClickedEvent>() {
+				@Override
+				public void onEvent(final String topic, final NiftyMousePrimaryClickedEvent data) {
+					nifty.publishEvent(topic, new ImageButtonClickedEvent(AbstractImageButtonController.this));
+				}
+			};
+			nifty.subscribe(screen, element.getId(), NiftyMousePrimaryClickedEvent.class, mouseClickedSubscriber);
+		}
 	}
 
 	@Override
@@ -80,25 +61,30 @@ public abstract class AbstractImageButtonController implements ImageButtonContro
 	@Override
 	public void onStartScreen() {
 	}
-	
+
 	public Attributes getAttributes() {
 		return attributes;
 	}
 	
-	public void onStartHover() {
-		imageElement.getRenderer(ImageRenderer.class).setImage(imageHover);
+	public void activate() {
+		if (!activated) {
+			element.stopEffect(EffectEventId.onCustom);
+		}
+		activated = true;
 	}
 	
-	public void onStopHover() {
-		ImageRenderer renderer = imageElement.getRenderer(ImageRenderer.class);
-		renderer.setImage(image);
+	public void desactivate() {
+		activated = false;
+		element.startEffect(EffectEventId.onCustom, null,"desactivate");
 	}
 	
-	public void doOnClick() {
-		imageElement.getRenderer(ImageRenderer.class).setImage(imagePressed);
-		onClick();
-		imageElement.getRenderer(ImageRenderer.class).setImage(imageHover);
+	public void setVisible(boolean visible) {
+		element.setVisible(visible);
 	}
 
+	public void doOnclick() {
+		onClick();
+	}
+	
 	public abstract void onClick();
 }

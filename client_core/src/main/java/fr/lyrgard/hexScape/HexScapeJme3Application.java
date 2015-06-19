@@ -8,22 +8,17 @@ import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
-import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.post.FilterPostProcessor;
-import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.renderer.ViewPort;
-import com.jme3.renderer.queue.RenderQueue.Bucket;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
-import com.jme3.scene.Geometry;
-import com.jme3.scene.shape.Box;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.camera.FlyByCameraAppState;
 import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
+import fr.lyrgard.hexScape.control.FocusControllerAppState;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.control.SelectMarkerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
@@ -34,8 +29,8 @@ import fr.lyrgard.hexScape.message.LookingFromAboveMessage;
 import fr.lyrgard.hexScape.message.LookingFromPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Sky;
-import fr.lyrgard.hexScape.model.TitleScreen;
 import fr.lyrgard.hexScape.model.Table;
+import fr.lyrgard.hexScape.model.TitleScreen;
 import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
 
@@ -57,6 +52,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	private TitleMenuButtonsAppState titleMenuButtonsAppState = new TitleMenuButtonsAppState();
 	
+	private FocusControllerAppState focusControllerAppState = new FocusControllerAppState();
+	
 	private SelectMarkerAppState selectMarkerAppState = new SelectMarkerAppState();
 	
 	PointLight haloLight;
@@ -73,6 +70,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		stateManager.attach(pointOfViewCameraAppState);
 		stateManager.attach(selectMarkerAppState);
 		stateManager.attach(flyByCameraAppState);
+		stateManager.attach(focusControllerAppState);
 		
 		pieceControlerAppState.setEnabled(false);
 		rotatingAroundCameraAppState.setEnabled(false);
@@ -140,8 +138,9 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rotatingAroundCameraAppState.setEnabled(false);
 			selectMarkerAppState.setEnabled(false);
 			flyByCameraAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(false);
 			
-			titleMenuButtonsAppState.setEnabled(true);
+			
 			cam.setLocation(new Vector3f(0, 100, 0));
 			cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 0));
 			break;
@@ -273,4 +272,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		return viewPort;
 	}
 
+	public PieceManager getSelectedPiece() {
+		return pieceControlerAppState.getSelectedPiece();
+	}
 }

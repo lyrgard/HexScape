@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<controlDefinition name="dicePanel" style="nifty-panel-style" 
+		controller="fr.lyrgard.hexScape.gui.desktop.controller.game.DicePanelController">
+		<panel id="#armyCardPanel" childLayout="center" width="104px" heigth="120px">
+			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,0" width="100%" height="100%"/>
+			<panel childLayout="vertical" align="center" visibleToMouse="true" width="100px" heigth="120px">
+				<panel height="20px" width="84px" childLayout="absolute-inside" align="center">
+					<text id="#cardNameText" style="nifty-label" color="#000f" textHAlign="left" height="20px" x="0" y="0"/>
+				</panel>
+				<panel  childLayout="center" focusable="true" width="100px" heigth="100px">
+		        	<image id="#armyCardImage" filename="$armyCardImage" width="100px" height="100px" filter="true"/>
+		        	<panel childLayout="vertical" heigth="100%" width="100%" paddind="2px">
+		        		<panel heigth="*" width="100%"></panel>
+		        		<panel height="24" width="100%" childLayout="horizontal" backgroundColor="#fffe">
+		        			<text id="#figuresNumberText" style="nifty-label" color="#000f" textHAlign="center" textVAlign="center" height="24px" width="*"/>
+		        			<control name="imageButton" height="24px" width="24px" visibleToMouse="true"  
+								id="#putOnMapButton" 
+								controller="fr.lyrgard.hexScape.gui.desktop.controller.game.PlaceAllPiecesButtonController"
+								buttonImage="gui/images/placeAllPieces.png" 
+								align="right"
+								/>
+						</panel> 
+		        	</panel>
+				</panel>
+			</panel>
+		</panel>
+	</controlDefinition>
+</nifty-controls>

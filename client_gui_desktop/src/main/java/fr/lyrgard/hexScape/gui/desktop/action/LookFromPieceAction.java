@@ -6,7 +6,7 @@ import javax.swing.AbstractAction;
 import javax.swing.ImageIcon;
 
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
-import fr.lyrgard.hexScape.message.LookFromPieceMessage;
+import fr.lyrgard.hexScape.message.LookFromSelectedPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 
 public class LookFromPieceAction extends AbstractAction {
@@ -26,6 +26,6 @@ public class LookFromPieceAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		CoreMessageBus.post(new LookFromPieceMessage(CurrentUserInfo.getInstance().getPlayerId(), pieceId));		
+		CoreMessageBus.post(new LookFromSelectedPieceMessage(CurrentUserInfo.getInstance().getPlayerId()));		
 	}
 }

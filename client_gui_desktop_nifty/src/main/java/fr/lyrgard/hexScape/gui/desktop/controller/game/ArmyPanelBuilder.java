@@ -6,8 +6,9 @@ import fr.lyrgard.hexScape.model.player.Player;
 
 public class ArmyPanelBuilder extends ControlBuilder {
 
-	public ArmyPanelBuilder(CardInstance cardInstance, String playerId, int place) {
-		super("armyCardPanel_" + playerId + "_" + place, "armyCardPanel");
-		
+	public ArmyPanelBuilder(CardInstance cardInstance) {
+		super(cardInstance.getId(), "armyCardPanel");
 	}
+	
+	
 }

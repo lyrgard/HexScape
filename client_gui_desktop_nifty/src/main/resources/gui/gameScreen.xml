@@ -4,17 +4,49 @@
 	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
 	<screen id="gameScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.game.GameScreenController">
 		<layer id="foreground" backgroundColor="#0000" childLayout="center">
-			<panel id="bottomPanel" width="1000px" height="120px" childLayout="center" valign="bottom">
-				<control name="scrollPanel" id="armiesScrollPanel" vertical="false" height="100%" width="100%" stepSizeX="100" pageSizeX="300">
-					<panel id="#scrollPanelContainer" height="100%" childLayout="horizontal">
-  					</panel>
-				</control>
-			</panel>
-			<panel id="middlePanel" width="*" height="100%" childLayout="vertical" >
-				<!-- spacer -->
-			</panel>
-			<panel id="rightPanel" width="300px" height="100%" childLayout="vertical" backgroundColor="#f008">
+			<!-- <panel id="gameArea" width="100%" height="100%" visibleToMouse="true" focusable="true"></panel> -->
+			<panel valign="bottom" childLayout="horizontal" width="100%" >
+				<panel id="gameBottomPanel" width="750px" height="200px" childLayout="center" valign="bottom">
+					<control id="gameBottomPanelPlayerTabs" name="tabGroup" buttonWidth="190px" height="100%">
+					</control>
+				</panel>
+				<panel childLayout="vertical" valign="bottom" width="120px">
+					<panel width="120px" height="40px" backgroundColor="#fffe" childLayout="horizontal">
+						<panel width="*"/>	
+						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+							id="lookAtTheMapButton" 
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.game.LookAtMapButtonController"
+							buttonImage="gui/images/lookAtTheMap.png" 
+							align="right"
+							/>
+						<panel width="*"/>
+						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"
+							id="moveCameraFreelyButton"  
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.game.MoveCameraFreelyButtonController"
+							buttonImage="gui/images/moveCameraFreely.png" 
+							align="right"
+							/>
+						<panel width="*"/>
+						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"
+							id="lookFromPointOfViewButton"  
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.game.LookFromPointOfViewButtonController"
+							buttonImage="gui/images/lookFromPointOfView.png" 
+							align="right"
+							/>
+						<panel width="*"/>
+					</panel>
+					<panel valign="bottom" width="120px" height="120px"  childLayout="vertical"  backgroundColor="#fffe">
+						<panel id="diceTypesPanel" width="100%" height="28px" childLayout="horizontal"></panel>
+						<panel id="rollDicePanel" width="100%" height="92px" childLayout="evenly-distributed"></panel>
+					</panel>
+				</panel>
 				
+				<panel width="*"/>
+				<control id="gameChat" valign="bottom" name="nifty-chat" width="400px" height="250px" lines="12" sendLabel="${i18n.sendChatMessage}"/>		
+			</panel>
+
+			<panel align="right" valign="top" width="400px" height="400px" childLayout="vertical" >
+				<!-- <control id="gameChat" name="nifty-chat" width="100%" height="100%" lines="12" sendLabel="${i18n.sendChatMessage}"/> -->
 			</panel>
 		</layer>
 	</screen>

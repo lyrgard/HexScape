@@ -111,7 +111,6 @@ public class RightPanel extends JPanel {
 				}
 			}
 		}
-
 	}
 	
 	@Subscribe public void onMapLoaded(MapLoadedMessage message) {

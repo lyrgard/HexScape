@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<controlDefinition name="imageButtonTextTitle" style="nifty-panel-style" 
+		controller="fr.lyrgard.hexScape.gui.desktop.controller.DefaultImageButtonController"
+		buttonText="$text" textWidth="$textWidth" onClickMethod="doOnClick()">
+		<panel style="imageButtonActivated" childLayout="absolute" focusable="true" visibleToMouse="true" width="$width" heigth="$height">
+			<image id="#imageButtonImage" filename="$image" x="0px" y="0px" />
+			<panel childLayout="center" x="77px" y="22px" height="48px" width="$textWidth">
+				<image filename="gui/images/buttonTitleTextBackground.png" imageMode="resize:0,16,20,30,0,24,12,4,0,16,20,30" width="$textWidth" heigth="48px" align="left"/>
+				<panel childLayout="horizontal" align="left" height="48px">
+					<panel width="5px"/>
+					<text text="$buttonText" style="uiLabel32" valign="center"/>
+				</panel>	
+			</panel>
+			<interact onClick="$onClickMethod" />
+		</panel>
+	</controlDefinition>
+</nifty-controls>

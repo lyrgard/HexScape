@@ -1,25 +1,35 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
+import com.google.common.eventbus.Subscribe;
 import com.jme3.app.SimpleApplication;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.system.AppSettings;
 import com.jme3.system.JmeCanvasContext;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.screen.ScreenController;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.HexScapeJme3Application;
 import fr.lyrgard.hexScape.InitCallBack;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.controller.home.HomeScreenController;
+import fr.lyrgard.hexScape.message.WorldGetFocusMessage;
 
 
-public class HexScapeDesktopGui implements ScreenController, InitCallBack {
+public class HexScapeDesktopGui implements InitCallBack {
 
 	private Nifty nifty;
 	
+	private static final HexScapeDesktopGui INSTANCE = new HexScapeDesktopGui();
+	
+	private HexScapeDesktopGui() {
+	}
+	
+	public static HexScapeDesktopGui getInstance() {
+		return INSTANCE;
+	}
+	
 	public static void main(String[] args){
-		new HexScapeDesktopGui().start();
+		INSTANCE.start();
 	}
 	
 	
@@ -67,29 +77,17 @@ public class HexScapeDesktopGui implements ScreenController, InitCallBack {
 		app.getGuiViewPort().addProcessor(niftyDisplay);
 		
 		//nifty.resolutionChanged();
+		
+		GuiMessageBus.register(this);
 	}
 
-	@Override
-	public void bind(Nifty arg0, Screen arg1) {
-		// TODO Auto-generated method stub
-
+	@Subscribe public void onWorldGetFocus(WorldGetFocusMessage message) {
+		nifty.getCurrentScreen().getFocusHandler().resetFocusElements();
 	}
 
-	@Override
-	public void onEndScreen() {
-		// TODO Auto-generated method stub
-
+	public Nifty getNifty() {
+		return nifty;
 	}
 
-	@Override
-	public void onStartScreen() {
-		// TODO Auto-generated method stub
-
-	}
-
-
-
-
-
-
+	
 }

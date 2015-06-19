@@ -17,7 +17,6 @@ import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
-import fr.lyrgard.hexScape.service.ConfigurationService;
 import fr.lyrgard.hexScape.service.MapManager;
 import fr.lyrgard.hexScape.service.PieceManager;
 
@@ -72,7 +71,6 @@ public class MapMessageListener extends AbstractMessageListener {
 				public Void call() throws Exception {
 					HexScapeCore.getInstance().getHexScapeJme3Application().setScene(mapManager);
 
-					HexScapeCore.getInstance().setMapManager(mapManager);
 					
 					if (displayFigures) {
 						for (Player player : game.getPlayers()) {

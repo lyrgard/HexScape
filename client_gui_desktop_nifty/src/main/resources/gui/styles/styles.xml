@@ -10,8 +10,19 @@
 	<style id="uiLabel32">
 		<attributes font="gui/font/neuropol_x_rg_32.fnt" color="#000f"/>
 	</style>
-	<style id="userText">
-		<attributes font="gui/font/neuropol_x_rg_16.fnt"/>
+	<style id="baseUserText" base="base-font">
+	</style>
+	<style id="userText" base="baseUserText">
+		<attributes color="#000f" />
+	</style>
+	<style id="userTextRed" base="baseUserText">
+		<attributes color="#f00f"/>
+	</style>
+	<style id="userTextGreen" base="baseUserText">
+		<attributes color="#0f0f"/>
+	</style>
+	<style id="userTextBlue" base="baseUserText">
+		<attributes color="#00ff"/>
 	</style>
 	<style id="nifty-scrollpanel#scrollpanel">
 	    <attributes backgroundColor="#0000" />

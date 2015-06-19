@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+
+    <!-- the chatbox control consists of a ListBox for the chat, a ListBox for the player, a text input field and a button to send the message -->
+    <controlDefinition name="nifty-chat" style="nifty-chat-control"
+                       controller="fr.lyrgard.hexScape.gui.desktop.controller.chat.HexScapeChatControl" lines="10" sendLabel="Send"
+                       chatLineIconWidth="14px" chatLineIconHeight="11px" chatLineHeight="25px" chatAreaWidth="" playerAreaWidth="">
+        <panel style="#mainPanel">
+            <panel style="#chatPanel">
+                <panel style="#chatArea">
+                    <control id="#chatBox" name="scrollPanel" vertical="true" horizontal="false" autoScroll="bottom" width="100%" height="100%">
+                    	<effect>
+            				<onActive name="colorBar" color="#fffe" post="false" neverStopRendering="true" timeType="infinite"/>
+            				<onActive name="border" border="2px" color="#888e" inset="0px,0px,0px,0px"/>
+        				</effect>
+        				<panel id="#content" childLayout="vertical">
+	  					</panel>
+                    </control>
+                </panel>
+                <panel style="#playerArea">
+                    <control id="#playerList" name="scrollPanel" vertical="optional" horizontal="off" selection="Disabled" height="100%">
+                        <effect>
+            				<onActive name="colorBar" color="#fffe" post="false" neverStopRendering="true" timeType="infinite"/>
+            				<onActive name="border" border="2px" color="#888e" inset="0px,0px,0px,0px"/>
+        				</effect>
+        				<panel id="#content" childLayout="vertical">
+	  					</panel>
+                    </control>
+                </panel>
+            </panel>
+            <panel style="#spacer"/>
+            <panel style="#chatTextArea">
+                <control id="#chat-text-input" name="textfield"/>
+                <control name="imageButton" id="sendGameChatMessageButton" align="center" height="32" width="36" visibleToMouse="true"
+							onClickMethod="sendText()"   
+							image="gui/images/sendMessage.png" />	
+                <!-- <control id="#chat-text-button" name="button" width="" label="$sendLabel">
+                    <interact onClick="sendText()"/>
+                </control> -->
+            </panel>
+        </panel>
+    </controlDefinition>
+
+    <!-- this defines the control for a single line of text in the chat and player window -->
+    <controlDefinition name="nifty-chat-line">
+        <panel childLayout="horizontal" width="100%" align="center" >
+            <image id="#chat-line-icon" width="$chatLineIconWidth" height="$chatLineIconHeight" valign="center"/>
+            <panel height="$chatLineHeight" width="2px" />
+            <control id="#chat-line-text" name="label" align="left" textHAlign="left" height="$chatLineHeight"
+                     wrap="true"/>
+        </panel>
+    </controlDefinition>
+
+</nifty-controls>

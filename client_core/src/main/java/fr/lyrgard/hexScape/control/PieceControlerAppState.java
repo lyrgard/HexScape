@@ -319,4 +319,11 @@ public class PieceControlerAppState extends AbstractAppState implements ActionLi
 		
 		currentState = newState;
 	}
+	
+	public PieceManager getSelectedPiece() {
+		if (selectPieceByMouseAppState.isEnabled()) {
+			return selectPieceByMouseAppState.getSelectedPiece();
+		}
+		return null;
+	}
 }

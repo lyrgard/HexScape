@@ -5,7 +5,7 @@
 
     <!-- the background of the textfield -->
     <style id="nifty-textfield#panel">
-        <attributes childLayout="overlay" height="32px"/>
+        <attributes childLayout="center" height="32px"/>
         <effect>
             <onHover name="changeMouseCursor" id="textFieldCursor"/>
             <!-- <onHover name="border" color="#822f" post="true"/> -->

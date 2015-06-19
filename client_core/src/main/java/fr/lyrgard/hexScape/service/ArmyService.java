@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -13,6 +15,7 @@ import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.model.card.Army;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
+import fr.lyrgard.hexScape.model.piece.PieceInstance;
 
 public class ArmyService {
 	
@@ -80,6 +83,14 @@ public class ArmyService {
 				} else {
 					String cardInstanceId = playerId + "-" + i; 
 					CardInstance cardInstance = new CardInstance(cardInstanceId, cardType.getId(), number);
+					
+					
+					for (int j = 0; j < number; j++ ) {
+						for (String figureName : cardType.getFigureNames()) {
+							cardInstance.getPieceLeftToPlace().add(figureName);
+						}
+					}
+					
 					army.getCards().add(cardInstance);
 					i++;
 				}

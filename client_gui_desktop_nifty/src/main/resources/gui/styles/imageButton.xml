@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-styles xmlns="http://nifty-gui.lessvoid.com/nifty-gui">
+
+    <style id="imageButtonActivated">
+        <effect>
+			<onHover name="changeMouseCursor" id="buttonHoverMousePointer" />
+			<onHover name="fade" start="#f" end="#a" />
+			<onCustom customKey="desactivate" name="fade" start="#f" end="#4" length="200" neverStopRendering="true"/>
+		</effect>
+    </style>
+</nifty-styles>

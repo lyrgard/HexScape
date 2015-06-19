@@ -8,12 +8,18 @@
 	<useStyles filename="gui/styles/hexScapeDropDown.xml" />
 	<useStyles filename="gui/styles/hexScapeScrollbar.xml" />
 	<useStyles filename="gui/styles/hexScapeListBox.xml" />
+	<useStyles filename="gui/styles/hexScapeTabs.xml" />
+	<useStyles filename="gui/styles/imageButton.xml" />
+	<useStyles filename="gui/styles/hexScapeChat.xml" />
 	<useControls filename="nifty-default-controls.xml" />
 	<useControls filename="gui/controls/imageButton.xml" />
 	<useControls filename="gui/controls/imageButtonText.xml" />
+	<useControls filename="gui/controls/imageButtonTextTitle.xml" />
 	<useControls filename="gui/controls/armyCardPanel.xml" />
 	<useControls filename="gui/controls/hexScapeTextfield.xml" />
 	<useControls filename="gui/controls/hexScapeDropDown.xml" />
 	<useControls filename="gui/controls/hexScapeListBox.xml" />
+	<useControls filename="gui/controls/hexScapeChatControl.xml" />
+	<useControls filename="gui/controls/hexScapeTabs.xml" />
 	<resourceBundle id="i18n" filename="gui/i18n/i18n" />
 </nifty>

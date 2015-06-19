@@ -6,7 +6,7 @@ import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.message.LookFreelyMessage;
 import fr.lyrgard.hexScape.message.LookFromAboveMessage;
-import fr.lyrgard.hexScape.message.LookFromPieceMessage;
+import fr.lyrgard.hexScape.message.LookFromSelectedPieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.service.PieceManager;
 
@@ -25,12 +25,11 @@ public class CameraMessageListener extends AbstractMessageListener {
 	}
 	
 	@Subscribe
-	public void onLookAtPointOfView(LookFromPieceMessage message) {
+	public void onLookAtPointOfView(LookFromSelectedPieceMessage message) {
 		String playerId = message.getPlayerId();
-		String pieceId = message.getPieceId();
 		
 		if (CurrentUserInfo.getInstance().getPlayerId().equals(playerId)) {
-			PieceManager pieceManager = HexScapeCore.getInstance().getMapManager().getPieceManagersByPieceIds().get(pieceId);
+			PieceManager pieceManager = HexScapeCore.getInstance().getHexScapeJme3Application().getSelectedPiece(); 
 			if (pieceManager != null) {
 				HexScapeCore.getInstance().getHexScapeJme3Application().lookThroughEyesOf(pieceManager);
 			}

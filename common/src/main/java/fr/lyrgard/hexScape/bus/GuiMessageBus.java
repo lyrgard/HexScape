@@ -6,7 +6,8 @@ import fr.lyrgard.hexScape.message.AbstractMessage;
 
 public class GuiMessageBus {
 
-	private static EventBus eventBus = new EventBus();
+	private static EventBus eventBus = new EventBus(new MessageBusExceptionHandler());
+	
 
 	public static void post(AbstractMessage message) {
 		eventBus.post(message);

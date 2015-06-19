@@ -51,12 +51,7 @@ public class HexScapeFrame extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				if (HexScapeCore.getInstance().isOnline()) {
-					DisconnectFromServerMessage message = new DisconnectFromServerMessage();
-	        		CoreMessageBus.post(message);
-				}
-				HexScapeCore.getInstance().getHexScapeJme3Application().stop(true);
-				System.exit(0);
+				exit();
 			}
 		});
 		
@@ -81,4 +76,26 @@ public class HexScapeFrame extends JFrame {
 		pack();
 	}
 	
+	public void exit() {
+		if (HexScapeCore.getInstance().isOnline()) {
+			DisconnectFromServerMessage message = new DisconnectFromServerMessage();
+    		CoreMessageBus.post(message);
+		}
+		HexScapeCore.getInstance().getHexScapeJme3Application().stop(false);
+		
+		Runnable exit = new Runnable() {
+			
+			@Override
+			public void run() {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				HexScapeFrame.getInstance().dispose();
+			}
+		};
+		
+		new Thread(exit).start();
+	}
 }

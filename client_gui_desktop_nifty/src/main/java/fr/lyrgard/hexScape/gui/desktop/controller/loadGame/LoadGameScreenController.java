@@ -146,7 +146,7 @@ public class LoadGameScreenController implements ScreenController {
 		nifty.gotoScreen("gameScreen");
 	}
 
-	@NiftyEventSubscriber(id="gameNameTextField#textField")
+	@NiftyEventSubscriber(id="gameNameTextField")
 	public void onGameNameChanged(String id, TextFieldChangedEvent event) {
 		gameName = event.getText();
 		if (StringUtils.isBlank(gameName)) {

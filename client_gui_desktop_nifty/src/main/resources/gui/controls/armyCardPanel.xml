@@ -5,22 +5,34 @@
 	<controlDefinition name="armyCardPanel" style="nifty-panel-style" 
 		controller="fr.lyrgard.hexScape.gui.desktop.controller.game.ArmyCardPanelController"
 		armyCardImage="$image">
-		<panel style="#panel" childLayout="center" focusable="true" valign="center" visibleToMouse="true" width="100%" heigth="100%">
-			<effect overlay="true">
-    	        <onActive name="border" border="2px" color="#888e" inset="0px,0px,0px,0px"/>
-        	</effect>
-        	<image id="#armyCardImage" filename="$armyCardImage" width="100%" height="100%"/>
-        	<panel childLayout="vertical">
-        		<text text="TOTO" style="nifty-label" align="left" valign="top"/>
-        		<panel heigth="*" width="100%"></panel>
-        		<control name="imageButton" height="24px" width="24px" visibleToMouse="true"  
-						id="#putOnMapButton" 
-						goTo="homeScreen"
-						image="gui/images/placeAllPieces.png" 
-						imageHover="gui/images/placeAllPieces.png" 
-						imagePressed="gui/images/placeAllPieces.png" 
-						/> 
-        	</panel>
+		<panel id="#armyCardPanel" childLayout="center" width="104px" heigth="152px">
+			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,0" width="100%" height="100%"/>
+			<panel childLayout="vertical" align="center" visibleToMouse="true" width="100px" heigth="152px">
+				<panel height="20px" width="84px" childLayout="absolute-inside" align="center">
+					<text id="#cardNameText" style="nifty-label" color="#000f" textHAlign="left" height="20px" x="0" y="0"/>
+				</panel>
+				<panel  childLayout="vertical" focusable="true" width="100px" heigth="132px" >
+					<panel childLayout="center" width="100px" heigth="132px">
+						<image id="#armyCardImage" filename="$armyCardImage" width="100px" height="100px" filter="true" valign="top"/>
+						<panel id="#markersPanel" heigth="100px" width="100px" visibleToMouse="true">
+							<interact onSecondaryClick="openMarkersMenu()" />
+						</panel>
+					</panel>
+	        		<panel height="32px" width="100%" childLayout="horizontal" backgroundColor="#fff4" padding="2px">
+	        			<text id="#figuresNumberText" style="nifty-label" color="#000f" textHAlign="center" textVAlign="center" height="32px" width="*" />
+	        			<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+							id="#putOnMapButton" 
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.game.PlaceAllPiecesButtonController"
+							buttonImage="gui/images/placeAllPieces.png" 
+							align="right"
+							/>
+						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+							buttonImage="gui/images/showCard.png" 
+							align="right"
+							/>
+					</panel> 
+				</panel>
+			</panel>
 		</panel>
 	</controlDefinition>
 </nifty-controls>
