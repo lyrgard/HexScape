@@ -69,14 +69,14 @@ public class CardInstance {
 					return;
 				}
 			}
-			markers.add(marker);
+			getMarkers().add(marker);
 		} else {
-			markers.add(marker);
+			getMarkers().add(marker);
 		}
 	}
 	
 	public MarkerInstance getMarker(String markerId) {
-		for (MarkerInstance m : markers) {
+		for (MarkerInstance m : getMarkers()) {
 			if (m.getId().equals(markerId)) {
 				return m;
 			}
@@ -85,7 +85,7 @@ public class CardInstance {
 	}
 	
 	public MarkerInstance getMarkerByType(String markerTypeId) {
-		for (MarkerInstance m : markers) {
+		for (MarkerInstance m : getMarkers()) {
 			if (m.getMarkerDefinitionId().equals(markerTypeId)) {
 				return m;
 			}

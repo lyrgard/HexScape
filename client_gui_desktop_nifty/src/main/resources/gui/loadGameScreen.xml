@@ -16,24 +16,26 @@
 	<popup id="newGameOrRestoreGamePopup" childLayout="center" backgroundColor="#0000">
 		<panel height="200px" width="800px" childLayout="center">
 			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" width="100%" height="100%"/>
-			<panel height="100%" width="100%" childLayout="horizontal">
-				<panel height="100%" width="50%" childLayout="center">
-					<!-- <control name="imageButton" id="newGameButton" align="center" height="50" width="150" valign="center" visibleToMouse="true"
-						controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.NewGameButtonController"  
-						image="gui/images/newGame.png" 
-						imageHover="gui/images/newGameHover.png" 
-						imagePressed="gui/images/newGame.png" /> -->
-					<control name="imageButtonText" id="newGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
-						controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.NewGameButtonController"  
-						image="gui/images/addWithText.png" 
-						text="${i18n.newGame}" />	
+			<panel height="100%" width="100%" childLayout="vertical">
+				<panel height="70%" width="100%" childLayout="horizontal">
+					<panel height="100%" width="50%" childLayout="center">
+						<control name="imageButtonText" id="newGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.NewGameButtonController"  
+							image="gui/images/addWithText.png" 
+							text="${i18n.newGame}" />	
+					</panel>
+					<panel height="100%" width="50%" childLayout="center">
+						<control name="imageButtonText" id="restoreGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							goTo="homeScreen"  
+							image="gui/images/openFileWithText.png" 
+							text="${i18n.loadGame}" />	
+					</panel>
 				</panel>
-				<panel height="100%" width="50%" childLayout="center">
-					<control name="imageButtonText" id="restoreGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
-						goTo="homeScreen"  
-						image="gui/images/openFileWithText.png" 
-						text="${i18n.loadGame}" />	
-				</panel>		
+				<panel  height="30%" width="100%" childLayout="center">
+					<control name="imageButtonText" id="cancelNewOrLoad" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"   
+						image="gui/images/cancelWithText.png" 
+						text="${i18n.cancel}" />
+				</panel>
 			</panel>
 		</panel>
 	</popup>
@@ -71,11 +73,17 @@
 						<control id="playerNumberDropDown" name="hexScapeDropDown" displayItems="4" width="60px" valign="center"/>
 					</panel>
 				</panel>
-				<panel height="40%" width="100%" align="left" childLayout="center">
-					<control name="imageButtonText" id="startGameButton" visible="false" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+				<panel height="40%" width="100%" align="left" childLayout="horizontal">
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="startGameButton" visible="false" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
 							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.StartGameButtonController"   
 							image="gui/images/startGameWithText.png" 
 							text="${i18n.startGame}" />
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="cancelNewGame" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"   
+							image="gui/images/cancelWithText.png" 
+							text="${i18n.cancel}" />
+					<panel width="*" height="1px"/>
 				</panel>
 			</panel>
 		</panel>

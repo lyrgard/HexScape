@@ -3,6 +3,7 @@ package fr.lyrgard.hexScape.gui.desktop.controller.game;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import com.google.common.eventbus.Subscribe;
 
@@ -24,39 +25,51 @@ public class DicePanelController {
 	private Nifty nifty;
 	private Screen screen;
 
-	public DicePanelController(Nifty nifty, Screen screen) {
+	public DicePanelController(final Nifty nifty, final Screen screen) {
 		this.nifty = nifty;
 		this.screen = screen;
 		
-		Element diceTypesPanel = screen.findElementByName("diceTypesPanel");
+		final Element diceTypesPanel = screen.findElementByName("diceTypesPanel");
 		rollDicePanel = screen.findElementByName("rollDicePanel");
 		
-		Collection<DiceType> diceTypes = DiceService.getInstance().getDiceTypes();
+		final Collection<DiceType> diceTypes = DiceService.getInstance().getDiceTypes();
 		
-		new PanelBuilder() {{
-			width("*");
-			height("1px");
-		}}.build(nifty, screen, diceTypesPanel);
-		
-		for (final DiceType dieType : diceTypes) {
-			
-			Element image = new ImageButtonBuilder() {{
-				width("24px");
-				height("24px");
-				controller("fr.lyrgard.hexScape.gui.desktop.controller.game.DiceTypeButtonController");
-				parameter("buttonImage", HexScapeCore.APP_DATA_FOLDER.toURI().relativize(dieType.getIconFile().toURI()).getPath());
-				parameter(DieButtonController.DIE_TYPE_ID, dieType.getId());
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			@Override
+			public Void call() throws Exception {
+				for (Element element : diceTypesPanel.getElements()) {
+					element.markForRemoval();
+				}
 				
-			}}.build(nifty, screen, diceTypesPanel);
-			
-			images.put(dieType.getId(), image);
-		}
+				new PanelBuilder() {{
+					width("*");
+					height("1px");
+				}}.build(nifty, screen, diceTypesPanel);
+				
+				for (final DiceType dieType : diceTypes) {
+					
+					Element image = new ImageButtonBuilder("dieSelectorButton_" + dieType.getId()) {{
+						width("24px");
+						height("24px");
+						controller("fr.lyrgard.hexScape.gui.desktop.controller.game.DiceTypeButtonController");
+						parameter("buttonImage", HexScapeCore.APP_DATA_FOLDER.toURI().relativize(dieType.getIconFile().toURI()).getPath());
+						parameter(DieButtonController.DIE_TYPE_ID, dieType.getId());
+						
+					}}.build(nifty, screen, diceTypesPanel);
+					
+					images.put(dieType.getId(), image);
+				}	
+				selectDieType(diceTypes.iterator().next().getId());
+				return null;
+			}
+		});
 		
-		selectDieType(diceTypes.iterator().next().getId());
+		
 		
 	}
 	
-	public void selectDieType(String dieTypeId) {
+	private void selectDieType(String dieTypeId) {
 		
 		final DiceType dieType = DiceService.getInstance().getDiceType(dieTypeId);
 
@@ -75,7 +88,7 @@ public class DicePanelController {
 
 			for (int i = 1; i <= dieType.getMaxNumberThrown(); i++) {
 				final int number = i;
-				new ImageButtonBuilder() {{
+				new ImageButtonBuilder("launchdiceButton_" + dieType.getId() + "_" + number) {{
 					width("24px");
 					height("24px");
 					controller("fr.lyrgard.hexScape.gui.desktop.controller.game.DieButtonController");
@@ -88,7 +101,14 @@ public class DicePanelController {
 		}
 	}
 	
-	@Subscribe public void onChangeDieTypeSelected(ChangeDieTypeSelectedMessage message) {
-		selectDieType(message.getNewDieTypeId());
+	@Subscribe public void onChangeDieTypeSelected(final ChangeDieTypeSelectedMessage message) {
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			@Override
+			public Void call() throws Exception {
+				selectDieType(message.getNewDieTypeId());
+				return null;
+			}
+		});
 	}
 }

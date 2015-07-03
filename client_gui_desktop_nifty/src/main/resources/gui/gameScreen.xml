@@ -5,10 +5,26 @@
 	<screen id="gameScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.game.GameScreenController">
 		<layer id="foreground" backgroundColor="#0000" childLayout="center">
 			<!-- <panel id="gameArea" width="100%" height="100%" visibleToMouse="true" focusable="true"></panel> -->
+			<panel heigth="40px" width="100%" valign="top" childLayout="center">
+				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"
+					id="saveGameButton"  
+					controller="fr.lyrgard.hexScape.gui.desktop.controller.game.SaveGameButtonController"
+					buttonImage="gui/images/saveSmall.png" 
+					valign="center"
+					align="left"
+					/>
+				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+					id="leaveGameButton"
+					controller="fr.lyrgard.hexScape.gui.desktop.controller.game.LeaveGameButtonController" 
+					buttonImage="gui/images/closeSmall.png" 
+					valign="center"
+					align="right"
+					/>
+			</panel>
 			<panel valign="bottom" childLayout="horizontal" width="100%" >
 				<panel id="gameBottomPanel" width="750px" height="200px" childLayout="center" valign="bottom">
-					<control id="gameBottomPanelPlayerTabs" name="tabGroup" buttonWidth="190px" height="100%">
-					</control>
+					<!-- <control id="gameBottomPanelPlayerTabs" name="tabGroup" buttonWidth="190px" height="100%">
+					</control> -->
 				</panel>
 				<panel childLayout="vertical" valign="bottom" width="120px">
 					<panel width="120px" height="40px" backgroundColor="#fffe" childLayout="horizontal">

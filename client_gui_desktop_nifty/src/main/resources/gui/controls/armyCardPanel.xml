@@ -14,22 +14,21 @@
 				<panel  childLayout="vertical" focusable="true" width="100px" heigth="132px" >
 					<panel childLayout="center" width="100px" heigth="132px">
 						<image id="#armyCardImage" filename="$armyCardImage" width="100px" height="100px" filter="true" valign="top"/>
-						<panel id="#markersPanel" heigth="100px" width="100px" visibleToMouse="true">
-							<interact onSecondaryClick="openMarkersMenu()" />
+						<panel id="#markersPanel" height="100px" width="100px" visibleToMouse="true" childLayout="evenly-distributed">
+							<interact onClick="showDetail()" />
 						</panel>
 					</panel>
 	        		<panel height="32px" width="100%" childLayout="horizontal" backgroundColor="#fff4" padding="2px">
+	        			<panel width="*" height="1px"/>
 	        			<text id="#figuresNumberText" style="nifty-label" color="#000f" textHAlign="center" textVAlign="center" height="32px" width="*" />
+	        			<panel width="*" height="1px"/>
 	        			<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
 							id="#putOnMapButton" 
 							controller="fr.lyrgard.hexScape.gui.desktop.controller.game.PlaceAllPiecesButtonController"
 							buttonImage="gui/images/placeAllPieces.png" 
 							align="right"
 							/>
-						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
-							buttonImage="gui/images/showCard.png" 
-							align="right"
-							/>
+						<panel width="*" height="1px"/>
 					</panel> 
 				</panel>
 			</panel>

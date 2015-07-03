@@ -4,10 +4,10 @@
 	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
 	<screen id="homeScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.home.HomeScreenController">
 		<layer id="foreground" childLayout="center">
-			<effect>
+			<!-- <effect>
 				<onCustom customKey="startScreen" name="fade" start="#00" end="#ff" startDelay="1000" length="500" />
 				<onEndScreen name="fade" start="#ff" end="#00" length="200" neverStopRendering="true"/>
-			</effect>
+			</effect> -->
 			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" height="450px" width="550px"/>
 			<panel height="450px" width="550px" childLayout="vertical">
 				<panel height="*"/>

@@ -10,6 +10,7 @@ import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.TextFieldChangedEvent;
 import de.lessvoid.nifty.elements.Element;
+import de.lessvoid.nifty.elements.events.NiftyMousePrimaryClickedEvent;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
@@ -59,19 +60,26 @@ public class LoadGameScreenController implements ScreenController {
 	}
 	
 	@Override
-	public void onEndScreen() {
-		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
-			nifty.closePopup(newGameOrRestoreGamePopup.getId());
-		}
-		GuiMessageBus.unregister(this);
-	}
-
-	@Override
 	public void onStartScreen() {
 		//HexScapeCore.getInstance().getHexScapeJme3Application().setScene(null);
+		mapNameDisplay.setVisible(false);
+		map = null;
 		newGameOrRestoreGamePopup = nifty.createPopup("newGameOrRestoreGamePopup");
 		nifty.showPopup(nifty.getCurrentScreen(), newGameOrRestoreGamePopup.getId(), null);
 		GuiMessageBus.register(this);
+	}
+	
+	@Override
+	public void onEndScreen() {
+		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
+			nifty.closePopup(newGameOrRestoreGamePopup.getId());
+			newGameOrRestoreGamePopup = null;
+		}
+		if (newGamePopup != null && newGamePopup.isVisible()) {
+			nifty.closePopup(newGamePopup.getId());
+			newGamePopup = null;
+		}
+		GuiMessageBus.unregister(this);
 	}
 	
 	
@@ -89,6 +97,7 @@ public class LoadGameScreenController implements ScreenController {
 	public void openNewGamePopup() {
 		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
 			nifty.closePopup(newGameOrRestoreGamePopup.getId());
+			newGameOrRestoreGamePopup = null;
 		}
 		newGamePopup = nifty.createPopup("newGamePopup");
 		nifty.showPopup(nifty.getCurrentScreen(), newGamePopup.getId(), null);
@@ -106,6 +115,7 @@ public class LoadGameScreenController implements ScreenController {
 	public void startGame() {
 		if (newGamePopup != null && newGamePopup.isVisible()) {
 			nifty.closePopup(newGamePopup.getId());
+			newGamePopup = null;
 		}
 		playerNumber = playerNumberDropDown.getSelection();
 		CreateGameMessage message = new CreateGameMessage(gameName, map, playerNumber);
@@ -158,6 +168,24 @@ public class LoadGameScreenController implements ScreenController {
 	@NiftyEventSubscriber(id="playerNumberDropDown")
 	public void onPlayerNumberChanged(String id, DropDownSelectionChangedEvent<Integer> event) {
 		playerNumber = event.getSelection();
+	}
+	
+	@NiftyEventSubscriber(id="cancelNewGame")
+	public void onCancelNewGame(String id, NiftyMousePrimaryClickedEvent event) {
+		if (newGamePopup != null && newGamePopup.isVisible()) {
+			nifty.closePopup(newGamePopup.getId());
+			newGamePopup = null;
+		}
+		HexScapeCore.getInstance().getHexScapeJme3Application().displayTitleScreen();
+		mapNameDisplay.setVisible(false);
+		map = null;
+		newGameOrRestoreGamePopup = nifty.createPopup("newGameOrRestoreGamePopup");
+		nifty.showPopup(nifty.getCurrentScreen(), newGameOrRestoreGamePopup.getId(), null);
+	}
+	
+	@NiftyEventSubscriber(id="cancelNewOrLoad")
+	public void onCancelNewOrLoad(String id, NiftyMousePrimaryClickedEvent event) {
+		nifty.gotoScreen("homeScreen");
 	}
 	
 	

@@ -1,43 +1,40 @@
 package fr.lyrgard.hexScape.gui.desktop.controller.game;
 
-import java.util.Collection;
 import java.util.Properties;
-
-import javax.swing.ImageIcon;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
+import java.util.concurrent.Callable;
 
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.eventbus.Subscribe;
 
 import de.lessvoid.nifty.Nifty;
-import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.builder.HoverEffectBuilder;
+import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.controls.Controller;
-import de.lessvoid.nifty.controls.Menu;
 import de.lessvoid.nifty.elements.Element;
-import de.lessvoid.nifty.elements.events.NiftyMouseSecondaryClickedEvent;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
-import de.lessvoid.nifty.tools.SizeValue;
 import de.lessvoid.xml.xpp3.Attributes;
+import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.action.AddMarkerToCardAction;
 import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
-import fr.lyrgard.hexScape.gui.desktop.action.AddStackableMarkerToCardAction;
-import fr.lyrgard.hexScape.gui.desktop.action.ChangeCardOwnerAction;
-import fr.lyrgard.hexScape.gui.desktop.action.ChooseMapAction;
-import fr.lyrgard.hexScape.gui.desktop.action.RemoveAllMarkersOfTypeForPlayerdAction;
+import fr.lyrgard.hexScape.gui.desktop.message.DisplayCardDetailMessage;
+import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
+import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
+import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
 import fr.lyrgard.hexScape.model.game.Game;
-import fr.lyrgard.hexScape.model.marker.HiddenMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.HiddenMarkerInstance;
 import fr.lyrgard.hexScape.model.marker.MarkerDefinition;
-import fr.lyrgard.hexScape.model.marker.RevealableMarkerDefinition;
+import fr.lyrgard.hexScape.model.marker.MarkerInstance;
+import fr.lyrgard.hexScape.model.marker.StackableMarkerInstance;
 import fr.lyrgard.hexScape.model.piece.PieceInstance;
 import fr.lyrgard.hexScape.model.player.Player;
 import fr.lyrgard.hexScape.service.CardService;
@@ -45,6 +42,7 @@ import fr.lyrgard.hexScape.service.MarkerService;
 
 public class ArmyCardPanelController implements Controller {
 	private static final String CARD_NAME_TEXT = "#cardNameText";
+	private static final String MARKERS_PANEL = "#markersPanel";
 	private static final String FIGURES_NUMBER_TEXT = "#figuresNumberText";
 	private static final String ADD_ALL_PIECES_BUTTON = "#putOnMapButton";
 	
@@ -53,10 +51,11 @@ public class ArmyCardPanelController implements Controller {
 	
 	private CardInstance card;
 	private CardType cardType;
+	private Player owner;
 	
 	private Element addAllPiecesButton;
-	
 	private Element figuresNumberText;
+	private Element markersPanel;
 
 	@Override
 	public void bind(Nifty nifty, Screen screen, Element element, Properties properties, Attributes attributes) {
@@ -70,6 +69,7 @@ public class ArmyCardPanelController implements Controller {
 		card = player.getArmy().getCard(cardId);
 		cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());
 
+		owner = CurrentUserInfo.getInstance().getGame().getCardOwner(card.getId());
 			
 		Element cardNameText = element.findElementByName(CARD_NAME_TEXT);
 		cardNameText.getRenderer(TextRenderer.class).setText(cardType.getName());
@@ -77,12 +77,14 @@ public class ArmyCardPanelController implements Controller {
 		figuresNumberText = element.findElementByName(FIGURES_NUMBER_TEXT);
 		updateFiguresNumberText();
 		
+		markersPanel = element.findElementByName(MARKERS_PANEL);
+		
 		
 		addAllPiecesButton = element.findElementByName(ADD_ALL_PIECES_BUTTON);
 		PlaceAllPiecesButtonController addAllPiecesButtonController = addAllPiecesButton.getControl(PlaceAllPiecesButtonController.class);
 		addAllPiecesButtonController.setCard(card);
 		
-		
+		updateMarkers();
 		
 		GuiMessageBus.register(this);
 	}
@@ -106,6 +108,65 @@ public class ArmyCardPanelController implements Controller {
 
 	@Override
 	public void onStartScreen() {
+	}
+	
+	public void updateMarkers() {
+		for (Element action : markersPanel.getElements()) {
+			action.markForRemoval();
+		}
+		HexScapeCore.getInstance().getHexScapeJme3Application().enqueue(new Callable<Void>() {
+
+			public Void call() throws Exception {
+				
+				for (final MarkerInstance marker : card.getMarkers()) {
+					final MarkerDefinition markerType = MarkerService.getInstance().getMarkersByIds().get(marker.getMarkerDefinitionId());
+					
+					new PanelBuilder() {{
+						childLayoutHorizontal();
+						interactOnClick("showDetail()");
+						
+						if (marker instanceof StackableMarkerInstance) {
+							panel(new PanelBuilder() {{
+								valign(VAlign.Center);
+								childLayoutCenter();
+								image(new ImageBuilder() {{
+									filename("gui/images/textBackground.png");
+									imageMode("resize:2,1,2,2,2,1,2,1,2,1,2,2");
+									width("15px");
+									height("20px");
+								}});
+								text(new TextBuilder() {{
+									text(String.valueOf(((StackableMarkerInstance)marker).getNumber()));
+									style("uiLabel16");
+									textHAlignCenter();
+									textVAlignCenter();
+								}});
+							}});
+							
+						}
+						image(new ImageBuilder() {{
+							filename(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(markerType.getImage().toURI()).getPath());
+							valign(VAlign.Center);
+							
+							if (marker instanceof HiddenMarkerInstance && owner.getId().equals(CurrentUserInfo.getInstance().getPlayerId())) {
+								onHoverEffect(new HoverEffectBuilder("changeImage") {{
+									String hiddenMarkerTypeId = ((HiddenMarkerInstance)marker).getHiddenMarkerDefinitionId();
+									final MarkerDefinition hiddenMarkerType = MarkerService.getInstance().getMarkersByIds().get(hiddenMarkerTypeId);
+									effectParameter("active", HexScapeCore.APP_DATA_FOLDER.toURI().relativize(hiddenMarkerType.getImage().toURI()).getPath());
+									effectParameter("inactive", HexScapeCore.APP_DATA_FOLDER.toURI().relativize(markerType.getImage().toURI()).getPath());
+								}});
+								visibleToMouse(true);
+								interactOnClick("showDetail()");
+							} else {
+								visibleToMouse(false);
+							}
+						}});
+					}}.build(nifty, screen, markersPanel);
+					
+				}
+				return null;
+			}
+		});
 	}
 
 	@Subscribe public void onPiecePlaced(final PiecePlacedMessage message) {
@@ -146,71 +207,31 @@ public class ArmyCardPanelController implements Controller {
 		}
 	}
 	
-	public void openMarkersMenu() {
-		Element popup = nifty.createPopup("niftyPopupMenu");
-		@SuppressWarnings("unchecked")
-		Menu<CardInstance> popupMenu = popup.findNiftyControl("#menu", Menu.class);
-		popupMenu.setWidth(new SizeValue("250px")); // this is required and is not happening automatically!
+	public void showDetail() {
+		GuiMessageBus.post(new DisplayCardDetailMessage(card));
+	}
+	
+	@Subscribe public void onMarkerPlaced(MarkerPlacedMessage message) {
+		String cardId = message.getCardId();
 		
+		if (card != null && card.getId().equals(cardId)) {
+			updateMarkers();
+		}
+	}
+	
+	@Subscribe public void onMarkerRevealed(MarkerRevealedMessage message) {
+		String cardId = message.getCardId();
 		
-//		Collection<MarkerDefinition> markerTypes = MarkerService.getInstance().getMarkersListForCard();
-//		
-//		for (final MarkerDefinition markerType : markerTypes) {
-//			
-//			switch(markerType.getType()) {
-//			case STACKABLE:
-//				final ImageIcon icon = new ImageIcon(markerType.getImage().getAbsolutePath());
-//				JMenu addStackableMarkerMenu = new JMenu("add/remove " + markerType.getName() + " to this card");
-//				addStackableMarkerMenu.setIcon(icon);
-//				for (int i = 1; i <= 10; i++) {
-//					JMenuItem numberItem = new JMenuItem(new AddStackableMarkerToCardAction(markerType, card, i));
-//					addStackableMarkerMenu.add(numberItem);
-//				}
-//				for (int i = -1; i >= -10; i--) {
-//					JMenuItem numberItem = new JMenuItem(new AddStackableMarkerToCardAction(markerType, card, i));
-//					addStackableMarkerMenu.add(numberItem);
-//				}
-//				add(addStackableMarkerMenu);
-//				break;
-//			case REVEALABLE:
-//				add(new JMenuItem(new AddMarkerToCardAction(markerType, ((RevealableMarkerDefinition)markerType).getHiddenMarkerDefinition(), card)));
-//				break;
-//			case NORMAL:
-//				add(new JMenuItem(new AddMarkerToCardAction(markerType, null, card)));
-//				break;
-//			case HIDDEN:
-//				break;
-//			}
-//		}
-//		
-//		for (final MarkerDefinition markerType : markerTypes) {
-//			if (markerType instanceof HiddenMarkerDefinition) {
-//				JMenuItem removeMarkersItem = new JMenuItem(new RemoveAllMarkersOfTypeForPlayerdAction(markerType));
-//				add(removeMarkersItem);
-//			}
-//		}
-//		
-//		Game game = CurrentUserInfo.getInstance().getGame();
-//		if (game != null) {
-//			if (game.getPlayers().size() > 1) {
-//				final ImageIcon icon = new ImageIcon(ChooseMapAction.class.getResource("/gui/icons/share.png"));
-//				JMenu giveCardToNewOwnerMenu = new JMenu("give this card to another player :");
-//				giveCardToNewOwnerMenu.setIcon(icon);
-//				for (Player player : game.getPlayers()) {
-//					if (player.getArmy() != null && !player.getArmy().hasCard(card.getId())) {
-//						JMenuItem giveCardToPlayerItem = new JMenuItem(new ChangeCardOwnerAction(card, player));
-//						giveCardToPlayerItem.setText(player.getDisplayName());
-//						giveCardToNewOwnerMenu.add(giveCardToPlayerItem);
-//					}
-//				}
-//				add(giveCardToNewOwnerMenu);
-//			}
-//		}
+		if (card != null && card.getId().equals(cardId)) {
+			updateMarkers();
+		}
+	}
+	
+	@Subscribe public void onMarkerRemoved(MarkerRemovedMessage message) {
+		String cardId = message.getCardId();
 		
-		popupMenu.addMenuItem("MenuItem 1", "gui/images/chat/player.png", card);
-		popupMenu.addMenuItemSeparator();
-		popupMenu.addMenuItem("MenuItem 2", "gui/images/chat/observer.png", card);
-		
-		nifty.showPopup(screen, popup.getId(), null);
+		if (card != null && card.getId().equals(cardId)) {
+			updateMarkers();
+		}
 	}
 }
