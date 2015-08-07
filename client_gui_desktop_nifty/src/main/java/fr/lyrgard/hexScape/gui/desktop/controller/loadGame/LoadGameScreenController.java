@@ -6,6 +6,10 @@ import com.google.common.eventbus.Subscribe;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.NiftyEventSubscriber;
+import de.lessvoid.nifty.builder.ImageBuilder;
+import de.lessvoid.nifty.builder.PanelBuilder;
+import de.lessvoid.nifty.builder.PopupBuilder;
+import de.lessvoid.nifty.builder.TextBuilder;
 import de.lessvoid.nifty.controls.DropDown;
 import de.lessvoid.nifty.controls.DropDownSelectionChangedEvent;
 import de.lessvoid.nifty.controls.TextFieldChangedEvent;
@@ -17,7 +21,9 @@ import de.lessvoid.nifty.screen.ScreenController;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.gui.desktop.controller.ImageButtonTextBuilder;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
+import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
@@ -42,6 +48,7 @@ public class LoadGameScreenController implements ScreenController {
 	
 	private Element newGameOrRestoreGamePopup;
 	private Element newGamePopup;
+	private Element choosePlayerPopup;
 	
 	private Element mapNameDisplay;
 	private Element mapNameText;
@@ -71,14 +78,7 @@ public class LoadGameScreenController implements ScreenController {
 	
 	@Override
 	public void onEndScreen() {
-		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
-			nifty.closePopup(newGameOrRestoreGamePopup.getId());
-			newGameOrRestoreGamePopup = null;
-		}
-		if (newGamePopup != null && newGamePopup.isVisible()) {
-			nifty.closePopup(newGamePopup.getId());
-			newGamePopup = null;
-		}
+		closePopups();
 		GuiMessageBus.unregister(this);
 	}
 	
@@ -95,10 +95,7 @@ public class LoadGameScreenController implements ScreenController {
 	
 	@SuppressWarnings("unchecked")
 	public void openNewGamePopup() {
-		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
-			nifty.closePopup(newGameOrRestoreGamePopup.getId());
-			newGameOrRestoreGamePopup = null;
-		}
+		closePopups();
 		newGamePopup = nifty.createPopup("newGamePopup");
 		nifty.showPopup(nifty.getCurrentScreen(), newGamePopup.getId(), null);
 		
@@ -112,11 +109,83 @@ public class LoadGameScreenController implements ScreenController {
 		startGameButton = newGamePopup.findElementByName("startGameButton");
 	}
 	
-	public void startGame() {
+	public void openChoosePlayerPopup(final Game game) {
+		closePopups();
+		
+		new PopupBuilder("choosePlayerPopup") {{
+			childLayoutCenter();
+			backgroundColor("#0000");
+			panel(new PanelBuilder() {{
+				height("400px");
+				width("800px");
+				childLayoutCenter();
+				image(new ImageBuilder() {{
+					filename("gui/images/textfield/textfieldBackground.png");
+					imageMode("resize:10,8,10,15,6,16,6,2,10,8,10,15");
+					width("100%");
+					height("100%");					
+				}});
+				panel(new PanelBuilder("") {{
+					width("100%");
+					height("100%");
+					padding("10px");
+					childLayoutVertical();
+					text(new TextBuilder() {{
+						text("${i18n.joinAs} :");
+						style("uiLabel24");
+					}});
+					panel(new PanelBuilder("choosePlayerButtonsContainer") {{
+						width("100%");
+						height("*");
+						set("childLayout", "evenly-distributed");
+						for (final Player player : game.getFreePlayers()) {
+							control(new ImageButtonTextBuilder("choosePlayerButton_" + player.getId()) {{
+								parameter("image", "gui/images/startGameWithText.png");
+								parameter("imageHover", "gui/images/startGameWithText.png");
+								parameter("imagePressed", "gui/images/startGameWithText.png");
+								parameter("text", player.getDisplayName());
+								parameter(ChoosePlayerButtonController.PLAYER_ID, player.getId());
+								parameter(ChoosePlayerButtonController.GAME_ID, game.getId());
+								parameter("textWidth", "200px");
+								width("240px");
+								height("48px");
+								alignCenter();
+								controller("fr.lyrgard.hexScape.gui.desktop.controller.loadGame.ChoosePlayerButtonController");
+							}});
+						}
+					}});
+				}});
+			}});
+			
+		}}.registerPopup(nifty);
+		
+		choosePlayerPopup = nifty.createPopup("choosePlayerPopup");
+		nifty.showPopup(nifty.getCurrentScreen(), choosePlayerPopup.getId(), null);
+		
+		Element container = choosePlayerPopup.findElementByName("choosePlayerButtonsContainer");
+		
+		choosePlayerPopup.resetLayout();
+		container.resetLayout();
+
+	}
+	
+	public void closePopups() {
+		if (newGameOrRestoreGamePopup != null && newGameOrRestoreGamePopup.isVisible()) {
+			nifty.closePopup(newGameOrRestoreGamePopup.getId());
+			newGameOrRestoreGamePopup = null;
+		}
 		if (newGamePopup != null && newGamePopup.isVisible()) {
 			nifty.closePopup(newGamePopup.getId());
 			newGamePopup = null;
 		}
+		if (choosePlayerPopup != null && choosePlayerPopup.isVisible()) {
+			nifty.closePopup(choosePlayerPopup.getId());
+			choosePlayerPopup = null;
+		}
+	}
+	
+	public void startGame() {
+		closePopups();
 		playerNumber = playerNumberDropDown.getSelection();
 		CreateGameMessage message = new CreateGameMessage(gameName, map, playerNumber);
 		CoreMessageBus.post(message);
@@ -125,14 +194,24 @@ public class LoadGameScreenController implements ScreenController {
 	
 	@Subscribe public void onMapLoaded(final MapLoadedMessage message) {
 		Map map = message.getMap();
+		setMap(map);
+		checkGameReadyToStart();
+	}
+	
+	private void setMap(Map map) {
 		mapNameText.getRenderer(TextRenderer.class).setText(map.getName());
 		mapNameDisplay.setVisible(true);
 		LoadGameScreenController.this.map = map;
-		checkGameReadyToStart();
 	}
 	
 	@Subscribe public void onGameCreated(final GameCreatedMessage message) {
 		Game game = message.getGame();
+		
+		setMap(game.getMap());
+		
+		DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), true);
+		CoreMessageBus.post(displayMapMessage);
+		
 		StartGameMessage startGameMessage = new StartGameMessage(CurrentUserInfo.getInstance().getId(), game.getId());
 		CoreMessageBus.post(startGameMessage);
 	}
@@ -142,15 +221,20 @@ public class LoadGameScreenController implements ScreenController {
 		Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		if (game != null) {
 			if (!game.getFreePlayers().isEmpty()) {
-				Player player = game.getFreePlayers().iterator().next();
-				JoinGameMessage joinGameMessage = new JoinGameMessage(CurrentUserInfo.getInstance().getId(), gameId, player.getId());
-				CoreMessageBus.post(joinGameMessage);
+				if (game.getFreePlayers().size() > 1) {
+					openChoosePlayerPopup(game);
+				} else {
+					Player player = game.getFreePlayers().iterator().next();
+					JoinGameMessage joinGameMessage = new JoinGameMessage(CurrentUserInfo.getInstance().getId(), gameId, player.getId());
+					CoreMessageBus.post(joinGameMessage);
+				}
 			} else {
 				
 			}
 			
 		}
 	}
+	
 	
 	@Subscribe public void onGameJoined(final GameJoinedMessage message) {
 		nifty.gotoScreen("gameScreen");
@@ -172,10 +256,7 @@ public class LoadGameScreenController implements ScreenController {
 	
 	@NiftyEventSubscriber(id="cancelNewGame")
 	public void onCancelNewGame(String id, NiftyMousePrimaryClickedEvent event) {
-		if (newGamePopup != null && newGamePopup.isVisible()) {
-			nifty.closePopup(newGamePopup.getId());
-			newGamePopup = null;
-		}
+		closePopups();
 		HexScapeCore.getInstance().getHexScapeJme3Application().displayTitleScreen();
 		mapNameDisplay.setVisible(false);
 		map = null;

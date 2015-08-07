@@ -3,6 +3,7 @@ package fr.lyrgard.hexScape;
 
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
@@ -63,7 +64,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 	public HexScapeJme3Application() {
 		super(new AppState[] {});
 		
-		//stateManager.attach(new StatsAppState());
+		stateManager.attach(new StatsAppState());
 		stateManager.attach(rotatingAroundCameraAppState);
 		stateManager.attach(pieceControlerAppState);
 		stateManager.attach(titleMenuButtonsAppState);

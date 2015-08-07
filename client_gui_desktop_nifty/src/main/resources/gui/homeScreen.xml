@@ -19,7 +19,7 @@
 				<panel height="20px"/>
 				<control name="imageButtonTextTitle" align="center" height="88" width="377" textWidth="300" valign="center" visibleToMouse="true"
 					id="multiplayerGameButton" 
-					goTo="gameScreen"   
+					goTo="onlineScreen"   
 					image="gui/images/multiplayerGameWithText.png" 
 					text="${i18n.multiplayerGame}" />
 				<panel height="20px"/>	

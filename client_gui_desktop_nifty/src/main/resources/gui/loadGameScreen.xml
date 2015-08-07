@@ -26,7 +26,7 @@
 					</panel>
 					<panel height="100%" width="50%" childLayout="center">
 						<control name="imageButtonText" id="restoreGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
-							goTo="homeScreen"  
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.RestoreGameButtonController"
 							image="gui/images/openFileWithText.png" 
 							text="${i18n.loadGame}" />	
 					</panel>
@@ -84,31 +84,6 @@
 							image="gui/images/cancelWithText.png" 
 							text="${i18n.cancel}" />
 					<panel width="*" height="1px"/>
-				</panel>
-			</panel>
-		</panel>
-	</popup>
-	<popup id="restoreGamePopup" childLayout="center" backgroundColor="#0000">
-		<panel height="400px" width="800px" childLayout="center">
-			<image filename="gui/images/menuBackground2.png" imageMode="resize:42,1,45,12,42,1,45,2,42,1,45,15" width="100%" height="100%"/>
-			<panel height="100%" width="100%" childLayout="vertical">
-				<panel height="20%" width="100%" align="left" childLayout="horizontal">
-					<panel height="100%" width="25%" childLayout="center">
-						<text text="${i18n.gameName} :" style="nifty-label" align="right"></text>
-					</panel>
-					<panel height="100%" width="75%" childLayout="horizontal">
-						<panel width="10px"/>
-						<text id="gameNameText" style="nifty-label" valign="center"/>
-					</panel>
-				</panel>
-				<panel height="20%" width="100%" align="left" childLayout="horizontal">
-					<panel height="100%" width="25%" childLayout="center">
-						<text text="${i18n.playerNumber} :" style="nifty-label" align="right"></text>
-					</panel>
-					<panel height="100%" width="75%" childLayout="horizontal">
-						<panel width="10px"/>
-						<text id="playerNumberText" style="nifty-label" valign="center"/>
-					</panel>
 				</panel>
 			</panel>
 		</panel>

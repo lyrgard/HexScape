@@ -1,5 +1,8 @@
 package fr.lyrgard.hexScape.gui.desktop;
 
+import java.awt.Image;
+import java.awt.Toolkit;
+
 import com.google.common.eventbus.Subscribe;
 import com.jme3.app.SimpleApplication;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -29,6 +32,8 @@ public class HexScapeDesktopGui implements InitCallBack {
 	}
 	
 	public static void main(String[] args){
+		
+		
 		INSTANCE.start();
 	}
 	
@@ -36,6 +41,8 @@ public class HexScapeDesktopGui implements InitCallBack {
 	
 	private void start() {
 		HexScapeFrame frame = HexScapeFrame.getInstance();
+		Image icone = Toolkit.getDefaultToolkit().getImage("hexscape.png");
+		frame.setIconImage(icone);
 		
 		final HexScapeCore core = HexScapeCore.getInstance();
 		final HexScapeJme3Application app = core.getHexScapeJme3Application();
@@ -69,12 +76,21 @@ public class HexScapeDesktopGui implements InitCallBack {
 		nifty.addXml("gui/homeScreen.xml");
 		nifty.addXml("gui/loadGameScreen.xml");
 		nifty.addXml("gui/gameScreen.xml");
+		nifty.addXml("gui/onlineScreen.xml");
 		nifty.gotoScreen("homeScreen");
 
 		nifty.registerMouseCursor("buttonHoverMousePointer", "gui/images/cursorHover.png", 0, 0);
 		
 		// attach the nifty display to the gui view port as a processor
 		app.getGuiViewPort().addProcessor(niftyDisplay);
+		
+		boolean displayStats = false;
+		
+		if (Boolean.TRUE.toString().equals(System.getProperty("displayStats"))) {
+			displayStats = true;
+		}
+		app.setDisplayStatView(displayStats);
+		app.setDisplayFps(displayStats);
 		
 		//nifty.resolutionChanged();
 		
