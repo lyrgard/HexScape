@@ -1,4 +1,4 @@
 HexScape
 ========
 
-A 3D Hex based game motor.
+A 3D Hex based game engine.
