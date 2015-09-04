@@ -19,6 +19,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.AbstractMessage;
+import fr.lyrgard.hexScape.message.CannotConnectToServerMessage;
 import fr.lyrgard.hexScape.message.ErrorMessage;
 import fr.lyrgard.hexScape.message.UserInformationMessage;
 import fr.lyrgard.hexScape.message.json.MessageJsonMapper;
@@ -88,6 +89,7 @@ public class ClientWebSocket {
 	public void onError(Throwable t) {
 		ClientNetwork.getInstance().disconnect();
 		GuiMessageBus.post(new ErrorMessage(null, "Cannot connect to the server"));
+		GuiMessageBus.post(new CannotConnectToServerMessage());
 		LOGGER.error("Error on websocket", t);
 	}
 

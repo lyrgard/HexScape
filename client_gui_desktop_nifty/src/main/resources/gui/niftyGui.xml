@@ -22,5 +22,6 @@
 	<useControls filename="gui/controls/hexScapeChatControl.xml" />
 	<useControls filename="gui/controls/hexScapeTabs.xml" />
 	<useControls filename="gui/controls/armyCardDetail.xml" />
+	<useControls filename="gui/controls/gameItem.xml" />
 	<resourceBundle id="i18n" filename="gui/i18n/i18n" />
 </nifty>

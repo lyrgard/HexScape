@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
+import fr.lyrgard.hexScape.message.CannotConnectToServerMessage;
 import fr.lyrgard.hexScape.message.ConnectToServerMessage;
 import fr.lyrgard.hexScape.message.ConnectedToServerMessage;
 import fr.lyrgard.hexScape.message.DisconnectFromServerMessage;
@@ -38,7 +39,11 @@ public class ServerListener {
 		User user = Universe.getInstance().getUsersByIds().get(userId);
 		
 		if (user != null) {
-			ClientNetwork.getInstance().connect(user, host);
+			try {
+				ClientNetwork.getInstance().connect(user, host);
+			} catch (Exception e) {
+				GuiMessageBus.post(new CannotConnectToServerMessage());
+			}
 		}
 	}
 	

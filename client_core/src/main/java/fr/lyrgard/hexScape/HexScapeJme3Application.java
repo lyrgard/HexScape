@@ -11,8 +11,11 @@ import com.jme3.light.DirectionalLight;
 import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.Caps;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
+import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
@@ -39,8 +42,6 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	private MapManager scene;
 	
-	private Table table;
-	
 	private PieceManager pieceLookedAt;
 	
 	private RotatingAroundCameraAppState rotatingAroundCameraAppState = new RotatingAroundCameraAppState();
@@ -57,7 +58,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	private SelectMarkerAppState selectMarkerAppState = new SelectMarkerAppState();
 	
-	PointLight haloLight;
+	private Node gameNode;
+	private Spatial menuNode;
 	
 	private InitCallBack initCallBack;
 	
@@ -108,7 +110,17 @@ public class HexScapeJme3Application extends SimpleApplication {
         dlsr.setLight(sun);
         dlsr.setShadowIntensity(0.3f);
         viewPort.addProcessor(dlsr);
+        
+        if (renderer.getCaps().contains(Caps.GLSL100)){
+            CartoonEdgeProcessor cartoonEdgeProcess = new CartoonEdgeProcessor();
+            viewPort.addProcessor(cartoonEdgeProcess);
+        }
 	
+        gameNode = new Node();
+        menuNode = TitleScreen.getInstance().getSpatial();
+        rootNode.attachChild(gameNode);
+        rootNode.attachChild(menuNode);
+        viewPort.clearScenes();
 		
         rootNode.setShadowMode(ShadowMode.CastAndReceive);
         setPauseOnLostFocus(false);
@@ -184,6 +196,14 @@ public class HexScapeJme3Application extends SimpleApplication {
 			selectMarkerAppState.setEnabled(true);
 			flyByCameraAppState.setEnabled(true);
 			break;
+		case DISABLED:
+			pointOfViewCameraAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(false);
+			rotatingAroundCameraAppState.setEnabled(false);
+			pieceControlerAppState.setEnabled(false);
+			selectMarkerAppState.setEnabled(false);
+			flyByCameraAppState.setEnabled(false);
+			break;
 		default:
 			break;
 		}
@@ -191,36 +211,37 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	public void displayTitleScreen() {
 		
-		if (this.scene != null) {
-			rootNode.detachAllChildren();
-			scene = null;
-		}
-		if (this.table != null) {
-			rootNode.detachChild(this.table);
-			this.table = null;
-		}
-		setControlState(View3dControlState.TITLE_SCREEN);
+		scene = null;
 		
-		rootNode.attachChild(TitleScreen.getInstance().getSpatial());
+		setControlState(View3dControlState.TITLE_SCREEN);
+		viewPort.detachScene(gameNode);
+		viewPort.attachScene(menuNode);
+	}
+	
+	public void displayBlankScreen() {
+		
+		scene = null;
+		
+		setControlState(View3dControlState.DISABLED);
+		viewPort.clearScenes();
 	}
 
 	public void setScene(MapManager scene) {
 		
-		rootNode.detachAllChildren();
-		if (this.scene != null) {
-			rootNode.detachChild(this.scene.getSpatial());
-		}
+		gameNode.detachAllChildren();
 		dlsr.cleanup();
 		this.scene = scene;
 		
 		if (scene != null) {			
 			
 			// Sky and table
-			rootNode.attachChild(Sky.getInstance().getSpatial());
-			this.table = new Table(scene);
-			rootNode.attachChild(table);
+			gameNode.attachChild(Sky.getInstance().getSpatial());
+			gameNode.attachChild(new Table(scene));
+			gameNode.attachChild(scene.getSpatial());
 			
-			rootNode.attachChild(scene.getSpatial());
+			viewPort.clearScenes();
+			
+			viewPort.attachScene(gameNode);
 			
 			if (CurrentUserInfo.getInstance().isPlayingGame()) {
 				// reset camera position

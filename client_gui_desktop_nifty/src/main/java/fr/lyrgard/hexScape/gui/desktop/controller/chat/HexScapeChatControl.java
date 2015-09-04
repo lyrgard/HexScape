@@ -175,7 +175,7 @@ public class HexScapeChatControl extends AbstractController implements KeyInputH
 									marginTop("2px");
 								}});
 								text(new TextBuilder() {{
-									text(sdf.format(new Date()) + " - " + line.getPlayer().getDisplayName() + " : " + line.getMessage());
+									text(sdf.format(new Date()) + " - " + line.getActorName() + " : " + line.getMessage());
 									style(ChatUtils.getHeaderStyle(line.getPlayer()));
 									textHAlign(Align.Left);
 									wrap(true);
@@ -199,7 +199,7 @@ public class HexScapeChatControl extends AbstractController implements KeyInputH
 									marginRight("1px");
 								}});
 								text(new TextBuilder() {{
-									text(sdf.format(new Date()) + " - " + line.getPlayer().getDisplayName() + " :");
+									text(sdf.format(new Date()) + " - " + line.getActorName() + " :");
 									style(ChatUtils.getHeaderStyle(line.getPlayer()));
 									textHAlign(Align.Left);
 									wrap(true);
@@ -239,7 +239,7 @@ public class HexScapeChatControl extends AbstractController implements KeyInputH
 									marginRight("1px");
 								}});
 								text(new TextBuilder() {{
-									text(sdf.format(new Date()) + " - " + line.getPlayer().getDisplayName() + " rolled : ");
+									text(sdf.format(new Date()) + " - " + line.getActorName() + " rolled : ");
 									style(ChatUtils.getHeaderStyle(line.getPlayer()));
 									textHAlign(Align.Left);
 									wrap(true);

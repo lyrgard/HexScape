@@ -30,6 +30,8 @@ public class Game {
 	private Collection<Player> players;
 	
 	private Collection<String> observersIds;
+	
+	private String description;
 
 	@JsonIgnore
 	private static ObjectMapper mapper = new ObjectMapper();
@@ -102,6 +104,7 @@ public class Game {
 		return null;
 	}
 	
+	@JsonIgnore
 	public Collection<Player> getFreePlayers() {
 		Collection<Player> freePlayers = new ArrayList<>();
 		for (Player player : players) {
@@ -110,6 +113,17 @@ public class Game {
 			}
 		}
 		return freePlayers;
+	}
+	
+	@JsonIgnore
+	public int getNonFreePlayersNumber() {
+		int i = 0;
+		for (Player player : players) {
+			if (player.getUserId() != null) {
+				i++;
+			}
+		}
+		return i;
 	}
 
 	public Collection<String> getObserversIds() {
@@ -158,5 +172,13 @@ public class Game {
 
 	public void setStarted(boolean started) {
 		this.started = started;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 }

@@ -51,6 +51,8 @@ public class HexScapeFrame extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
+				HexScapeDesktopGui.getInstance().getNifty().exit();
+				HexScapeCore.getInstance().getHexScapeJme3Application().stop();
 				exit();
 			}
 		});

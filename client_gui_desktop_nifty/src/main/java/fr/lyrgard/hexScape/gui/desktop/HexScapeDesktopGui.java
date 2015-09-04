@@ -3,6 +3,8 @@ package fr.lyrgard.hexScape.gui.desktop;
 import java.awt.Image;
 import java.awt.Toolkit;
 
+import javax.swing.SwingUtilities;
+
 import com.google.common.eventbus.Subscribe;
 import com.jme3.app.SimpleApplication;
 import com.jme3.niftygui.NiftyJmeDisplay;
@@ -40,25 +42,30 @@ public class HexScapeDesktopGui implements InitCallBack {
 	
 	
 	private void start() {
-		HexScapeFrame frame = HexScapeFrame.getInstance();
-		Image icone = Toolkit.getDefaultToolkit().getImage("hexscape.png");
-		frame.setIconImage(icone);
 		
-		final HexScapeCore core = HexScapeCore.getInstance();
-		final HexScapeJme3Application app = core.getHexScapeJme3Application();
-		AppSettings settings = new AppSettings(true);
-		settings.setWidth(frame.getCanvasContainer().getWidth());
-		settings.setHeight(frame.getCanvasContainer().getHeight());
-		app.setSettings(settings);
-		app.createCanvas(); // create canvas!
-		JmeCanvasContext ctx = (JmeCanvasContext) app.getContext();
-		ctx.setSystemListener(app);
-		
-		app.setInitCallBack(this);
-		
-		frame.setJmeCanvas(ctx.getCanvas());
-		
-		app.startCanvas();
+		SwingUtilities.invokeLater(new Runnable(){
+            public void run(){
+            	HexScapeFrame frame = HexScapeFrame.getInstance();
+        		Image icone = Toolkit.getDefaultToolkit().getImage("hexscape.png");
+        		frame.setIconImage(icone);
+        		
+        		final HexScapeCore core = HexScapeCore.getInstance();
+        		final HexScapeJme3Application app = core.getHexScapeJme3Application();
+        		AppSettings settings = new AppSettings(true);
+        		settings.setWidth(frame.getCanvasContainer().getWidth());
+        		settings.setHeight(frame.getCanvasContainer().getHeight());
+        		app.setSettings(settings);
+        		app.createCanvas(); // create canvas!
+        		JmeCanvasContext ctx = (JmeCanvasContext) app.getContext();
+        		ctx.setSystemListener(app);
+        		
+        		app.setInitCallBack(HexScapeDesktopGui.this);
+        		
+        		frame.setJmeCanvas(ctx.getCanvas());
+        		
+        		app.startCanvas();
+            }
+        });
 	}
 
 
@@ -77,6 +84,7 @@ public class HexScapeDesktopGui implements InitCallBack {
 		nifty.addXml("gui/loadGameScreen.xml");
 		nifty.addXml("gui/gameScreen.xml");
 		nifty.addXml("gui/onlineScreen.xml");
+		nifty.addXml("gui/optionScreen.xml");
 		nifty.gotoScreen("homeScreen");
 
 		nifty.registerMouseCursor("buttonHoverMousePointer", "gui/images/cursorHover.png", 0, 0);

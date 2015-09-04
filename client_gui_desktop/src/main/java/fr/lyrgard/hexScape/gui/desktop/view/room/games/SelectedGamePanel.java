@@ -31,7 +31,7 @@ import fr.lyrgard.hexScape.gui.desktop.message.GameSelectedMessage;
 import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.PlayerCellRenderer;
 import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.PlayerListModel;
 import fr.lyrgard.hexScape.gui.desktop.view.room.ActivateOnlineService;
-import fr.lyrgard.hexScape.message.DisplayMapMessage;
+import fr.lyrgard.hexScape.message.DisplayGameMessage;
 import fr.lyrgard.hexScape.message.GameEndedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
@@ -124,7 +124,7 @@ public class SelectedGamePanel extends JPanel {
 				add(view3d, BorderLayout.CENTER);
 				System.out.println("SELECTED GAME VIEW TAKES 3D");
 
-						DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), false);
+						DisplayGameMessage displayMapMessage = new DisplayGameMessage(game.getId(), false);
 						CoreMessageBus.post(displayMapMessage);
 
 						gameTitle.setText(getTitle());

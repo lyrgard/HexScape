@@ -63,7 +63,7 @@ public class ObjModelLoader extends AbstractModelLoader {
 		if (mat.getTextureParam("DiffuseMap") != null) {
 			Texture texture = mat.getTextureParam("DiffuseMap").getTextureValue();
 
-			mat = new Material(assetManager, "Common/MatDefs/Light/Lighting.j3md");
+			mat = new Material(assetManager, "model/materialDef/LightBlow.j3md");
 			geo.setMaterial(mat);
 			mat.setTexture("DiffuseMap", texture);
 			mat.setBoolean("UseMaterialColors",true);    

@@ -2,14 +2,14 @@ package fr.lyrgard.hexScape.message;
 
 public class AbstractMessage {
 	
-	private String userId;
+	private String sessionUserId;
 
 	public String getSessionUserId() {
-		return userId;
+		return sessionUserId;
 	}
 
-	public void setSessionUserId(String userId) {
-		this.userId = userId;
+	public void setSessionUserId(String sessionUserId) {
+		this.sessionUserId = sessionUserId;
 	} 
 
 }

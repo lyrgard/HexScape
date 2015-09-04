@@ -3,18 +3,133 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
 	<screen id="onlineScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.online.OnlineScreenController">
-		<layer id="foreground" childLayout="center">
-			<panel width="100%" height="100%" childLayout="vertical">
-				<panel id="" width="100%" height="200px" backgroundColor="#f008">
-				</panel>
-				<panel width="100%" height="*" childLayout="horizontal" backgroundColor="#0f08">
-					<panel width="300" height="100%" childLayout="vertical" backgroundColor="#00f8">
-					
+		<layer id="foreground" childLayout="center" padding="10px" backgroundColor="#1111">
+		
+			<!-- Title -->		
+			<panel height="32px" width="100%" valign="top" childLayout="center" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15">
+				<text id="roomTitleLabel" text="${i18n.room}" style="uiLabel24"/>
+				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+					id="leaveGameButton"
+					controller="fr.lyrgard.hexScape.gui.desktop.controller.online.DisconnectFromServerButtonController" 
+					buttonImage="gui/images/closeSmall.png" 
+					valign="center"
+					align="right"
+					/>
+			</panel>
+			
+			<!-- Game List -->
+			<panel height="100%" width="300px" childLayout="vertical" align="left" padding="42px,0px,0px,0px">
+				<panel height="100%" width="*" childLayout="vertical" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15">
+					<panel height="32px" width="100%" childLayout="center">
+						<text text="${i18n.games}" style="uiLabel24"/>
+						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.online.NewOnlineGameButtonController" 
+							buttonImage="gui/images/addSmall.png" 
+							valign="center"
+							align="right"
+							/>
 					</panel>
-					<control id="gameChat" valign="bottom" name="nifty-chat" width="*" height="100%" lines="12" sendLabel="${i18n.sendChatMessage}"/>
+					
+					 <panel width="1px" height="10px"/>
+					
+					<panel width="100%" height="500px" childLayout="horizontal">
+						<panel width="10px" height="10px" backColor="#f008"/>
+						<control id="gameList" name="listBox" vertical="optional" horizontal="off" displayItems="4" viewConverterClass="fr.lyrgard.hexScape.gui.desktop.controller.online.GameItemViewConverter" height="500px" width="*">
+							<control name="gameItem" />
+						</control>
+	                    <panel width="10px" height="10px" backColor="#f008"/>
+                    </panel>
+                    <panel width="1px" height="10px"/>
 				</panel>
-				
-			</panel>				
+			</panel>
+			
+			<!-- Game Chat -->
+			<panel width="100%" height="50%" childLayout="vertical" valign="top" padding="42px,0px,0px,310px">
+				<control id="roomChat" valign="bottom" name="nifty-chat" width="100%" height="100%" lines="12" sendLabel="${i18n.sendChatMessage}"/>
+			</panel>
+			
+			<!-- <panel width="100%" height="100%" childLayout="vertical">
+				<panel width="1px" height="50%"></panel>
+				<panel width="1px" height="15px"></panel>
+				<panel width="100%" height="*" childLayout="horizontal">
+					<panel height="100%" width="50%" childLayout="horizontal">
+						<panel height="1px" width="316px"></panel>
+						<panel width="*" height="100%" backgroundColor="#fffc"></panel>
+					</panel>
+					<panel width="*" height="100%" backgroundColor="#f008"></panel>
+					<panel height="1px" width="6px"></panel>
+				</panel>
+				<panel width="1px" height="15px"></panel> 
+			</panel> -->
+			
+			<panel width="50%" height="100%" childLayout="horizontal" align="left">
+				<panel height="1px" width="310px"></panel>
+				<panel  height="50%" width="*" childLayout="vertical" valign="bottom" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" padding="15px,5px,15px,5px">
+					<text text="${i18n.gameName} :" style="uiLabel16" align="left"></text>
+					<text id="selectedGameName" text="" style="userText" align="left"></text>
+					<text text="${i18n.gameDescription} :" style="uiLabel16" align="left"></text>
+					<text id="selectedGameDescription" text="" style="userText" align="left"></text>
+				</panel>
+			</panel>
+					
 		</layer>
 	</screen>
+	<popup id="newOnlineGamePopup" childLayout="center" backgroundColor="#0000">
+		<panel height="400px" width="800px" childLayout="center">
+			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" width="100%" height="100%"/>
+			<panel height="100%" width="100%" childLayout="vertical">
+				<panel height="17%" width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.gameName} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="onlineGameNameTextField" name="textfield" maxLength="50" width="316px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="16%" width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.gameDescription} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="onlineGameDescriptionTextField" name="textfield" maxLength="200" width="316px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="16%" width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.map} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control name="imageButtonText" id="loadGameButton" align="center" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.loadGame.ChooseMapButtonController"   
+							image="gui/images/openFileWithText.png" 
+							text="${i18n.loadMap}" />	
+					</panel>
+				</panel>
+				<panel height="16%" width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.playerNumber} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="onlineGamePlayerNumberDropDown" name="hexScapeDropDown" displayItems="4" width="60px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="35%" width="100%" align="left" childLayout="horizontal">
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="createOnlineGameButton" visible="false" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.online.CreateOnlineGameButtonController"   
+							image="gui/images/addWithText.png" 
+							text="${i18n.createGame}" />
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="cancelNewOnlineGame" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"   
+							image="gui/images/cancelWithText.png" 
+							text="${i18n.cancel}" />
+					<panel width="*" height="1px"/>
+				</panel>
+			</panel>
+		</panel>
+	</popup>
 </nifty>

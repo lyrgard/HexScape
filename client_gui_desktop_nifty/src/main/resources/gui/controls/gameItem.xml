@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<controlDefinition name="gameItem" style="nifty-panel-style" 
+		controller="fr.lyrgard.hexScape.gui.desktop.controller.online.GameItemController">
+		<panel id="#gameItem" childLayout="vertical" width="250px" heigth="150px" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,0" padding="5px">
+			<text id="#gameNameText" style="uiLabel16" align="center"/>
+			<text id="#gameDescriptionText" style="nifty-label" color="#000f" textHAlign="left"/>
+			<panel height="*" width="1px"/>
+			<panel  childLayout="horizontal" >
+				<panel height="1px" width="*"/>
+				<image id="#gameStatusImage" filename="gui/images/gameStatusStoped.png"/>
+				<panel height="1px" width="*"/>
+				<text text="${i18n.players} : " style="uiLabel16"/>
+				<text id="#playerNumberText" text="" style="uiLabel16"/>
+				<panel height="1px" width="*"/>
+			</panel>
+		</panel>
+	</controlDefinition>
+</nifty-controls>

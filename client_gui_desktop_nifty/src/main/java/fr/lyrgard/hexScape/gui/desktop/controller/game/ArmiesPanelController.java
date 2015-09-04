@@ -17,6 +17,7 @@ import de.lessvoid.nifty.controls.tabs.builder.TabGroupBuilder;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.controller.ImageButtonTextBuilder;
 import fr.lyrgard.hexScape.message.ArmyLoadedMessage;
 import fr.lyrgard.hexScape.message.CardInstanceChangedOwnerMessage;
@@ -139,6 +140,7 @@ public class ArmiesPanelController {
 		if (armyContainer != null) {
 			for (Element child : armyContainer.getElements()) {
 				child.markForRemoval();
+				GuiMessageBus.unregister(child.getControl(ArmyCardPanelController.class));
 			}
 			for (final CardInstance card : army.getCards()) {
 				final CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());

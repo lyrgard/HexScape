@@ -28,7 +28,7 @@ public class ClientNetwork {
 	private ClientWebSocket socket;
 	private WebSocketClient client;
 	
-	public void connect(User user, String url) {
+	public void connect(User user, String url) throws Exception {
 		if (socket == null) {
 			String destUri = "ws://" + url;
 			client = new WebSocketClient();
@@ -43,9 +43,10 @@ public class ClientNetwork {
 				client.connect(socket, echoUri, request);
 				LOGGER.info("Connecting to : %s%n", echoUri);
 				
-			} catch (Throwable t) {
-				LOGGER.error("Error while connecting to server", t);
+			} catch (Exception e) {
+				LOGGER.error("Error while connecting to server", e);
 				client = null;
+				throw e;
 			}
 		}
     }

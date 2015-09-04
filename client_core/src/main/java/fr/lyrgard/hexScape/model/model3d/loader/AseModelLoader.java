@@ -829,8 +829,7 @@ public class AseModelLoader extends AbstractModelLoader {
 		
 		public Material getMaterial() {
 			AssetManager assetManager = HexScapeCore.getInstance().getHexScapeJme3Application().getAssetManager();
-			Material mat = new Material(assetManager, 
-					"Common/MatDefs/Light/Lighting.j3md");
+			Material mat = new Material(assetManager, "model/materialDef/LightBlow.j3md");
 			
 			Texture TileTexture = assetManager.loadTexture(HexScapeCore.APP_DATA_FOLDER.toURI().relativize(getTextureFile(mainObjectName, name).toURI()).getPath());
 			TileTexture.setWrap(WrapMode.Repeat);

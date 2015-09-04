@@ -35,7 +35,7 @@ private static GameRecorderListener instance;
 	private GameRecord record = new GameRecord();
 	
 	@Subscribe public void onEvent(GameCreatedMessage message) {
-		GameRecorderService.getInstance().addAction(new CreateGameMessage(message.getGame().getName(), message.getGame().getMap(), message.getGame().getPlayerNumber()));
+		GameRecorderService.getInstance().addAction(new CreateGameMessage(message.getGame().getName(), message.getGame().getDescription(), message.getGame().getMap(), message.getGame().getPlayerNumber()));
 	}
 	
 	@Subscribe public void onEvent(ArmyLoadedMessage message) {

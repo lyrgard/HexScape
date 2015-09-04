@@ -55,6 +55,17 @@ public class ChatEntryModel {
 		this.diceResults = diceResults;
 		this.type = ChatEntryType.DICE_ROLL;
 	}
+	
+	public String getActorName() {
+		if (player != null) {
+			return player.getDisplayName();
+		} else if (user != null) {
+			return user.getName();
+		} else {
+			return "UNKNOWN";
+		}
+			
+	}
 
 	public Player getPlayer() {
 		return player;

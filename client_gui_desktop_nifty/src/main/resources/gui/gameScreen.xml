@@ -61,9 +61,6 @@
 				<control id="gameChat" valign="bottom" name="nifty-chat" width="400px" height="250px" lines="12" sendLabel="${i18n.sendChatMessage}"/>		
 			</panel>
 
-			<panel align="right" valign="top" width="400px" height="400px" childLayout="vertical" >
-				<!-- <control id="gameChat" name="nifty-chat" width="100%" height="100%" lines="12" sendLabel="${i18n.sendChatMessage}"/> -->
-			</panel>
 		</layer>
 	</screen>
 </nifty>

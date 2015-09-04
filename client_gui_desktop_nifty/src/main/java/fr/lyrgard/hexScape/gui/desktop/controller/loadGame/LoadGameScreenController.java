@@ -23,6 +23,7 @@ import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.controller.ImageButtonTextBuilder;
 import fr.lyrgard.hexScape.message.CreateGameMessage;
+import fr.lyrgard.hexScape.message.DisplayGameMessage;
 import fr.lyrgard.hexScape.message.DisplayMapMessage;
 import fr.lyrgard.hexScape.message.GameCreatedMessage;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
@@ -187,13 +188,15 @@ public class LoadGameScreenController implements ScreenController {
 	public void startGame() {
 		closePopups();
 		playerNumber = playerNumberDropDown.getSelection();
-		CreateGameMessage message = new CreateGameMessage(gameName, map, playerNumber);
+		CreateGameMessage message = new CreateGameMessage(gameName, null, map, playerNumber);
 		CoreMessageBus.post(message);
 	}
 	
 	
 	@Subscribe public void onMapLoaded(final MapLoadedMessage message) {
 		Map map = message.getMap();
+		DisplayMapMessage displayMapMessage = new DisplayMapMessage(map);
+		CoreMessageBus.post(displayMapMessage);
 		setMap(map);
 		checkGameReadyToStart();
 	}
@@ -209,7 +212,7 @@ public class LoadGameScreenController implements ScreenController {
 		
 		setMap(game.getMap());
 		
-		DisplayMapMessage displayMapMessage = new DisplayMapMessage(game.getId(), true);
+		DisplayGameMessage displayMapMessage = new DisplayGameMessage(game.getId(), true);
 		CoreMessageBus.post(displayMapMessage);
 		
 		StartGameMessage startGameMessage = new StartGameMessage(CurrentUserInfo.getInstance().getId(), game.getId());

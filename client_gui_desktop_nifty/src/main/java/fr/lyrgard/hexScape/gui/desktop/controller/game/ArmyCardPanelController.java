@@ -19,14 +19,15 @@ import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.xml.xpp3.Attributes;
 import fr.lyrgard.hexScape.HexScapeCore;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
 import fr.lyrgard.hexScape.gui.desktop.message.DisplayCardDetailMessage;
 import fr.lyrgard.hexScape.message.MarkerPlacedMessage;
 import fr.lyrgard.hexScape.message.MarkerRemovedMessage;
 import fr.lyrgard.hexScape.message.MarkerRevealedMessage;
 import fr.lyrgard.hexScape.message.PiecePlacedMessage;
 import fr.lyrgard.hexScape.message.PieceRemovedMessage;
+import fr.lyrgard.hexScape.message.PlacePieceMessage;
 import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 import fr.lyrgard.hexScape.model.card.CardType;
@@ -183,7 +184,8 @@ public class ArmyCardPanelController implements Controller {
 				if (card.getPieceLeftToPlace().size() == 0) {
 					addAllPiecesButton.setVisible(false);
 				} else if (StringUtils.equals(playerId, CurrentUserInfo.getInstance().getPlayerId())) {
-					new AddPieceAction(card.getPieceLeftToPlace().peek(), card).actionPerformed(null);
+					PlacePieceMessage placePieceMessage = new PlacePieceMessage(card.getId(), card.getPieceLeftToPlace().peek());
+					CoreMessageBus.post(placePieceMessage);	
 				}
 			}
 		}

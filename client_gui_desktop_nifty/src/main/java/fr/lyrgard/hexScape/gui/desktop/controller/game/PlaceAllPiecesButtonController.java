@@ -1,7 +1,8 @@
 package fr.lyrgard.hexScape.gui.desktop.controller.game;
 
-import fr.lyrgard.hexScape.gui.desktop.action.AddPieceAction;
+import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.controller.AbstractImageButtonController;
+import fr.lyrgard.hexScape.message.PlacePieceMessage;
 import fr.lyrgard.hexScape.model.card.CardInstance;
 
 public class PlaceAllPiecesButtonController extends AbstractImageButtonController {
@@ -10,7 +11,8 @@ public class PlaceAllPiecesButtonController extends AbstractImageButtonControlle
 
 	@Override
 	public void onClick() {
-		new AddPieceAction(card.getPieceLeftToPlace().peek(), card).actionPerformed(null);
+		PlacePieceMessage message = new PlacePieceMessage(card.getId(), card.getPieceLeftToPlace().peek());
+		CoreMessageBus.post(message);	
 	}
 
 	public CardInstance getCard() {

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<screen id="optionScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.option.OptionScreenController">
+		<layer id="foreground" childLayout="center">
+			<panel id="saveSuccessMessage" valign="top" top="50px" height="50px" width="400px" childLayout="center" visible="false">
+				<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" width="100%" height="100%"/>
+				<panel height="100%" width="100%" childLayout="center">
+					<text text="${i18n.optionSaveSuccess}" style="uiLabel24"></text>
+				</panel>
+			</panel>
+			<panel id="importAssetSuccessMessage" valign="top" top="50px" height="50px" width="400px" childLayout="center" visible="false">
+				<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" width="100%" height="100%"/>
+				<panel height="100%" width="100%" childLayout="center">
+					<text text="${i18n.importAssetSuccess}" style="uiLabel24"></text>
+				</panel>
+			</panel>
+			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" height="450px" width="800px"/>
+			<panel height="450px" width="800px" childLayout="vertical">
+				<panel height="*"/>
+				<panel width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.playerName} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="playerNameTextField" name="textfield" maxLength="50" width="316px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="10px"/>
+				<panel width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.gameType} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="gameTypeDropDown" name="hexScapeDropDown" displayItems="4" width="316px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="10px"/>
+				<panel width="100%" align="left" childLayout="horizontal">
+					<panel height="100%" width="40%" childLayout="center">
+						<text text="${i18n.serverUrl} :" style="uiLabel24" align="right"></text>
+					</panel>
+					<panel height="100%" width="60%" childLayout="horizontal">
+						<panel width="10px"/>
+						<control id="serverUrlTextField" name="textfield" maxLength="50" width="316px" valign="center"/>
+					</panel>
+				</panel>
+				<panel height="10px"/>
+				<panel width="100%" align="left" childLayout="horizontal">
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="saveOptionButton" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.option.SaveOptionButtonController"   
+							image="gui/images/saveWithText.png" 
+							text="${i18n.save}" />
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							goTo="homeScreen"
+							image="gui/images/backWithText.png" 
+							text="${i18n.back}" />
+					<panel width="*" height="1px"/>
+				</panel>
+				<panel height="30px"/>
+				<panel width="100%" align="left" childLayout="horizontal">
+					<panel width="*" height="1px"/>
+					<control name="imageButtonText" id="loadAssetButton" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+							controller="fr.lyrgard.hexScape.gui.desktop.controller.option.ImportAssetButtonController"   
+							image="gui/images/loadAssetWithText.png" 
+							text="${i18n.importAsset}" />
+					<panel width="*" height="1px"/>
+				</panel>
+				<panel height="*"/>
+			</panel>
+		</layer>
+	</screen>
+	<popup id="importingAssetPopup" childLayout="center" backgroundColor="#0008">
+		<panel height="50px" width="500px" childLayout="center">
+			<image filename="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" width="100%" height="100%"/>
+			<panel height="100%" width="100%" childLayout="center">
+				<text text="${i18n.importingAsset}" style="uiLabel24"></text>
+			</panel>
+		</panel>
+	</popup>
+</nifty>

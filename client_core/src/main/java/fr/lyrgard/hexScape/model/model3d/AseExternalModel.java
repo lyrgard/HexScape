@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.jme3.material.Material;
+import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
@@ -42,8 +43,27 @@ public class AseExternalModel implements ExternalModel {
 			i++;
 		}
 		
+		//makeToonish(node);
 		return node;
 	}
+	
+	public void makeToonish(Spatial spatial){
+        if (spatial instanceof Node){
+            Node n = (Node) spatial;
+            for (Spatial child : n.getChildren())
+                makeToonish(child);
+        }else if (spatial instanceof Geometry){
+            Material mat = ((Geometry) spatial).getMaterial();
+            mat.setBoolean("Toon", true);
+            mat.setColor("EdgesColor", ColorRGBA.Red);
+            mat.setFloat("EdgeSize", 0.01f);
+            //mat.setColor("FogColor", new ColorRGBA(0.8f, 0.8f, 0.8f, 17.0f));
+            //mat.setBoolean("Fog_Edges", true);
+            
+            //spatial.setMaterial(mat);
+            //TangentBinormalGenerator.generate(spatial);
+        }
+    }
 
 
 	public String getName() {

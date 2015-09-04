@@ -1,12 +1,12 @@
 package fr.lyrgard.hexScape.message;
 
-public class DisplayMapMessage extends AbstractMessage {
+public class DisplayGameMessage extends AbstractMessage {
 
 	private boolean displayFigures;
 	
 	private String gameId;
 
-	public DisplayMapMessage(String gameId, boolean displayFigures) {
+	public DisplayGameMessage(String gameId, boolean displayFigures) {
 		super();
 		this.gameId = gameId;
 		this.displayFigures = displayFigures;
