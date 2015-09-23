@@ -24,7 +24,7 @@
            controller="de.lessvoid.nifty.controls.dropdown.DropDownPopup">
         <interact onClick="close()"/>
         <panel id="#panel" style="#list-panel" height="200px">
-            <control id="#listBox" name="listBox" horizontal="optional" displayItems="$displayItems"
+            <control id="#listBox" name="hexScapelistBox" horizontal="optional" displayItems="$displayItems"
                      selectionMode="Single" forceSelection="true"/>
         </panel>
     </popup>

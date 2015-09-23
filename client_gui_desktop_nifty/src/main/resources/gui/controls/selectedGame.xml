@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty-controls xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<controlDefinition name="selectedGame"
+		controller="fr.lyrgard.hexScape.gui.desktop.controller.online.SelectedGameController" >
+		<panel width="50%" height="100%" childLayout="horizontal" align="left">
+			<panel height="1px" width="310px"></panel>
+			<panel  height="50%" width="*" childLayout="vertical" valign="bottom" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" padding="15px,5px,15px,5px">
+				<text text="${i18n.gameName} :" style="uiLabel24" align="left"></text>
+				<text id="selectedGameName" text=" " style="uiLabel16" textHAlign="left"></text>
+				<panel width="1px" height="5px"/>
+				<text text="${i18n.players} :" style="uiLabel24" align="left"></text>
+				<!-- <text id="selectedGameDescription" text=" " style="userText" textHAlign="left"></text> -->
+				<control id="selectedGamePlayerList" name="listBox"  horizontal="off" displayItems="4"/>
+				<panel width="100%" height="*" childLayout="absolute">
+					<control name="imageButtonText" id="joinSelectedGameButton" x="10px" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+						controller="fr.lyrgard.hexScape.gui.desktop.controller.online.JoinSelectedGameButtonController"   
+						image="gui/images/joinGameWithText.png" 
+						text="${i18n.joinGame}" />
+					<control name="imageButtonText" id="leaveSelectedGameButton" x="10px" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+						controller="fr.lyrgard.hexScape.gui.desktop.controller.online.LeaveGameButtonController"   
+						image="gui/images/cancelWithText.png" 
+						text="${i18n.leaveGame}" />
+					<control name="imageButtonText" id="startSelectedGameButton" x="10px" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+						controller="fr.lyrgard.hexScape.gui.desktop.controller.online.StartSelectedGameButtonController"   
+						image="gui/images/startGameWithText.png" 
+						text="${i18n.startGame}" />
+					<control name="imageButtonText" id="observeSelectedGameButton" x="10px" visible="true" height="48" width="240" textWidth="200" valign="center" visibleToMouse="true"
+						controller="fr.lyrgard.hexScape.gui.desktop.controller.online.ObserveSelectedGameButtonController"   
+						image="gui/images/observeGameWithText.png" 
+						text="${i18n.observeGame}" />
+				</panel>
+			</panel>
+		</panel>
+	</controlDefinition>
+</nifty-controls>

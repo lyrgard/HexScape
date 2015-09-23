@@ -297,4 +297,10 @@ public class HexScapeJme3Application extends SimpleApplication {
 	public PieceManager getSelectedPiece() {
 		return pieceControlerAppState.getSelectedPiece();
 	}
+
+	public Node getGameNode() {
+		return gameNode;
+	}
+	
+	
 }

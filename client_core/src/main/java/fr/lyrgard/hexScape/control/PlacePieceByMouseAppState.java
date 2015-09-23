@@ -30,7 +30,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 
 	private Camera cam;
 
-	private Node rootNode;
+	private Node gameNode;
 
 	private boolean movedEnoughToInitMove;
 
@@ -41,7 +41,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 		super.initialize(stateManager, app);
 		this.inputManager = app.getInputManager();
 		this.cam = app.getCamera();
-		this.rootNode = ((HexScapeJme3Application)app).getRootNode();
+		this.gameNode = ((HexScapeJme3Application)app).getGameNode();
 	}
 
 	@Override
@@ -55,7 +55,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 
 	public void setPieceToPlace(PieceManager newPieceToPlace) {
 		if (this.pieceToPlace != null) {
-			rootNode.detachChild(this.pieceToPlace.getSpatial());
+			gameNode.detachChild(this.pieceToPlace.getSpatial());
 			if (HexScapeCore.getInstance().getHexScapeJme3Application().getScene().contains(pieceToPlace)) {
 				HexScapeCore.getInstance().getMapManager().placePiece(pieceToPlace, pieceToPlace.getPiece().getX(), pieceToPlace.getPiece().getY(), pieceToPlace.getPiece().getZ(), pieceToPlace.getPiece().getDirection());
 			}
@@ -157,7 +157,7 @@ public class PlacePieceByMouseAppState extends AbstractAppState {
 			initialMousePosition = new Vector2f(inputManager.getCursorPosition());
 			movedEnoughToInitMove = false;
 			if (pieceToPlace != null) {
-				rootNode.attachChild(pieceToPlace.getSpatial());
+				gameNode.attachChild(pieceToPlace.getSpatial());
 			}
 		} else {
 			setPieceToPlace(null);

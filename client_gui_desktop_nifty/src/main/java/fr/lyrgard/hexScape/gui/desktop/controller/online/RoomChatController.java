@@ -6,9 +6,14 @@ import fr.lyrgard.hexScape.gui.desktop.controller.chat.ChatEntryModel;
 import fr.lyrgard.hexScape.gui.desktop.controller.chat.HexScapeChatControl;
 import fr.lyrgard.hexScape.gui.desktop.controller.chat.ChatEntryModel.ChatEntryType;
 import fr.lyrgard.hexScape.message.DisconnectedFromServerMessage;
+import fr.lyrgard.hexScape.message.GameJoinedMessage;
+import fr.lyrgard.hexScape.message.GameLeftMessage;
+import fr.lyrgard.hexScape.message.GameStartedMessage;
 import fr.lyrgard.hexScape.message.RoomMessagePostedMessage;
 import fr.lyrgard.hexScape.message.UserJoinedRoomMessage;
+import fr.lyrgard.hexScape.model.CurrentUserInfo;
 import fr.lyrgard.hexScape.model.Universe;
+import fr.lyrgard.hexScape.model.game.Game;
 import fr.lyrgard.hexScape.model.player.User;
 import fr.lyrgard.hexScape.model.room.Room;
 
@@ -66,6 +71,48 @@ public class RoomChatController {
 		if (user != null) {
 			displayUserAction(user, "joined the game");
 			roomChat.addUser(user);
+		}
+	}
+	
+	@Subscribe public void gameJoined(GameJoinedMessage message) {
+		final Game game = message.getGame();
+		final String userId = message.getUserId();
+		
+		if (!userId.equals(CurrentUserInfo.getInstance().getId())) {
+			User user = Universe.getInstance().getUsersByIds().get(userId);
+
+			if (user != null && game != null) {
+				displayUserAction(user, " joined " + game.getName());
+			}
+		}
+	}
+
+	@Subscribe public void onGameLeft(GameLeftMessage message) {
+		final String gameId = message.getGameId();
+		final String userId = message.getUserId();
+		
+		if (!userId.equals(CurrentUserInfo.getInstance().getId())) {
+			Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+			User user = Universe.getInstance().getUsersByIds().get(userId);
+
+			if (user != null && game != null) {
+				displayUserAction(user, " left " + game.getName());
+			}
+		}
+	}
+	
+	@Subscribe public void onGameStarted(GameStartedMessage message) {
+		final String gameId = message.getGameId();
+		final String userId = message.getUserId();
+		
+
+		if (!userId.equals(CurrentUserInfo.getInstance().getId())) {
+			Game game = Universe.getInstance().getGamesByGameIds().get(gameId);
+			User user = Universe.getInstance().getUsersByIds().get(userId);
+
+			if (user != null && game != null) {
+				displayUserAction(user, " started " + game.getName());
+			}
 		}
 	}
 }

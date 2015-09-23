@@ -147,8 +147,8 @@ public class LoadGameScreenController implements ScreenController {
 								parameter("text", player.getDisplayName());
 								parameter(ChoosePlayerButtonController.PLAYER_ID, player.getId());
 								parameter(ChoosePlayerButtonController.GAME_ID, game.getId());
-								parameter("textWidth", "200px");
-								width("240px");
+								parameter("textWidth", "250px");
+								width("290px");
 								height("48px");
 								alignCenter();
 								controller("fr.lyrgard.hexScape.gui.desktop.controller.loadGame.ChoosePlayerButtonController");

@@ -140,7 +140,7 @@ public class ArmiesPanelController {
 		if (armyContainer != null) {
 			for (Element child : armyContainer.getElements()) {
 				child.markForRemoval();
-				GuiMessageBus.unregister(child.getControl(ArmyCardPanelController.class));
+				//GuiMessageBus.unregister(child.getControl(ArmyCardPanelController.class));
 			}
 			for (final CardInstance card : army.getCards()) {
 				final CardType cardType = CardService.getInstance().getCardInventory().getCardTypesById().get(card.getCardTypeId());

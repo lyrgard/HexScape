@@ -6,6 +6,8 @@ import com.google.common.eventbus.Subscribe;
 
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.controls.Controller;
+import de.lessvoid.nifty.controls.listbox.ListBoxImpl;
+import de.lessvoid.nifty.controls.listbox.ListBoxItemController;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.ImageRenderer;
 import de.lessvoid.nifty.elements.render.TextRenderer;
@@ -17,9 +19,10 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.message.GameJoinedMessage;
 import fr.lyrgard.hexScape.message.GameLeftMessage;
 import fr.lyrgard.hexScape.message.GameStartedMessage;
+import fr.lyrgard.hexScape.model.Universe;
 import fr.lyrgard.hexScape.model.game.Game;
 
-public class GameItemController implements Controller {
+public class GameItemController extends ListBoxItemController<String> {
 	private static final String GAME_NAME_TEXT = "#gameNameText";
 	private static final String GAME_DESCRIPTION_TEXT = "#gameDescriptionText";
 	private static final String GAME_STATUS_IMAGE = "#gameStatusImage";
@@ -44,8 +47,8 @@ public class GameItemController implements Controller {
 		this.screen = screen;
 	}
 	
-	public void setGame(Game game) {
-		this.game = game;
+	public void setGame(String gameId) {
+		game = Universe.getInstance().getGamesByGameIds().get(gameId);
 		if (game == null) {
 			rootElement.setVisible(false);
 			return;
@@ -76,10 +79,12 @@ public class GameItemController implements Controller {
 		updatePlayerNumberText();
 				
 		GuiMessageBus.register(this);
+		
+		rootElement.layoutElements();
 	}
 	
 	private void updatePlayerNumberText() {
-		playerNumberText.getRenderer(TextRenderer.class).setText(game.getNonFreePlayersNumber() + "/" + game.getPlayerNumber() );
+		playerNumberText.getRenderer(TextRenderer.class).setText("${i18n.players} : " + game.getNonFreePlayersNumber() + "/" + game.getPlayerNumber() );
 	}
 	
 	private void updateGameStatusImage() {
@@ -107,6 +112,16 @@ public class GameItemController implements Controller {
 	public void onStartScreen() {
 	}
 	
+	
+	public void listBoxItemClicked() {
+        String item = getListBox().getItemByVisualIndex(getVisualItemIndex());
+        getListBox().setFocusItem(item);
+        if (getListBox().getSelection().contains(item)) {
+        	getListBox().deselectItemByVisualIndex(getVisualItemIndex());
+        } else {
+        	getListBox().selectItemByVisualIndex(getVisualItemIndex());
+        }
+    }
 	
 
 	@Subscribe public void onGameStarted(final GameStartedMessage message) {

@@ -24,7 +24,6 @@
 		<module>../common</module>
 		<module>../client_network</module>
 		<module>../client_core</module>
-		<module>../client_gui_desktop</module>
 		<module>../client_gui_desktop_nifty</module>
 		<module>../server_network</module>
 		<module>../server_core</module>

@@ -2,18 +2,17 @@ package fr.lyrgard.hexScape.gui.desktop.controller.online;
 
 import de.lessvoid.nifty.controls.ListBox.ListBoxViewConverter;
 import de.lessvoid.nifty.elements.Element;
-import fr.lyrgard.hexScape.model.game.Game;
 
-public class GameItemViewConverter implements ListBoxViewConverter<Game> {
+public class GameItemViewConverter implements ListBoxViewConverter<String> {
 
 	@Override
-	public void display(Element listBoxItem, Game game) {
+	public void display(Element listBoxItem, String gameId) {
 		GameItemController gameItemController = listBoxItem.getControl(GameItemController.class);
-		gameItemController.setGame(game);
+		gameItemController.setGame(gameId);
 	}
 
 	@Override
-	public int getWidth(Element element, Game item) {
+	public int getWidth(Element element, String item) {
 		return 250;
 	}
 

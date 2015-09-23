@@ -80,7 +80,7 @@
 							<artifactItems>
 								<artifactItem>
 									<groupId>${project.groupId}</groupId>
-									<artifactId>hexscape_client_gui_desktop</artifactId>
+									<artifactId>hexscape_client_gui_desktop_nifty</artifactId>
 									<version>${project.version}</version>
 									<classifier>executable</classifier>
 									<type>jar</type>

@@ -3,10 +3,10 @@
     <controlDefinition controller="de.lessvoid.nifty.controls.tabs.TabGroupControl" name="tabGroup"
                        childRootId="#tab-content-panel" style="nifty-tabs" buttonWidth="$buttonWidth">
         <panel id="#tabs-panel" childLayout="vertical">
+            <panel id="#tab-content-panel" style="#panel" childLayout="center"/>
             <panel id="#tab-button-panel" style="#tab-button-panel" childLayout="horizontal">
                 <control id="#button-template" name="button" style="nifty-tab-button-active" width="$buttonWidth"/>
             </panel>
-            <panel id="#tab-content-panel" style="#panel" childLayout="center"/>
         </panel>
     </controlDefinition>
 

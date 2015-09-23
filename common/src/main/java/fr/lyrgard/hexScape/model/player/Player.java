@@ -44,6 +44,8 @@ public class Player {
 			if (user != null) {
 				result = user.getName() + " (" + result + ")";
 			}
+		} else {
+			result += " (Empty)";
 		}
 		return result;
 	}
@@ -78,7 +80,7 @@ public class Player {
 
 	@Override
 	public String toString() {
-		return name;
+		return getDisplayName();
 	}
 
 	@Override
@@ -117,4 +119,5 @@ public class Player {
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+	
 }

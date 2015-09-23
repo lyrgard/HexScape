@@ -1,6 +1,5 @@
 package fr.lyrgard.hexScape.gui.desktop.controller.game;
 
-import java.awt.EventQueue;
 import java.util.concurrent.Callable;
 
 import com.google.common.eventbus.Subscribe;
@@ -15,7 +14,6 @@ import de.lessvoid.nifty.screen.ScreenController;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
-import fr.lyrgard.hexScape.gui.desktop.HexScapeFrame;
 import fr.lyrgard.hexScape.gui.desktop.controller.chat.HexScapeChatControl;
 import fr.lyrgard.hexScape.gui.desktop.controller.chat.HexScapeChatTextSendEvent;
 import fr.lyrgard.hexScape.gui.desktop.message.DisplayCardDetailMessage;
@@ -110,7 +108,7 @@ public class GameScreenController implements ScreenController {
 				@Override
 				public Void call() throws Exception {
 					if (HexScapeCore.getInstance().isOnline()) {
-						// TODO
+						nifty.gotoScreen("online");
 					} else {
 						HexScapeCore.getInstance().getHexScapeJme3Application().displayTitleScreen();
 						nifty.gotoScreen("homeScreen");

@@ -30,14 +30,14 @@
 							/>
 					</panel>
 					
-					 <panel width="1px" height="10px"/>
+					<panel width="1px" height="10px"/>
 					
 					<panel width="100%" height="500px" childLayout="horizontal">
-						<panel width="10px" height="10px" backColor="#f008"/>
-						<control id="gameList" name="listBox" vertical="optional" horizontal="off" displayItems="4" viewConverterClass="fr.lyrgard.hexScape.gui.desktop.controller.online.GameItemViewConverter" height="500px" width="*">
-							<control name="gameItem" />
+						<panel width="10px" height="10px"/>
+						<control id="gameList" name="listBox"  horizontal="off" displayItems="6" viewConverterClass="fr.lyrgard.hexScape.gui.desktop.controller.online.GameItemViewConverter" height="500px">
+							<control name="gameItem"/>
 						</control>
-	                    <panel width="10px" height="10px" backColor="#f008"/>
+	                    <panel width="10px" height="10px"/>
                     </panel>
                     <panel width="1px" height="10px"/>
 				</panel>
@@ -62,16 +62,7 @@
 				<panel width="1px" height="15px"></panel> 
 			</panel> -->
 			
-			<panel width="50%" height="100%" childLayout="horizontal" align="left">
-				<panel height="1px" width="310px"></panel>
-				<panel  height="50%" width="*" childLayout="vertical" valign="bottom" backgroundImage="gui/images/textfield/textfieldBackground.png" imageMode="resize:10,8,10,15,6,16,6,2,10,8,10,15" padding="15px,5px,15px,5px">
-					<text text="${i18n.gameName} :" style="uiLabel16" align="left"></text>
-					<text id="selectedGameName" text="" style="userText" align="left"></text>
-					<text text="${i18n.gameDescription} :" style="uiLabel16" align="left"></text>
-					<text id="selectedGameDescription" text="" style="userText" align="left"></text>
-				</panel>
-			</panel>
-					
+			<control id="selectedGame" name="selectedGame"/>
 		</layer>
 	</screen>
 	<popup id="newOnlineGamePopup" childLayout="center" backgroundColor="#0000">

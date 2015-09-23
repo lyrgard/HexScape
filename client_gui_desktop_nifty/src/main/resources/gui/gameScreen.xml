@@ -5,7 +5,7 @@
 	<screen id="gameScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.game.GameScreenController">
 		<layer id="foreground" backgroundColor="#0000" childLayout="center">
 			<!-- <panel id="gameArea" width="100%" height="100%" visibleToMouse="true" focusable="true"></panel> -->
-			<panel heigth="40px" width="100%" valign="top" childLayout="center">
+			<panel heigth="40px" width="100%" valign="bottom" childLayout="center">
 				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"
 					id="saveGameButton"  
 					controller="fr.lyrgard.hexScape.gui.desktop.controller.game.SaveGameButtonController"
@@ -21,12 +21,12 @@
 					align="right"
 					/>
 			</panel>
-			<panel valign="bottom" childLayout="horizontal" width="100%" >
-				<panel id="gameBottomPanel" width="750px" height="200px" childLayout="center" valign="bottom">
+			<panel valign="top" childLayout="horizontal" width="100%" >
+				<panel id="gameBottomPanel" width="750px" height="180px" childLayout="center" valign="top">
 					<!-- <control id="gameBottomPanelPlayerTabs" name="tabGroup" buttonWidth="190px" height="100%">
 					</control> -->
 				</panel>
-				<panel childLayout="vertical" valign="bottom" width="120px">
+				<panel childLayout="vertical" valign="top" width="120px">
 					<panel width="120px" height="40px" backgroundColor="#fffe" childLayout="horizontal">
 						<panel width="*"/>	
 						<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
@@ -51,14 +51,14 @@
 							/>
 						<panel width="*"/>
 					</panel>
-					<panel valign="bottom" width="120px" height="120px"  childLayout="vertical"  backgroundColor="#fffe">
-						<panel id="diceTypesPanel" width="100%" height="28px" childLayout="horizontal"></panel>
-						<panel id="rollDicePanel" width="100%" height="92px" childLayout="evenly-distributed"></panel>
+					<panel valign="top" width="120px" height="140px"  childLayout="vertical"  backgroundColor="#fffe">
+						<panel id="diceTypesPanel" width="100%" height="30px" childLayout="horizontal"></panel>
+						<panel id="rollDicePanel" width="100%" height="110px" childLayout="evenly-distributed"></panel>
 					</panel>
 				</panel>
 				
 				<panel width="*"/>
-				<control id="gameChat" valign="bottom" name="nifty-chat" width="400px" height="250px" lines="12" sendLabel="${i18n.sendChatMessage}"/>		
+				<control id="gameChat" valign="top" name="nifty-chat" width="400px" height="250px" lines="12" sendLabel="${i18n.sendChatMessage}"/>		
 			</panel>
 
 		</layer>
