@@ -86,6 +86,8 @@ public class HexScapeJme3Application extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
+		setDisplayFps(false);
+		setDisplayStatView(false);
 		
 		assetManager.registerLocator(HexScapeCore.APP_DATA_FOLDER.getAbsolutePath(), FileLocator.class);
 		
@@ -94,27 +96,27 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		
-		Vector3f sunDirection = new Vector3f(-1,-1, -0.5f).normalizeLocal();
+		Vector3f sunDirection = new Vector3f(-1,-1, 0).normalizeLocal();
 		
 		DirectionalLight sun = new DirectionalLight();
-		sun.setColor(ColorRGBA.White.mult(0.5f));
-		sun.setDirection(sunDirection);
+		sun.setColor(ColorRGBA.White.mult(0.8f));
+		sun.setDirection(sunDirection.normalizeLocal());
 		rootNode.addLight(sun);
 		
 		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(1f));
+		al.setColor(ColorRGBA.White.mult(0.5f));
 		rootNode.addLight(al);
 		
 		final int SHADOWMAP_SIZE=1024;
         dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
         dlsr.setLight(sun);
-        dlsr.setShadowIntensity(0.3f);
+        dlsr.setShadowIntensity(0.5f);
         viewPort.addProcessor(dlsr);
         
-        if (renderer.getCaps().contains(Caps.GLSL100)){
-            CartoonEdgeProcessor cartoonEdgeProcess = new CartoonEdgeProcessor();
-            viewPort.addProcessor(cartoonEdgeProcess);
-        }
+//        if (renderer.getCaps().contains(Caps.GLSL100)){
+//            CartoonEdgeProcessor cartoonEdgeProcess = new CartoonEdgeProcessor();
+//            viewPort.addProcessor(cartoonEdgeProcess);
+//        }
 	
         gameNode = new Node();
         menuNode = TitleScreen.getInstance().getSpatial();
@@ -151,7 +153,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 			rotatingAroundCameraAppState.setEnabled(false);
 			selectMarkerAppState.setEnabled(false);
 			flyByCameraAppState.setEnabled(false);
-			titleMenuButtonsAppState.setEnabled(false);
+			titleMenuButtonsAppState.setEnabled(true);
 			
 			
 			cam.setLocation(new Vector3f(0, 100, 0));

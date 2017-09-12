@@ -120,7 +120,7 @@ public class RoomView extends AbstractView {
 	}
 
 	@Subscribe public void onRoomMessageReceived(RoomMessagePostedMessage message) {
-		String userId = message.getUserId();
+		String userId = message.getSessionUserId();
 		String roomId = message.getRoomId();
 		final String messageContent = message.getMessage();
 

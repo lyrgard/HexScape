@@ -36,7 +36,6 @@ public class HexScapeDesktopGui {
 		app.setSettings(settings);
 		
 		
-		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				app.createCanvas();
@@ -47,7 +46,6 @@ public class HexScapeDesktopGui {
 				ctx.getCanvas().setPreferredSize(dim);
 				
 				new HexScapeFrame(new View3d(ctx.getCanvas()));
-				
 				app.startCanvas();
 				
 //				app.getHexScapeJme3Application().createCanvas();

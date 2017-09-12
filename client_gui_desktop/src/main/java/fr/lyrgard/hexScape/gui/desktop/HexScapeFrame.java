@@ -70,7 +70,7 @@ public class HexScapeFrame extends JFrame {
 		} catch (Exception e) {
 			LOGGER.error("Error while loading Look And Feels Nimbus", e);
 		}
-
+		
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 

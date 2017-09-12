@@ -10,7 +10,7 @@
 		</authors>
 		<javaversion>1.7</javaversion>
 		<requiresjdk>no</requiresjdk>
-		<run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7|izpack.windowsinstall.8"/> 
+		<run-privileged condition="izpack.windowsinstall"/> 
 		<!-- <pack200 /> -->
 	</info>
 	

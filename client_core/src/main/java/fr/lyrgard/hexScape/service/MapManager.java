@@ -423,11 +423,11 @@ public class MapManager {
 		mat.setColor("Ambient", ColorRGBA.White);
 		mat.setColor("Diffuse",ColorRGBA.White);  // minimum material color
 		mat.setColor("Specular",ColorRGBA.White); // for shininess
-		mat.setFloat("Shininess", 50f); // [1,128] for shininess
+		mat.setFloat("Shininess", 1f); // [1,128] for shininess
 
 
 		geo.setMaterial(mat);
-
+		geo.setShadowMode(ShadowMode.CastAndReceive);
 		return geo;
 	}
 

@@ -17,6 +17,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.elements.render.TextRenderer;
 import de.lessvoid.nifty.input.NiftyInputEvent;
 import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.tools.SizeValue;
 import de.lessvoid.xml.xpp3.Attributes;
 import fr.lyrgard.hexScape.HexScapeCore;
 import fr.lyrgard.hexScape.bus.CoreMessageBus;
@@ -74,6 +75,7 @@ public class ArmyCardPanelController implements Controller {
 			
 		Element cardNameText = element.findElementByName(CARD_NAME_TEXT);
 		cardNameText.getRenderer(TextRenderer.class).setText(cardType.getName());
+		cardNameText.setConstraintWidth(new SizeValue("20px"));
 		
 		figuresNumberText = element.findElementByName(FIGURES_NUMBER_TEXT);
 		updateFiguresNumberText();

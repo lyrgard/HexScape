@@ -51,7 +51,7 @@ public class TitleScreen implements Displayable {
 	public void populateNode() {
 		node.detachAllChildren();
 		buttons = new Node();
-		//node.attachChild(buttons);
+		node.attachChild(buttons);
 		
 		InputStream stream = TitleScreen.class.getResourceAsStream("/title/Logo.hsc");
 		MapManager map = MapManager.fromInputStream(stream);
