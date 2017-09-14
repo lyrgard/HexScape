@@ -177,7 +177,7 @@ public class RotatingAroundCamera implements AnalogListener, ActionListener {
 			centerPos = volume.getCenter();
 			
 			if (resetPosition) {
-				distance = (float)(Math.sqrt(4 * volume.getXExtent() * volume.getXExtent() +  4 * volume.getYExtent() * volume.getYExtent()));
+				distance = (float)(1.1*Math.sqrt(4 * volume.getXExtent() * volume.getXExtent() +  4 * volume.getYExtent() * volume.getYExtent()));
 			} else {
 				distance = cam.getLocation().distance(centerPos);
 			}

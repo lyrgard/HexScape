@@ -65,6 +65,8 @@ public class TextureService  {
 			number = width / height;
 		} catch (IOException e) {
 			throw new RuntimeException("unable to load texture", e);
+		} catch (NullPointerException e) {
+			e.printStackTrace();
 		}
 	}
 	

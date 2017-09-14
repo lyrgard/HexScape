@@ -34,7 +34,11 @@ public class ConfigurationService {
 	private static final String LOCATION_SAVED_GAMES = "location.saved_games";
 	private static final String LOCATION_MAPS = "location.maps";
 	private static final String LOCATION_ARMIES = "location.armies";
-
+	
+	private static final String SETTINGS_LIGHT_SUN_INTENSITY = "settings.light.sun.intensity";
+	private static final String SETTINGS_LIGHT_AMBIANT_INTENSITY = "settings.light.ambiant.intensity";
+	private static final String SETTINGS_LIGHT_SUN_HEIGHT = "settings.light.sun.height";
+	private static final String SETTINGS_LIGHT_SUN_POSITION = "settings.light.sun.position";
 	
 	private static ConfigurationService INSTANCE;
 	
@@ -167,6 +171,38 @@ public class ConfigurationService {
 	
 	public void setLocationArmies(File location) {
 		properties.put(LOCATION_ARMIES, location.getAbsolutePath());
+	}
+	
+	public int getSunLightIntensity() {
+		return Integer.parseInt(properties.getProperty(SETTINGS_LIGHT_SUN_INTENSITY, "8"));
+	}
+	
+	public void setSunLightIntensity(int sunLightIntensity) {
+		properties.put(SETTINGS_LIGHT_SUN_INTENSITY, Integer.toString(sunLightIntensity));
+	}
+	
+	public int getSunHeight() {
+		return Integer.parseInt(properties.getProperty(SETTINGS_LIGHT_SUN_HEIGHT, "50"));
+	}
+	
+	public void setSunHeight(int sunHeight) {
+		properties.put(SETTINGS_LIGHT_SUN_HEIGHT, Integer.toString(sunHeight));
+	}
+	
+	public int getSunPosition() {
+		return Integer.parseInt(properties.getProperty(SETTINGS_LIGHT_SUN_POSITION, "50"));
+	}
+	
+	public void setSunPosition(int sunPosition) {
+		properties.put(SETTINGS_LIGHT_SUN_POSITION, Integer.toString(sunPosition));
+	}
+	
+	public int getAmbiantLightIntensity() {
+		return Integer.parseInt(properties.getProperty(SETTINGS_LIGHT_AMBIANT_INTENSITY, "4"));
+	}
+	
+	public void setAmbiantLightIntensity(int ambiantLightIntensity) {
+		properties.put(SETTINGS_LIGHT_AMBIANT_INTENSITY, Integer.toString(ambiantLightIntensity));
 	}
 	
 	public void save() {

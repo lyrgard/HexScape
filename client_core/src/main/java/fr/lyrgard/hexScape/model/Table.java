@@ -27,8 +27,8 @@ public class Table extends Geometry {
 		}
 		
 		BoundingBox bv = (BoundingBox)scene.getSpatial().getWorldBound();
-		float sizeX = bv.getXExtent() * 8f;
-		float sizeZ = bv.getZExtent() * 8f;
+		float sizeX = bv.getXExtent() * 2f;
+		float sizeZ = bv.getZExtent() * 2f;
 		Vector3f center = bv.getCenter();
 		Box tableMesh = new Box(sizeX , 1, sizeZ);
 
@@ -42,7 +42,7 @@ public class Table extends Geometry {
 			tableMat.setColor("Ambient", ColorRGBA.White);
 			tableMat.setColor("Diffuse",ColorRGBA.White);  // minimum material color
 			tableMat.setColor("Specular",ColorRGBA.White); // for shininess
-			tableMat.setFloat("Shininess", 5f);
+			tableMat.setFloat("Shininess", 1f);
 		}
 		setMaterial(tableMat);
 		setShadowMode(ShadowMode.Receive);

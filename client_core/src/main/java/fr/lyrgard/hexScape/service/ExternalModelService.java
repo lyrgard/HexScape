@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Spatial;
 
 import fr.lyrgard.hexScape.bus.GuiMessageBus;
@@ -54,6 +55,7 @@ public class ExternalModelService {
 			return null;
 		}
 		Spatial result = model.getNewInstance();
+		result.setShadowMode(ShadowMode.CastAndReceive);
 		
 		return result;
 	}

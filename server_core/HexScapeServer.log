@@ -1,0 +1,417 @@
+15:06:12.373 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @740ms
+15:06:12.439 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+15:06:12.554 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+15:06:12.554 [main] INFO  org.eclipse.jetty.server.Server - Started @926ms
+13:56:49.327 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @860ms
+13:56:49.486 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:56:49.757 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:56:49.757 [main] INFO  org.eclipse.jetty.server.Server - Started @1304ms
+13:57:38.059 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @640ms
+13:57:38.110 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:57:38.152 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:57:38.153 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:57:38.153 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+14:08:01.964 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @649ms
+14:08:02.017 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+14:08:02.102 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+14:08:02.102 [main] INFO  org.eclipse.jetty.server.Server - Started @792ms
+13:37:54.212 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @968ms
+13:37:54.387 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:37:54.543 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:37:54.544 [main] INFO  org.eclipse.jetty.server.Server - Started @1323ms
+13:39:04.272 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @653ms
+13:39:04.322 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:39:04.347 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:39:04.347 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:39:04.348 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+14:17:07.383 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @607ms
+14:17:07.434 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+14:17:07.520 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+14:17:07.520 [main] INFO  org.eclipse.jetty.server.Server - Started @749ms
+12:03:11.336 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @964ms
+12:03:11.476 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+12:03:11.620 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+12:03:11.620 [main] INFO  org.eclipse.jetty.server.Server - Started @1254ms
+12:03:50.542 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @619ms
+12:03:50.591 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+12:03:50.615 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+12:03:50.616 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+12:03:50.616 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:48:58.949 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @617ms
+13:48:59.003 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:48:59.086 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:48:59.087 [main] INFO  org.eclipse.jetty.server.Server - Started @760ms
+13:53:06.607 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @629ms
+13:53:06.656 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:53:06.681 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:53:06.681 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:53:06.682 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+12:58:13.895 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @887ms
+12:58:14.088 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+12:58:14.239 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+12:58:14.240 [main] INFO  org.eclipse.jetty.server.Server - Started @1257ms
+12:59:35.473 [qtp112466394-17] ERROR f.l.h.s.listener.RoomMessageListener - Error while cloning room
+com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field "nonFreePlayersNumber" (class fr.lyrgard.hexScape.model.game.Game), not marked as ignorable (9 known properties: "started", "freePlayers", "playerNumber", "name", "players", "id", "observersIds", "map", "description"])
+ at [Source: java.io.StringReader@f0e5b3c; line: 1, column: 6898] (through reference chain: fr.lyrgard.hexScape.model.room.Room["games"]->fr.lyrgard.hexScape.model.game.Game["nonFreePlayersNumber"])
+	at com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException.from(UnrecognizedPropertyException.java:51) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.DeserializationContext.reportUnknownProperty(DeserializationContext.java:671) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.std.StdDeserializer.handleUnknownProperty(StdDeserializer.java:773) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownProperty(BeanDeserializerBase.java:1297) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializerBase.handleUnknownVanilla(BeanDeserializerBase.java:1275) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:247) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:118) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer.deserialize(CollectionDeserializer.java:227) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer.deserialize(CollectionDeserializer.java:204) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.std.CollectionDeserializer.deserialize(CollectionDeserializer.java:23) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.SettableBeanProperty.deserialize(SettableBeanProperty.java:525) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.impl.FieldProperty.deserializeAndSet(FieldProperty.java:106) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.vanillaDeserialize(BeanDeserializer.java:242) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.deser.BeanDeserializer.deserialize(BeanDeserializer.java:118) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.ObjectMapper._readMapAndClose(ObjectMapper.java:2993) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at com.fasterxml.jackson.databind.ObjectMapper.readValue(ObjectMapper.java:2098) ~[jackson-databind-2.3.3.jar:2.3.3]
+	at fr.lyrgard.hexScape.model.room.Room.fromJson(Room.java:32) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.listener.RoomMessageListener.onJoinRoom(RoomMessageListener.java:52) ~[classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_45]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_45]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_45]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_45]
+	at com.google.common.eventbus.EventSubscriber.handleEvent(EventSubscriber.java:74) [guava-17.0.jar:na]
+	at com.google.common.eventbus.SynchronizedEventSubscriber.handleEvent(SynchronizedEventSubscriber.java:47) [guava-17.0.jar:na]
+	at com.google.common.eventbus.EventBus.dispatch(EventBus.java:322) [guava-17.0.jar:na]
+	at com.google.common.eventbus.EventBus.dispatchQueuedEvents(EventBus.java:304) [guava-17.0.jar:na]
+	at com.google.common.eventbus.EventBus.post(EventBus.java:275) [guava-17.0.jar:na]
+	at fr.lyrgard.hexScape.bus.CoreMessageBus.post(CoreMessageBus.java:12) [classes/:na]
+	at fr.lyrgard.hexscape.server.network.ServerWebSocket.onMessage(ServerWebSocket.java:91) [classes/:na]
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:1.8.0_45]
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62) ~[na:1.8.0_45]
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:1.8.0_45]
+	at java.lang.reflect.Method.invoke(Method.java:497) ~[na:1.8.0_45]
+	at org.eclipse.jetty.websocket.common.events.annotated.CallableMethod.call(CallableMethod.java:71) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.events.annotated.OptionalSessionCallableMethod.call(OptionalSessionCallableMethod.java:72) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.events.JettyAnnotatedEventDriver.onTextMessage(JettyAnnotatedEventDriver.java:209) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.message.SimpleTextMessage.messageComplete(SimpleTextMessage.java:69) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.events.AbstractEventDriver.appendMessage(AbstractEventDriver.java:64) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.events.JettyAnnotatedEventDriver.onTextFrame(JettyAnnotatedEventDriver.java:201) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.events.AbstractEventDriver.incomingFrame(AbstractEventDriver.java:160) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.WebSocketSession.incomingFrame(WebSocketSession.java:302) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.extensions.ExtensionStack.incomingFrame(ExtensionStack.java:215) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.Parser.notifyFrame(Parser.java:220) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.Parser.parse(Parser.java:258) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.io.AbstractWebSocketConnection.readParse(AbstractWebSocketConnection.java:602) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.websocket.common.io.AbstractWebSocketConnection.onFillable(AbstractWebSocketConnection.java:458) [websocket-common-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.io.AbstractConnection$2.run(AbstractConnection.java:534) [jetty-io-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:607) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$3.run(QueuedThreadPool.java:536) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at java.lang.Thread.run(Thread.java:745) [na:1.8.0_45]
+13:00:23.826 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @602ms
+13:00:23.875 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:00:23.957 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:00:23.957 [main] INFO  org.eclipse.jetty.server.Server - Started @739ms
+13:23:25.439 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1103ms
+13:23:25.541 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:23:25.640 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:23:25.640 [main] INFO  org.eclipse.jetty.server.Server - Started @1316ms
+13:19:21.513 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2630ms
+13:19:21.627 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:19:21.849 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:19:21.849 [main] INFO  org.eclipse.jetty.server.Server - Started @2991ms
+14:51:54.652 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @909ms
+14:51:54.750 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+14:51:54.874 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+14:51:54.874 [main] INFO  org.eclipse.jetty.server.Server - Started @1137ms
+14:52:05.279 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @780ms
+14:52:05.346 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+14:52:05.373 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+14:52:05.374 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+14:52:05.374 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:12:49.013 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3267ms
+13:12:49.149 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:12:49.305 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:12:49.305 [main] INFO  org.eclipse.jetty.server.Server - Started @3578ms
+13:26:51.776 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @956ms
+13:26:51.968 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:26:52.005 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED ServerConnector@1d119efb{HTTP/1.1}{0.0.0.0:4242}: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) [jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) [jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:26:52.006 [main] WARN  o.e.j.u.component.AbstractLifeCycle - FAILED org.eclipse.jetty.server.Server@4b5d6a01: java.net.BindException: Address already in use: bind
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:26:52.007 [main] ERROR f.l.hexScape.server.HexScapeServer - Error while trying to start server with port : 4242
+java.net.BindException: Address already in use: bind
+	at sun.nio.ch.Net.bind0(Native Method) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:437) ~[na:1.8.0_45]
+	at sun.nio.ch.Net.bind(Net.java:429) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:223) ~[na:1.8.0_45]
+	at sun.nio.ch.ServerSocketAdaptor.bind(ServerSocketAdaptor.java:74) ~[na:1.8.0_45]
+	at org.eclipse.jetty.server.ServerConnector.open(ServerConnector.java:279) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStart(AbstractNetworkConnector.java:80) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.ServerConnector.doStart(ServerConnector.java:218) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.server.Server.doStart(Server.java:336) ~[jetty-server-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.start(AbstractLifeCycle.java:68) ~[jetty-util-9.2.0.v20140526.jar:9.2.0.v20140526]
+	at fr.lyrgard.hexscape.server.network.ServerNetwork.start(ServerNetwork.java:38) ~[classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.start(HexScapeServer.java:84) [classes/:na]
+	at fr.lyrgard.hexScape.server.HexScapeServer.main(HexScapeServer.java:60) [classes/:na]
+13:15:01.073 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @1713ms
+13:15:01.178 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:15:01.314 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:15:01.314 [main] INFO  org.eclipse.jetty.server.Server - Started @1972ms
+12:51:04.961 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @3965ms
+12:51:05.560 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+12:51:05.931 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+12:51:05.931 [main] INFO  org.eclipse.jetty.server.Server - Started @5005ms
+13:19:52.531 [main] INFO  org.eclipse.jetty.util.log - Logging initialized @2023ms
+13:19:52.668 [main] INFO  org.eclipse.jetty.server.Server - jetty-9.2.0.v20140526
+13:19:53.297 [main] INFO  o.e.jetty.server.ServerConnector - Started ServerConnector@393671df{HTTP/1.1}{0.0.0.0:4242}
+13:19:53.297 [main] INFO  org.eclipse.jetty.server.Server - Started @2804ms

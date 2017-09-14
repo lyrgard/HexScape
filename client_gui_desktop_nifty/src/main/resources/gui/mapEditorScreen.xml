@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.sourceforge.net/nifty-1.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://nifty-gui.sourceforge.net/nifty-1.3.xsd http://nifty-gui.sourceforge.net/nifty-1.3.xsd">
+	<screen id="mapEditorScreen" controller="fr.lyrgard.hexScape.gui.desktop.controller.mapEditor.MapEditorScreenController">
+		<layer id="foreground" backgroundColor="#0000" childLayout="center">
+			<!-- <panel id="gameArea" width="100%" height="100%" visibleToMouse="true" focusable="true"></panel> -->
+			<panel heigth="40px" width="100%" valign="bottom" childLayout="center">
+				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"
+					id="saveGameButton"  
+					controller="fr.lyrgard.hexScape.gui.desktop.controller.game.SaveGameButtonController"
+					buttonImage="gui/images/saveSmall.png" 
+					valign="center"
+					align="left"
+					/>
+				<control name="imageButton" height="32px" width="36px" visibleToMouse="true"  
+					goTo="homeScreen" 
+					buttonImage="gui/images/closeSmall.png" 
+					valign="center"
+					align="right"
+					/>
+			</panel>
+		</layer>
+	</screen>
+</nifty>

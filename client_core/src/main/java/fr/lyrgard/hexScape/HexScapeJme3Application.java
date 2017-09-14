@@ -1,17 +1,14 @@
 package fr.lyrgard.hexScape;
 
 
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.app.StatsAppState;
 import com.jme3.app.state.AppState;
 import com.jme3.asset.plugins.FileLocator;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.PointLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
-import com.jme3.renderer.Caps;
 import com.jme3.renderer.ViewPort;
 import com.jme3.renderer.queue.RenderQueue.ShadowMode;
 import com.jme3.scene.Node;
@@ -23,6 +20,7 @@ import fr.lyrgard.hexScape.camera.FlyByCameraAppState;
 import fr.lyrgard.hexScape.camera.PointOfViewCameraAppState;
 import fr.lyrgard.hexScape.camera.RotatingAroundCameraAppState;
 import fr.lyrgard.hexScape.control.FocusControllerAppState;
+import fr.lyrgard.hexScape.control.LightControl;
 import fr.lyrgard.hexScape.control.PieceControlerAppState;
 import fr.lyrgard.hexScape.control.SelectMarkerAppState;
 import fr.lyrgard.hexScape.control.TitleMenuButtonsAppState;
@@ -63,6 +61,11 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
 	private InitCallBack initCallBack;
 	
+	private DirectionalLight sun;
+	private AmbientLight al;
+	
+	private LightControl lightControl;
+	
 	public HexScapeJme3Application() {
 		super(new AppState[] {});
 		
@@ -96,22 +99,14 @@ public class HexScapeJme3Application extends SimpleApplication {
 		
 		rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		
-		Vector3f sunDirection = new Vector3f(-1,-1, 0).normalizeLocal();
-		
-		DirectionalLight sun = new DirectionalLight();
-		sun.setColor(ColorRGBA.White.mult(0.8f));
-		sun.setDirection(sunDirection.normalizeLocal());
+		sun = new DirectionalLight();
 		rootNode.addLight(sun);
 		
-		AmbientLight al = new AmbientLight();
-		al.setColor(ColorRGBA.White.mult(0.5f));
-		rootNode.addLight(al);
+		al = new AmbientLight();
 		
-		final int SHADOWMAP_SIZE=1024;
-        dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
-        dlsr.setLight(sun);
-        dlsr.setShadowIntensity(0.5f);
-        viewPort.addProcessor(dlsr);
+		lightControl = new LightControl(sun,al, dlsr);
+		
+		rootNode.addLight(al);
         
 //        if (renderer.getCaps().contains(Caps.GLSL100)){
 //            CartoonEdgeProcessor cartoonEdgeProcess = new CartoonEdgeProcessor();
@@ -120,21 +115,35 @@ public class HexScapeJme3Application extends SimpleApplication {
 	
         gameNode = new Node();
         menuNode = TitleScreen.getInstance().getSpatial();
-        rootNode.attachChild(gameNode);
-        rootNode.attachChild(menuNode);
+
         viewPort.clearScenes();
+        viewPort.attachScene(rootNode);
 		
-        rootNode.setShadowMode(ShadowMode.CastAndReceive);
+        rootNode.setShadowMode(ShadowMode.Off);
         setPauseOnLostFocus(false);
         
         displayTitleScreen();
         
-        //rotatingAroundCameraAppState.setRotateAroundNode(TitleScreen.getInstance().getSpatial());
+
         GuiMessageBus.post(new CoreReady());     
         
         if (initCallBack != null) {
         	initCallBack.init();
         }
+	}
+	
+	public DirectionalLightShadowRenderer reinitShadows() {
+		final int SHADOWMAP_SIZE=4096;
+		if (dlsr != null) {
+			viewPort.removeProcessor(dlsr);
+		}
+		dlsr = new DirectionalLightShadowRenderer(assetManager, SHADOWMAP_SIZE, 3);
+        dlsr.setLight(sun);
+        dlsr.setShadowIntensity(lightControl.getShadowIntensity());
+        dlsr.setLight(sun);
+        viewPort.addProcessor(dlsr);
+        lightControl.setShadow(dlsr);
+        return dlsr;
 	}
 
 	public void setInitCallBack(InitCallBack initCallBack) {
@@ -216,20 +225,26 @@ public class HexScapeJme3Application extends SimpleApplication {
 		scene = null;
 		
 		setControlState(View3dControlState.TITLE_SCREEN);
-		viewPort.detachScene(gameNode);
-		viewPort.attachScene(menuNode);
+//		viewPort.detachScene(gameNode);
+//		viewPort.attachScene(menuNode);
+		rootNode.detachAllChildren();
+		rootNode.attachChild(menuNode);
+		
+		reinitShadows();
 	}
 	
 	public void displayBlankScreen() {
 		
-		scene = null;
-		
-		setControlState(View3dControlState.DISABLED);
-		viewPort.clearScenes();
+//		scene = null;
+//		
+//		setControlState(View3dControlState.DISABLED);
+//		viewPort.clearScenes();
 	}
 
 	public void setScene(MapManager scene) {
 		
+		rootNode.detachAllChildren();
+		rootNode.attachChild(gameNode);
 		gameNode.detachAllChildren();
 		dlsr.cleanup();
 		this.scene = scene;
@@ -241,9 +256,9 @@ public class HexScapeJme3Application extends SimpleApplication {
 			gameNode.attachChild(new Table(scene));
 			gameNode.attachChild(scene.getSpatial());
 			
-			viewPort.clearScenes();
-			
-			viewPort.attachScene(gameNode);
+//			viewPort.clearScenes();
+//			
+//			viewPort.attachScene(gameNode);
 			
 			if (CurrentUserInfo.getInstance().isPlayingGame()) {
 				// reset camera position
@@ -255,6 +270,7 @@ public class HexScapeJme3Application extends SimpleApplication {
 		} else {
 			rotatingAroundCameraAppState.setRotateAroundNode(null, true);
 		}
+		reinitShadows();
 	}
 	
 	public void lookThroughEyesOf(PieceManager piece) {
@@ -302,6 +318,10 @@ public class HexScapeJme3Application extends SimpleApplication {
 
 	public Node getGameNode() {
 		return gameNode;
+	}
+
+	public LightControl getLightControl() {
+		return lightControl;
 	}
 	
 	

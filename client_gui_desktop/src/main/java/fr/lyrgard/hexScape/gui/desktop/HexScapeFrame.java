@@ -3,6 +3,8 @@ package fr.lyrgard.hexScape.gui.desktop;
 import java.awt.CardLayout;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
@@ -10,6 +12,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -25,6 +30,8 @@ import fr.lyrgard.hexScape.bus.GuiMessageBus;
 import fr.lyrgard.hexScape.gui.desktop.navigation.ViewEnum;
 import fr.lyrgard.hexScape.gui.desktop.view.AbstractView;
 import fr.lyrgard.hexScape.gui.desktop.view.common.View3d;
+import fr.lyrgard.hexScape.gui.desktop.view.common.newGame.CreateGameDialog;
+import fr.lyrgard.hexScape.gui.desktop.view.config.LightConfigDialog;
 import fr.lyrgard.hexScape.gui.desktop.view.game.GameView;
 import fr.lyrgard.hexScape.gui.desktop.view.home.HomeView;
 import fr.lyrgard.hexScape.gui.desktop.view.room.RoomView;
@@ -98,7 +105,7 @@ public class HexScapeFrame extends JFrame {
 
 
 
-		//setJMenuBar(new MenuBar());
+		setJMenuBar(getHexScapeMenuBar());
 
 		setExtendedState(JFrame.MAXIMIZED_BOTH); // aligns itself with windows task bar
 		// set maximum screen   
@@ -106,6 +113,25 @@ public class HexScapeFrame extends JFrame {
 		setVisible(true);
 
 		GuiMessageBus.register(this);
+	}
+
+	private JMenuBar getHexScapeMenuBar() {
+		JMenuBar menuBar = new JMenuBar();
+		JMenu menu = new JMenu("Config");
+		menuBar.add(menu);
+		
+		JMenuItem item = new JMenuItem("Light");
+		item.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				LightConfigDialog dialog = new LightConfigDialog();
+				dialog.setModal(false);
+				dialog.setVisible(true);
+			}
+		});
+		menu.add(item);
+		return menuBar;
 	}
 
 	public void showView(ViewEnum view) {
